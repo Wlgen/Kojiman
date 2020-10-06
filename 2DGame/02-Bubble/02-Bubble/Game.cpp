@@ -1,3 +1,4 @@
+#include <iostream>
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include "Game.h"
@@ -7,6 +8,8 @@ void Game::init()
 {
 	bPlay = true;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+	gState.init();
+	menu.init();
 	scene.init();
 }
 
@@ -20,13 +23,25 @@ bool Game::update(int deltaTime)
 void Game::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	scene.render();
+	menu.render();
 }
 
 void Game::keyPressed(int key)
 {
-	if(key == 27) // Escape code
+	if (key == 27) { // Escape code
+		cout << "hueles mas a culo\n";
 		bPlay = false;
+	}
+	if (gState.getState() == State::state::menu) {
+		if (key == ' ') {
+			gState.changeState();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			scene.render();
+		}
+		else if (key == 'c') {
+			gState.toCredits();
+		}
+	}
 	keys[key] = true;
 }
 
