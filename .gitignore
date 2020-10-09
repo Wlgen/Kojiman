@@ -5,7 +5,6 @@
 
 # User-specific files
 *.rsuser
-*.suo
 *.user
 *.userosscache
 *.sln.docstates
@@ -28,7 +27,7 @@ bld/
 [Ll]og/
 [Ll]ogs/
 2DGame/02-Bubble/Debug
-2DGame/02-Bubble/02-Bubble/debug
+2DGame/02-Bubble/02-Bubble/Debug
 2DGame/02-Bubble/Release
 
 
