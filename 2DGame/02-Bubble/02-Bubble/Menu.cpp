@@ -14,11 +14,13 @@ void Menu::init() {
 
 	initShaders();
 	background = Background::createBackground(geom, texCoords, texProgram);
-	tex.loadFromFile("images/menuxd.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	tex[0].loadFromFile("images/menuxd.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	tex[1].loadFromFile("images/ins.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	tex[2].loadFromFile("images/silsil.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	projection = glm::ortho(0.f, float(639), float(479), 0.f);
 }
 
-void Menu::render() {
+void Menu::render(State::state state) {
 	glm::mat4 modelview;
 
 	texProgram.use();
@@ -26,7 +28,17 @@ void Menu::render() {
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
-	background->render(tex);
+	switch (state) {
+	case State::state::menu:
+		background->render(tex[0]);
+		break;
+	case State::state::credits:
+		background->render(tex[2]);
+		break;
+	case State::state::instr:
+		background->render(tex[1]);
+		break;
+	}
 }
 
 void Menu::initShaders()
