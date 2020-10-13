@@ -3,16 +3,15 @@
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "Background.h"
-#include "State.h"
 
-class Menu
+class Instr
 {
 public:
-	Menu();
-	~Menu();
+	Credits();
+	~~Credits();
 
 	void init();
-	void render(State::state state);
+	void render();
 
 private:
 	void initShaders();
@@ -20,7 +19,7 @@ private:
 private:
 	ShaderProgram texProgram;
 	glm::mat4 projection;
-	Background *background;
-	Texture tex[3];
+	Background* background;
+	Texture tex;
 };
 
