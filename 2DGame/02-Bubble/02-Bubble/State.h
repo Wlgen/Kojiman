@@ -1,9 +1,8 @@
 #pragma once
-#include "Menu.h"
 class State
 {
 public:
-	enum class state { menu, play, credits };
+	enum class state { menu, play, credits, instr };
 
 	State();
 	~State();
@@ -11,6 +10,9 @@ public:
 	void init();
 	void changeState();
 	void toCredits();
+	void toMenu();
+	void toPlay();
+	void toInst();
 	state getState();
 
 private:
