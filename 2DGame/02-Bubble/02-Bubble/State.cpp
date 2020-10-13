@@ -31,6 +31,18 @@ void State::toCredits() {
 	actual_state = state::credits;
 }
 
+void State::toMenu() {
+	actual_state = state::menu;
+}
+
+void State::toPlay() {
+	actual_state = state::play;
+}
+
+void State::toInst() {
+	actual_state = state::instr;
+}
+
 State::state State::getState() {
 	return actual_state;
 }
