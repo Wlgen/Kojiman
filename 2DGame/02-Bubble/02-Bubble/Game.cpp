@@ -11,6 +11,7 @@ void Game::init()
 	gState.init();
 	menu.init();
 	scene.init();
+	credits.init();
 }
 
 bool Game::update(int deltaTime)
@@ -25,12 +26,12 @@ void Game::render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (gState.getState() == State::state::menu) menu.render();
 	if (gState.getState() == State::state::play) scene.render();
+	if (gState.getState() == State::state::credits) credits.render();
 }
 
 void Game::keyPressed(int key)
 {
 	if (key == 27) { // Escape code
-		cout << "hueles mas a culo\n";
 		bPlay = false;
 	}
 	if (gState.getState() == State::state::menu) {
@@ -42,7 +43,12 @@ void Game::keyPressed(int key)
 		}
 	}
 	if (gState.getState() == State::state::credits) {
-		if (key == 'r') {
+		if (key == 'f') {
+			gState.changeState();
+		}
+	}
+	if (gState.getState() == State::state::play) {
+		if (key == 'x') {
 			gState.changeState();
 		}
 	}
