@@ -192,12 +192,7 @@ bool TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size, int
 	for (int x = x0; x <= x1; x++)
 	{
 		if (map[y * mapSize.x + x] != 0)
-		{
-			if (*posY - tileSize * y - size.y <= 4)
-			{
-				return true;
-			}
-		}
+			return true;
 	}
 
 	return false;

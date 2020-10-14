@@ -23,22 +23,29 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Ball::update(int deltaTime)
 {
+	bool activated = false;
 	sprite->update(deltaTime);
 	if (Catch && Game::instance().getSpecialKey(GLUT_KEY_UP))
 	{
 		Catch = false;
-		movX = 2;
-		movY = -2;
+		movX = 1;
+		movY = -1;
+	}
+	posBall.x += movX;
+	posBall.y += movY;
+	if ((map->collisionMoveLeft(posBall, glm::ivec2(32, 32))) || (map->collisionMoveRight(posBall, glm::ivec2(32, 32)))) {
+		movX = -movX;
+		posBall.x += movX;
+		activated = true;
 	}
 	if ((map->collisionMoveUp(posBall, glm::ivec2(32, 32), &posBall.y)) || (map->collisionMoveDown(posBall, glm::ivec2(32, 32), &posBall.y))) {
 		movY = -movY;
+		if (activated) {
+			movX = -movX;
+			activated = false;
+		}
+		posBall.y += movY;
 	}
-	if((map->collisionMoveLeft(posBall, glm::ivec2(32, 32))) || (map->collisionMoveRight(posBall, glm::ivec2(32, 32)))){
-		movX = -movX;
-	}
-	
-	posBall.x += movX;
-	posBall.y += movY;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x), float(tileMapDispl.y + posBall.y)));
 }
 
