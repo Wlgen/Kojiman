@@ -5,16 +5,23 @@
 #include "Player.h"
 #include "Game.h"
 
-
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
 
+Player* Player::player = NULL;
 
 enum PlayerAnims
 {
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
 };
+
+Player* Player::getInstance() {
+	if (!player) {
+		player = new Player;
+	}
+	return player;
+}
 
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
@@ -140,6 +147,10 @@ void Player::setPosition(const glm::vec2 &pos)
 {
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+}
+
+glm::ivec2 Player::getPosition() {
+	return posPlayer;
 }
 
 
