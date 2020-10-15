@@ -18,6 +18,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x), float(tileMapDispl.y + posBall.y)));
+	player = Player::getInstance();
 
 }
 
@@ -25,6 +26,7 @@ void Ball::update(int deltaTime)
 {
 	bool activated = false;
 	sprite->update(deltaTime);
+	posPlayer = player->getPosition();
 	if (Catch && Game::instance().getSpecialKey(GLUT_KEY_UP))
 	{
 		Catch = false;
@@ -46,6 +48,12 @@ void Ball::update(int deltaTime)
 		}
 		posBall.y += movY;
 	}
+	if (collisionWithPlayer(posBall, posPlayer)) {
+		if (movY > 0) {
+			movY = -movY;
+		}
+		posBall.y += movY;
+	}
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x), float(tileMapDispl.y + posBall.y)));
 }
 
@@ -63,4 +71,26 @@ void Ball::setPosition(const glm::vec2& pos)
 {
 	posBall = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x), float(tileMapDispl.y + posBall.y)));
+}
+
+bool Ball::collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer) {
+	int x0, x1, y, xp, xp1, y1;
+
+	x0 = posBall.x / 16;
+	x1 = (posBall.x + 32 - 1) / 16;
+
+	xp = posPlayer.x / 16;
+	xp1 = (posPlayer.x + 32 - 1) / 16;
+	for (int x = x0; x <= x1; x++)
+	{
+		for (int j = xp; j <= xp1; j++) {
+			if (x == j) {
+				if ((posBall.y >= posPlayer.y - 32) && (posPlayer.y > posBall.y + 31)) {
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
