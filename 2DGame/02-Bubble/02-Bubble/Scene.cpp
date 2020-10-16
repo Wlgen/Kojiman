@@ -34,6 +34,7 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
+	mapChange = 1;
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = Player::getInstance();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -51,7 +52,10 @@ void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
-	ball->update(deltaTime);
+	int next = ball->update(deltaTime);
+	if (next != 0) {
+		Scene::changeMap();
+	}
 }
 
 void Scene::render()
@@ -97,6 +101,15 @@ void Scene::initShaders()
 	texProgram.bindFragmentOutput("outColor");
 	vShader.free();
 	fShader.free();
+}
+
+void Scene::changeMap() {
+	mapChange = (mapChange + 1)%3;
+	if (mapChange == 0) mapChange = 1;
+	string lvl = "levels/level0" + to_string(mapChange) + ".txt";
+	map = TileMap::createTileMap(lvl, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	player->setTileMap(map);
+	ball->setTileMap(map);
 }
 
 
