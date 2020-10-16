@@ -104,12 +104,12 @@ void Scene::initShaders()
 }
 
 void Scene::changeMap() {
-	mapChange = (mapChange + 1)%3;
+	/*mapChange = (mapChange + 1)%3;
 	if (mapChange == 0) mapChange = 1;
 	string lvl = "levels/level0" + to_string(mapChange) + ".txt";
 	map = TileMap::createTileMap(lvl, glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setTileMap(map);
-	ball->setTileMap(map);
+	ball->setTileMap(map);*/
 }
 
 
