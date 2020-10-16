@@ -6,12 +6,10 @@ class Block {
   void init(const glm::ivec2 &blockMapPos, ShaderProgram &shaderProgram,
             string texture, const glm::vec2 &blockSize);
   void render();
-
-  void setPosition(const glm::vec2 &pos);
   void free();
 
  private:
-  glm::vec2
-  Texture *tex;
+  glm::ivec2 posBlock, blockSize;
+  Texture tex;
   Sprite *sprite;
 };

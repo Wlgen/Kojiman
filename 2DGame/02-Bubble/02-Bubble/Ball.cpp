@@ -8,8 +8,10 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	Catch = true;
 	movX = 0;
 	movY = 0;
-	spritesheet.loadFromFile("images/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 0.5), &spritesheet, &shaderProgram);
+	spritesheet.loadFromFile("images/blockpng.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.setMagFilter(GL_NEAREST);
+    spritesheet.setMinFilter(GL_NEAREST);
+	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(1.f, 1.f), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(1);
 
 	sprite->setAnimationSpeed(0, 8);

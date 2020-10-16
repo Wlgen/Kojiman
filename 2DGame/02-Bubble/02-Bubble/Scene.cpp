@@ -67,6 +67,7 @@ void Scene::render()
 	map->render();
 	player->render();
 	ball->render();
+	block->render();
 }
 
 void Scene::initShaders()
