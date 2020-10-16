@@ -89,14 +89,14 @@ void Player::update(int deltaTime)
 		posPlayer.y -= 2;
 		if (map->collisionPlayerUp(posPlayer, glm::ivec2(32, 32)))
 		{
-			posPlayer.y += 2;
+			posPlayer.y += 3;
 		}
 	}
 	else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
 		posPlayer.y += +2;
 		if (map->collisionPlayerDown(posPlayer, glm::ivec2(32, 32)))
 		{
-			posPlayer.y -= 2;
+			posPlayer.y -= 3;
 		}
 	}
 	
