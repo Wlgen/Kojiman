@@ -8,7 +8,7 @@ class Ball
 {
 	public:
 		void init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram);
-		void update(int deltaTime);
+		int update(int deltaTime);
 		void render();
 
 		void setTileMap(TileMap* tileMap);
@@ -17,10 +17,9 @@ class Ball
 		bool collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer);
 
 	private:
-		bool Catch;
-		int movX, movY;
+		bool Catch, collisionPlayer;
+		int movX, movY, tileSize;
 		glm::ivec2 tileMapDispl, posBall, posPlayer;
-		int jumpAngle, startY;
 		Texture spritesheet;
 		Sprite* sprite;
 		TileMap* map;

@@ -27,6 +27,7 @@ public:
 
 private:
 	void initShaders();
+	void changeMap();
 
 private:
 	TileMap *map;
@@ -35,7 +36,7 @@ private:
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
-
+	int mapChange;
 };
 
 
