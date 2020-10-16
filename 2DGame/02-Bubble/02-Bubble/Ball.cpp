@@ -6,6 +6,7 @@
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	Catch = true;
+	collisionPlayer = false;
 	movX = 0;
 	movY = 0;
 	spritesheet.loadFromFile("images/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
@@ -22,7 +23,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 }
 
-void Ball::update(int deltaTime)
+int Ball::update(int deltaTime)
 {
 	bool activated = false;
 	sprite->update(deltaTime);
@@ -53,8 +54,14 @@ void Ball::update(int deltaTime)
 			movY = -movY;
 		}
 		posBall.y += movY;
+		collisionPlayer = true;
 	}
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x), float(tileMapDispl.y + posBall.y)));
+	if (collisionPlayer&& !Catch) {
+		collisionPlayer = false;
+		return 1;
+	}
+	return 0;
 }
 
 void Ball::render()
@@ -65,6 +72,7 @@ void Ball::render()
 void Ball::setTileMap(TileMap* tileMap)
 {
 	map = tileMap;
+	tileSize = map->getTileSize();
 }
 
 void Ball::setPosition(const glm::vec2& pos)
@@ -76,11 +84,11 @@ void Ball::setPosition(const glm::vec2& pos)
 bool Ball::collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer) {
 	int x0, x1, y, xp, xp1, y1;
 
-	x0 = posBall.x / 16;
-	x1 = (posBall.x + 32 - 1) / 16;
+	x0 = posBall.x / tileSize;
+	x1 = (posBall.x + 32 - 1) / tileSize;
 
-	xp = posPlayer.x / 16;
-	xp1 = (posPlayer.x + 32 - 1) / 16;
+	xp = posPlayer.x / tileSize;
+	xp1 = (posPlayer.x + 32 - 1) / tileSize;
 	for (int x = x0; x <= x1; x++)
 	{
 		for (int j = xp; j <= xp1; j++) {
