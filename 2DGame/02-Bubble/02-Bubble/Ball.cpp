@@ -9,11 +9,20 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	collisionPlayer = false;
 	movX = 0;
 	movY = 0;
-	spritesheet.loadFromFile("images/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 0.5), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(1);
+	spritesheet.loadFromFile("images/farquad.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.setMagFilter(GL_NEAREST);
+    spritesheet.setMinFilter(GL_NEAREST);
+
+	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 1.f), &spritesheet, &shaderProgram);
+	sprite->setNumberAnimations(2);
 
 	sprite->setAnimationSpeed(0, 8);
+	sprite->addKeyframe(0, glm::vec2(0.5, 1.f));
+
+    sprite->setAnimationSpeed(1, 8);
+    sprite->addKeyframe(1, glm::vec2(1.f, 1.f));
+
+
 	sprite->addKeyframe(0, glm::vec2(0.0f, 0.0f));
 
 	sprite->changeAnimation(0);
@@ -57,6 +66,11 @@ int Ball::update(int deltaTime)
 		collisionPlayer = true;
 	}
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x), float(tileMapDispl.y + posBall.y)));
+    if (movX >= 0) {
+        sprite->changeAnimation(0);
+    } else {
+		sprite->changeAnimation(1);
+	}
 	if (collisionPlayer&& !Catch) {
 		collisionPlayer = false;
 		return 1;
