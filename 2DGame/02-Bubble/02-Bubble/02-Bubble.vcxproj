@@ -14,6 +14,8 @@
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="Background.h" />
     <ClInclude Include="Ball.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="BlockMap.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
@@ -28,6 +30,8 @@
   <ItemGroup>
     <ClCompile Include="Background.cpp" />
     <ClCompile Include="Ball.cpp" />
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BlockMap.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -90,6 +94,9 @@
       <AdditionalLibraryDirectories>..\..\..\libs\Simple OpenGL Image Library\projects\VC9\Debug;..\..\..\libs\freeglut\lib;..\..\..\libs\glew-1.13.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>SOIL.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(ProjectDir)libs\"* "$(SolutionDIr)$(Configuration)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
