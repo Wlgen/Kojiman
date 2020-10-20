@@ -94,6 +94,10 @@ void Ball::setPosition(const glm::vec2& pos) {
                                   float(tileMapDispl.y + posBall.y)));
 }
 
+void Ball::applyEffect(int num) {
+
+}
+
 /*bool Ball::collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer) {
 	int x0, x1, y, xp, xp1, y1;
 
