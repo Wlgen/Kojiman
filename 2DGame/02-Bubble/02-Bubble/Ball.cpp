@@ -23,7 +23,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
     sprite->addKeyframe(1, glm::vec2(1.f, 1.f));
 
 
-	sprite->addKeyframe(0, glm::vec2(0.0f, 0.0f));
+	//sprite->addKeyframe(0, glm::vec2(0.0f, 0.0f));
 
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
@@ -36,15 +36,21 @@ int Ball::update(int deltaTime)
 {
 	bool activated = false;
 	sprite->update(deltaTime);
-	posPlayer = player->getPosition();
 	if (Catch && Game::instance().getSpecialKey(GLUT_KEY_UP))
 	{
 		Catch = false;
 		movX = 1;
 		movY = -1;
 	}
-	posBall.x += movX;
+ 	posBall.x += movX;
 	posBall.y += movY;
+	if (player->collisionWithPlayer(posBall)) {
+		if (movY > 0) {
+			movY = -movY;
+		}
+		posBall.y += movY;
+		collisionPlayer = true;
+	}
 	if ((map->collisionMoveLeft(posBall, glm::ivec2(32, 32))) || (map->collisionMoveRight(posBall, glm::ivec2(32, 32)))) {
 		movX = -movX;
 		posBall.x += movX;
@@ -58,20 +64,13 @@ int Ball::update(int deltaTime)
 		}
 		posBall.y += movY;
 	}
-	if (collisionWithPlayer(posBall, posPlayer)) {
-		if (movY > 0) {
-			movY = -movY;
-		}
-		posBall.y += movY;
-		collisionPlayer = true;
-	}
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x), float(tileMapDispl.y + posBall.y)));
     if (movX >= 0) {
         sprite->changeAnimation(0);
     } else {
 		sprite->changeAnimation(1);
 	}
-	if (collisionPlayer&& !Catch) {
+	if (collisionPlayer && !Catch) {
 		collisionPlayer = false;
 		return 1;
 	}
@@ -86,7 +85,7 @@ void Ball::render()
 void Ball::setTileMap(TileMap* tileMap)
 {
 	map = tileMap;
-	tileSize = map->getTileSize();
+	//tileSize = map->getTileSize();
 }
 
 void Ball::setPosition(const glm::vec2& pos)
@@ -95,7 +94,7 @@ void Ball::setPosition(const glm::vec2& pos)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x), float(tileMapDispl.y + posBall.y)));
 }
 
-bool Ball::collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer) {
+/*bool Ball::collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer) {
 	int x0, x1, y, xp, xp1, y1;
 
 	x0 = posBall.x / tileSize;
@@ -107,7 +106,7 @@ bool Ball::collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer) {
 	{
 		for (int j = xp; j <= xp1; j++) {
 			if (x == j) {
-				if ((posBall.y >= posPlayer.y - 32) && (posPlayer.y > posBall.y + 31)) {
+				if ((posBall.y >= posPlayer.y - 32) && (posPlayer.y > posBall.y + 30)) {
 					return true;
 				}
 			}
@@ -115,4 +114,4 @@ bool Ball::collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer) {
 	}
 
 	return false;
-}
+}*/

@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Ball.h"
 #include "Block.h"
+#include "PowerUp.h"
 
 
 // Scene contains all the entities of our game.
@@ -33,6 +34,7 @@ private:
 	TileMap *map;
 	Player *player;
 	Ball *ball;
+	PowerUp* pu;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;
