@@ -2,14 +2,18 @@
 #include "Sprite.h"
 
 class Block {
- public:
-  void init(const glm::ivec2 &blockMapPos, ShaderProgram &shaderProgram,
-            string texture, const glm::vec2 &blockSize);
-  void render();
-  void free();
+   public:
+    void init(const glm::ivec2 &blockPos, ShaderProgram &shaderProgram,
+              Texture *tex, const glm::vec2 &blockSize);
+    void render() const;
+    void free();
 
- private:
-  glm::ivec2 posBlock, blockSize;
-  Texture tex;
-  Sprite *sprite;
+    void enableRender();
+    void disableRender();
+    bool blockRender();
+
+   private:
+    glm::ivec2 posBlock, blockSize;
+    Sprite *sprite;
+    bool canRender = true;
 };

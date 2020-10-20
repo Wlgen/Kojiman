@@ -41,5 +41,3 @@ private:
 
 
 #endif // _PLAYER_INCLUDE
-
-
