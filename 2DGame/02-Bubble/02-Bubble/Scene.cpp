@@ -2,7 +2,7 @@
 
 #include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
-#include <iostream>
+#include "Scene.h"
 
 #include "Ball.h"
 #include "Game.h"
@@ -18,6 +18,7 @@ Scene::Scene() {
     player = NULL;
     ball = NULL;
     blockMap = NULL;
+	pu = NULL;
 }
 
 Scene::~Scene() {
@@ -25,6 +26,8 @@ Scene::~Scene() {
     if (player != NULL) delete player;
     if (map != NULL) delete ball;
     if (blockMap != NULL) delete blockMap;
+	if (pu != NULL)
+		delete pu;
 }
 
 void Scene::init() {
@@ -49,6 +52,10 @@ void Scene::init() {
     projection =
         glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
     currentTime = 0.0f;
+	pu = new PowerUp();
+	pu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES) * map->getTileSize(), (INIT_PLAYER_Y_TILES-4) * map->getTileSize()));
+	pu->setTileMap(map);
 }
 
 void Scene::update(int deltaTime) {

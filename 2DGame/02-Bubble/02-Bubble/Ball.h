@@ -14,11 +14,9 @@ class Ball
 		void setTileMap(TileMap* tileMap);
 		void setPosition(const glm::vec2& pos);
 
-		bool collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer);
-
 	private:
 		bool Catch, collisionPlayer;
-		int movX, movY, tileSize;
+		int movX, movY;
 		glm::ivec2 tileMapDispl, posBall, posPlayer;
 		Texture spritesheet;
 		Sprite* sprite;
