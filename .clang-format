@@ -1,0 +1,4 @@
+# Archivo de formato .clang generado por Visual Studio
+
+BasedOnStyle : Google 
+IndentWidth : 4

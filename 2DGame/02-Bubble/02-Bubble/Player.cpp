@@ -57,6 +57,8 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 
 void Player::update(int deltaTime)
 {
+	int num = PowerUp::getActualEffect();
+	applyEffect(num);
 	sprite->update(deltaTime);
 	if(Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
@@ -193,6 +195,7 @@ void Player::applyEffect(int num) {
 			velY = 5;
 			break;
 		case 3:
+			//ball->applyEffect();
 			break;
 		default:
 			break;

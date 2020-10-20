@@ -4,6 +4,7 @@
 
 #include "Sprite.h"
 #include "TileMap.h"
+#include "PowerUp.h"
 
 
 // Player is basically a Sprite that represents the player. As such it has
@@ -41,5 +42,3 @@ private:
 
 
 #endif // _PLAYER_INCLUDE
-
-
