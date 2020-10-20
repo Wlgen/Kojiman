@@ -50,7 +50,9 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-	
+
+	velX = 4;
+	velY = 3;
 }
 
 void Player::update(int deltaTime)
@@ -60,10 +62,10 @@ void Player::update(int deltaTime)
 	{
 		if(sprite->animation() != MOVE_LEFT)
 			sprite->changeAnimation(MOVE_LEFT);
-		posPlayer.x -= 4;
+		posPlayer.x -= velX;
 		if(map->collisionPlayerLeft(posPlayer, glm::ivec2(32, 32)))
 		{
-			posPlayer.x += 4;
+			posPlayer.x += velX;
 			sprite->changeAnimation(STAND_LEFT);
 		}
 	}
@@ -71,10 +73,10 @@ void Player::update(int deltaTime)
 	{
 		if(sprite->animation() != MOVE_RIGHT)
 			sprite->changeAnimation(MOVE_RIGHT);
-		posPlayer.x += 4;
+		posPlayer.x += velX;
 		if(map->collisionPlayerRight(posPlayer, glm::ivec2(32, 32)))
 		{
-			posPlayer.x -= 4;
+			posPlayer.x -= velX;
 			sprite->changeAnimation(STAND_RIGHT);
 		}
 	}
@@ -86,17 +88,17 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(STAND_RIGHT);
 	}
 	if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
-		posPlayer.y -= 2;
+		posPlayer.y -= velX;
 		if (map->collisionPlayerUp(posPlayer, glm::ivec2(32, 32)))
 		{
-			posPlayer.y += 3;
+			posPlayer.y += velX;
 		}
 	}
 	else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
-		posPlayer.y += +2;
+		posPlayer.y += +velX;
 		if (map->collisionPlayerDown(posPlayer, glm::ivec2(32, 32)))
 		{
-			posPlayer.y -= 3;
+			posPlayer.y -= velX;
 		}
 	}
 	
@@ -141,6 +143,7 @@ void Player::render()
 void Player::setTileMap(TileMap *tileMap)
 {
 	map = tileMap;
+	tileSize = map->getTileSize();
 }
 
 void Player::setPosition(const glm::vec2 &pos)
@@ -151,6 +154,49 @@ void Player::setPosition(const glm::vec2 &pos)
 
 glm::ivec2 Player::getPosition() {
 	return posPlayer;
+}
+
+bool Player::collisionWithPlayer(glm::ivec2 posObj) {
+	int x0, x1, y, xp, xp1, y1;
+
+	x0 = posObj.x / tileSize;
+	x1 = (posObj.x + 32 - 1) / tileSize;
+
+	xp = posPlayer.x / tileSize;
+	xp1 = (posPlayer.x + 32 - 1) / tileSize;
+	for (int x = x0; x <= x1; x++)
+	{
+		for (int j = xp; j <= xp1; j++) {
+			if (x == j) {
+				if ((posObj.y >= posPlayer.y - 32) && (posPlayer.y > posObj.y + 30)) {
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+void Player::applyEffect(int num) {
+	switch (num) {
+		case 0:
+			velX = 4;
+			velY = 3;
+			break;
+		case 1:
+			velX = 2;
+			velY = 1;
+			break;
+		case 2:
+			velX = 6;
+			velY = 5;
+			break;
+		case 3:
+			break;
+		default:
+			break;
+	}
 }
 
 
