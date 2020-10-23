@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _BLOCKMAP_INCLUDE_
+#define _BLOCKMAP_INCLUDE_
+
 #include <glm/glm.hpp>
 
 #include "Block.h"
@@ -34,3 +36,5 @@ class BlockMap {
     glm::vec2 blockTexSize;
     std::vector<std::vector<Block> > map;
 };
+
+#endif  // _BLCOKMAP_INCLUDE_
