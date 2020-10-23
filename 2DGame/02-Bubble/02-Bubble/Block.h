@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _BLOCK_INCLUDE_
+#define _BLOCK_INCLUDE_
+
 #include "Sprite.h"
 
 class Block {
@@ -17,3 +19,5 @@ class Block {
     Sprite *sprite;
     bool canRender = true;
 };
+
+#endif // _BLOCK_INCLUDE_

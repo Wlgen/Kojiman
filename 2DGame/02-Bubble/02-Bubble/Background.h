@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _BACKGROUND_INCLUDE_
+#define _BACKGROUND_INCLUDE_
+
 #include <glm/glm.hpp>
 #include "Texture.h"
 #include "ShaderProgram.h"
@@ -19,3 +21,4 @@ private:
 	GLint posLocation, texCoordLocation;
 };
 
+#endif // _BACKGROUND_INCLUDE_
