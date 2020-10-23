@@ -2,28 +2,28 @@
 #define _MENU_INCLUDE_
 
 #include <glm/glm.hpp>
-#include "ShaderProgram.h"
-#include "Texture.h"
+
 #include "Background.h"
+#include "ShaderProgram.h"
 #include "State.h"
+#include "Texture.h"
 
-class Menu
-{
-public:
-	Menu();
-	~Menu();
+class Menu {
+   public:
+    Menu();
+    ~Menu();
 
-	void init();
-	void render(State::state state);
+    void init();
+    void render(State::state state);
 
-private:
-	void initShaders();
+   private:
+    void initShaders();
 
-private:
-	ShaderProgram texProgram;
-	glm::mat4 projection;
-	Background *background;
-	Texture tex[3];
+   private:
+    ShaderProgram texProgram;
+    glm::mat4 projection;
+    Background *background;
+    Texture tex[3];
 };
 
-#endif // _MENU_INCLUDE_
+#endif  // _MENU_INCLUDE_

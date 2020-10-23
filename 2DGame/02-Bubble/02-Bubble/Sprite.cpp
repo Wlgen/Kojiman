@@ -1,6 +1,5 @@
 #include "Sprite.h"
 
-
 #include <glm/gtc/matrix_transform.hpp>
 
 Sprite *Sprite::createSprite(const glm::vec2 &quadSize,
