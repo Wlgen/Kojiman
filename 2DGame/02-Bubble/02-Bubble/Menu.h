@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _MENU_INCLUDE_
+#define _MENU_INCLUDE_
+
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
 #include "Texture.h"
@@ -24,3 +26,4 @@ private:
 	Texture tex[3];
 };
 
+#endif // _MENU_INCLUDE_

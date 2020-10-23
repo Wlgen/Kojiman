@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _BALL_INCLUDE_
+#define _BALL_INCLUDE_
 
 #include "Sprite.h"
 #include "TileMap.h"
@@ -26,3 +27,4 @@ class Ball
 		Player *player;
 };
 
+#endif // _BALL_INCLUDE_

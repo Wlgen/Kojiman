@@ -1,4 +1,6 @@
-#pragma once
+#ifndef _STATE_INCLUDE_
+#define _STATE_INCLUDE_
+
 class State
 {
 public:
@@ -19,3 +21,4 @@ private:
 	state actual_state;
 };
 
+#endif // _STATE_INCLUDE_

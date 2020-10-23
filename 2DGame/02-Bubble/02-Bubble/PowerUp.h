@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _POWERUP_INCLUDE_
+#define _POWERUP_INCLUDE_
 
 #include "Sprite.h"
 #include "TileMap.h"
@@ -25,13 +26,15 @@ class PowerUp
 	
 		void initSrpite();
 
+    private:
 		bool collisionPlayer, rend;
 		int movX, movY, tileSize, firstTime, anim;
 		glm::ivec2 tileMapDispl, posPU, posPlayer;
 		Texture spritesheet;
-		Sprite* sprite;
+		Sprite *sprite;
 		TileMap *map;
-		Player *player;
+        Player *player;
 		ShaderProgram texProgram;
 };
 
+#endif // _POWERUP_INCLUDE_

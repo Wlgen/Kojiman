@@ -1,5 +1,5 @@
-#ifndef _TEXTURE_INCLUDE
-#define _TEXTURE_INCLUDE
+#ifndef _TEXTURE_INCLUDE_
+#define _TEXTURE_INCLUDE_
 
 
 #include <string>
@@ -47,5 +47,5 @@ private:
 };
 
 
-#endif // _TEXTURE_INCLUDE
+#endif // _TEXTURE_INCLUDE_
 
