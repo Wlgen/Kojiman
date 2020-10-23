@@ -37,4 +37,4 @@ class BlockMap {
     std::vector<std::vector<Block> > map;
 };
 
-#endif // _BLCOKMAP_INCLUDE_
+#endif  // _BLCOKMAP_INCLUDE_

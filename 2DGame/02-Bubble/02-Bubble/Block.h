@@ -20,4 +20,4 @@ class Block {
     bool canRender = true;
 };
 
-#endif // _BLOCK_INCLUDE_
+#endif  // _BLOCK_INCLUDE_

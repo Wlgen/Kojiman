@@ -5,11 +5,11 @@
 
 #include "Ball.h"
 #include "Block.h"
+#include "BlockMap.h"
 #include "Player.h"
+#include "PowerUp.h"
 #include "ShaderProgram.h"
 #include "TileMap.h"
-#include "BlockMap.h"
-#include "PowerUp.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -36,7 +36,7 @@ class Scene {
     float currentTime;
     glm::mat4 projection;
     int mapChange;
-	PowerUp* pu;
+    PowerUp *pu;
 };
 
 #endif  // _SCENE_INCLUDE
