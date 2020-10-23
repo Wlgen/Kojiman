@@ -1,10 +1,8 @@
 #include "Scene.h"
 
-#include <cmath>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-#include "Ball.h"
 #include "Game.h"
 #include "Scene.h"
 
