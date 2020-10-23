@@ -14,6 +14,8 @@ class Ball
 		void setTileMap(TileMap* tileMap);
 		void setPosition(const glm::vec2& pos);
 
+		void applyEffect(int num);
+
 	private:
 		bool Catch, collisionPlayer;
 		int movX, movY;
