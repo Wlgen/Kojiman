@@ -1,8 +1,8 @@
 #ifndef _SHADER_INCLUDE
 #define _SHADER_INCLUDE
 
-#include <GL/gl.h>
 #include <GL/glew.h>
+#include <GL/gl.h>
 
 #include <string>
 
