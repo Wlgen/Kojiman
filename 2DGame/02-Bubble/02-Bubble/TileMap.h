@@ -5,6 +5,7 @@
 
 #include "ShaderProgram.h"
 #include "Texture.h"
+#include "Block.h"
 
 // Class Tilemap is capable of loading a tile map from a text file in a very
 // simple format (see level01.txt for an example). With this information
@@ -45,6 +46,7 @@ class TileMap {
    private:
     bool loadLevel(const string &levelFile);
     void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
+    void checkDeleteBlock(int pos) const;
 
    private:
     GLuint vao;
@@ -53,8 +55,10 @@ class TileMap {
     glm::ivec2 position, mapSize, tilesheetSize;
     int tileSize, blockSize;
     Texture tilesheet;
+    Texture texBlock;
     glm::vec2 tileTexSize;
     int *map;
+    vector<Block*> blocks;
 };
 
 #endif  // _TILE_MAP_INCLUDE
