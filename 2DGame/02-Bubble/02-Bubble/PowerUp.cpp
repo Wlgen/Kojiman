@@ -73,7 +73,7 @@ void PowerUp::setPosition(const glm::vec2& pos) {
 }
 
 bool PowerUp::collisionWithPlayer(glm::ivec2 posUP, glm::ivec2 posPlayer) {
-    int x0, x1, y, xp, xp1, y1;
+    int x0, x1, xp, xp1;
 
     x0 = posUP.x / tileSize;
     x1 = (posUP.x + 32 - 1) / tileSize;
