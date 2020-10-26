@@ -4,8 +4,6 @@
 #include <glm/glm.hpp>
 
 #include "Ball.h"
-#include "Block.h"
-#include "BlockMap.h"
 #include "Player.h"
 #include "PowerUp.h"
 #include "ShaderProgram.h"
@@ -31,7 +29,6 @@ class Scene {
     TileMap *map;
     Player *player;
     Ball *ball;
-    BlockMap *blockMap;
     ShaderProgram texProgram;
     float currentTime;
     glm::mat4 projection;

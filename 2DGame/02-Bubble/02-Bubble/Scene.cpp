@@ -16,7 +16,6 @@ Scene::Scene() {
     map = NULL;
     player = NULL;
     ball = NULL;
-    blockMap = NULL;
     pu = NULL;
 }
 
@@ -24,7 +23,6 @@ Scene::~Scene() {
     if (map != NULL) delete map;
     if (player != NULL) delete player;
     if (map != NULL) delete ball;
-    if (blockMap != NULL) delete blockMap;
     if (pu != NULL) delete pu;
 }
 
@@ -33,10 +31,6 @@ void Scene::init() {
     mapChange = 1;
     map = TileMap::createTileMap("levels/level01.txt",
                                  glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-    blockMap = BlockMap::createBlockMap("levels/blocklevel01.txt",
-                                        glm::vec2(SCREEN_X + 16, SCREEN_Y + 16),
-                                        texProgram);
-
     player = Player::getInstance();
     player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
     player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
@@ -78,7 +72,6 @@ void Scene::render() {
     texProgram.setUniformMatrix4f("modelview", modelview);
     texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
     map->render();
-    blockMap->render();
     player->render();
     ball->render();
     pu->render();
