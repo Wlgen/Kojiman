@@ -140,7 +140,7 @@ void Player::setPosition(const glm::vec2 &pos) {
 glm::ivec2 Player::getPosition() { return posPlayer; }
 
 bool Player::collisionWithPlayer(glm::ivec2 posObj) {
-    int x0, x1, y, xp, xp1, y1;
+    int x0, x1, xp, xp1;
 
     x0 = posObj.x / tileSize;
     x1 = (posObj.x + 32 - 1) / tileSize;
