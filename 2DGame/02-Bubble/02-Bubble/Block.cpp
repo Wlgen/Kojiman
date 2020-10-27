@@ -8,19 +8,20 @@ void Block::init(const glm::ivec2 &blockPos, ShaderProgram &shaderProgram,
     sprite->setPosition(blockPos);
 }
 
-void Block::render() const {
+void Block::render() {
     if (canRender) {
         sprite->render();
+        rendered = true;
+    } else {
+        if (isRendered()) {
+            sprite->free();
+            rendered = false;
+        }
     }
-}
-
-void Block::free() {
-    canRender = false;
-    sprite->free();
 }
 
 void Block::enableRender() { canRender = true; }
 
 void Block::disableRender() { canRender = false; }
 
-bool Block::blockRender() { return canRender; }
+bool Block::isRendered() { return rendered; }
