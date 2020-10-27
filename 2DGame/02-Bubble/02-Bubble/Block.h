@@ -7,17 +7,17 @@ class Block {
    public:
     void init(const glm::ivec2 &blockPos, ShaderProgram &shaderProgram,
               Texture *tex, const glm::vec2 &blockSize);
-    void render() const;
-    void free();
+    void render();
 
     void enableRender();
     void disableRender();
-    bool blockRender();
+    bool isRendered();
 
    private:
     glm::ivec2 posBlock, blockSize;
     Sprite *sprite;
     bool canRender = true;
+    bool rendered = false;
 };
 
 #endif  // _BLOCK_INCLUDE_
