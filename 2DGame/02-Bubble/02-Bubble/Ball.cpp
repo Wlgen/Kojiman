@@ -56,13 +56,13 @@ int Ball::update(int deltaTime) {
         }
     }
     posBall.x += movX;
-    posBall.y += movY;
     if ((map->collisionMoveLeft(posBall, glm::ivec2(32, 32))) ||
         (map->collisionMoveRight(posBall, glm::ivec2(32, 32)))) {
         movX = -movX;
         posBall.x += movX;
         activated = true;
     }
+    posBall.y += movY;
     if ((map->collisionMoveUp(posBall, glm::ivec2(32, 32), &posBall.y)) ||
         (map->collisionMoveDown(posBall, glm::ivec2(32, 32), &posBall.y))) {
         movY = -movY;

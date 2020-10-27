@@ -87,7 +87,7 @@ bool TileMap::loadLevel(const string& levelFile) {
                 map[j * mapSize.x + i] = 0;
             else {
                 map[j * mapSize.x + i] = tile - int('0');
-                if (tile == '5') {
+                if (tile >= '5') {
                     blocks[j * mapSize.x + i] = new Block;
                     ++i;
                     if (i < mapSize.x) {
@@ -191,10 +191,10 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
 void TileMap::checkDeleteBlock(int pos) const{
     if (map[pos] >= 5) {
         if (blocks[pos] == NULL) {
-            blocks[pos - 1]->free();
+            blocks[pos - 1]->disableRender();
             map[pos] = map[pos - 1] = 0;
         } else {
-            blocks[pos]->free();
+            blocks[pos]->disableRender();
             map[pos]  = map[pos + 1] = 0;
         }
     }
