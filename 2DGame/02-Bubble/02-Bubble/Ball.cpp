@@ -43,7 +43,7 @@ int Ball::update(int deltaTime) {
         movX = 1;
         movY = -1;
     }
-    glm::vec2 checkPlayer = player->checkColissionBall();
+    glm::vec2 checkPlayer = player->checkCollisionBall();
     if (checkPlayer.x) {
         if (movY > 0) {
             movY = -movY;
@@ -131,25 +131,3 @@ void Ball::setPosition(const glm::vec2& pos) {
 }
 
 void Ball::applyEffect(int num) {}
-
-/*bool Ball::collisionWithPlayer(glm::ivec2 posBall, glm::ivec2 posPlayer) {
-        int x0, x1, y, xp, xp1, y1;
-
-    x0 = posBall.x / tileSize;
-    x1 = (posBall.x + 32 - 1) / tileSize;
-
-        xp = posPlayer.x / tileSize;
-        xp1 = (posPlayer.x + 32 - 1) / tileSize;
-        for (int x = x0; x <= x1; x++)
-        {
-                for (int j = xp; j <= xp1; j++) {
-                        if (x == j) {
-                                if ((posBall.y >= posPlayer.y - 32) &&
-(posPlayer.y > posBall.y + 30)) { return true;
-                                }
-                        }
-                }
-        }
-
-        return false;
-}*/

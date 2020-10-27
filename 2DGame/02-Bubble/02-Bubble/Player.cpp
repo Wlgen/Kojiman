@@ -51,7 +51,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram) {
                                   float(tileMapDispl.y + posPlayer.y)));
 
     posBall = posPU = glm::vec2(-5, -5);
-    collisionBall = false;
+    collisionBall = collisionPU = false;
 
     velX = 3;
     velY = 3;
@@ -60,6 +60,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram) {
 void Player::update(int deltaTime) {
     sprite->update(deltaTime);
     collisionBall = false;
+    collisionPU = false;
     for (int i = 0; i < velY; i++) {
         if (Game::instance().getSpecialKey(GLUT_KEY_LEFT)) {
             if (sprite->animation() != MOVE_LEFT)
@@ -101,6 +102,10 @@ void Player::update(int deltaTime) {
             collisionBall = collisionWithPlayer(posBall);
             numColl = 1;
         }
+        if (!collisionPU) {
+            collisionPU = collisionWithPlayer(posPU);
+            posPU = glm::vec2(-5, -5);
+        }
     }
 }
 
@@ -113,7 +118,6 @@ void Player::setTileMap(TileMap *tileMap) {
 
 void Player::setPosition(const glm::vec2 &pos) {
     posPlayer = pos;
-    prePosPlayer = pos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                                   float(tileMapDispl.y + posPlayer.y)));
 }
@@ -127,7 +131,7 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj) {
     x1 = (posObj.x + 24 - 1) / tileSize;
 
     xp = posPlayer.x / tileSize;
-    xp1 = (posPlayer.x + 24 - 1) / tileSize;
+    xp1 = (posPlayer.x + 32 - 1) / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
@@ -164,9 +168,14 @@ void Player::applyEffect(int num) {
     }
 }
 
-glm::vec2 Player::checkColissionBall() { 
-    //posBall = pos;
+glm::vec2 Player::checkCollisionBall() { 
     return glm::vec2(collisionBall, numColl);
 }
 
+bool Player::checkCollisionPU() {
+    return collisionPU;
+}
+
 void Player::setBallPosition(glm::vec2 pos) { posBall = pos; }
+
+void Player::setPUPosition(glm::vec2 pos) { posPU = pos; }

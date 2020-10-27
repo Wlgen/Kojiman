@@ -19,16 +19,18 @@ class Player {
     void setPosition(const glm::vec2 &pos);
     bool collisionWithPlayer(glm::ivec2 posObj);
 
-    glm::vec2 checkColissionBall();
+    glm::vec2 checkCollisionBall();
+    bool checkCollisionPU();
     void setBallPosition(glm::vec2 pos);
+    void setPUPosition(glm::vec2 pos);
 
     void applyEffect(int num);
 
     glm::ivec2 getPosition();
 
    private:
-    bool bJumping, collisionBall;
-    glm::ivec2 tileMapDispl, posPlayer, prePosPlayer, posBall, posPU;
+    bool bJumping, collisionBall, collisionPU;
+    glm::ivec2 tileMapDispl, posPlayer, posBall, posPU;
     int jumpAngle, startY, tileSize, velX, velY, numColl;
     Texture spritesheet;
     Sprite *sprite;
