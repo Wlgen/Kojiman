@@ -18,7 +18,7 @@ class Ball {
 
    private:
     bool Catch, collisionPlayer;
-    int movX, movY;
+    int movX, movY, contTime;
     glm::ivec2 tileMapDispl, posBall, posPlayer;
     Texture spritesheet;
     Sprite* sprite;
