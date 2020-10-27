@@ -8,8 +8,8 @@ Menu::Menu() {}
 Menu::~Menu() { delete background; }
 
 void Menu::init() {
-    glm::vec2 geom[2] = {glm::vec2(0.f), glm::vec2(640.f, 480.f)};
-    glm::vec2 texCoords[2] = {glm::vec2(0.f), glm::vec2(1.f)};
+    glm::vec2 geom[2] = { glm::vec2(0.f), glm::vec2(640.f, 480.f) };
+    glm::vec2 texCoords[2] = { glm::vec2(0.f), glm::vec2(1.f) };
 
     initShaders();
     background = Background::createBackground(geom, texCoords, texProgram);
