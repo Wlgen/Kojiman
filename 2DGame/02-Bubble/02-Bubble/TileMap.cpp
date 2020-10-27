@@ -293,12 +293,23 @@ bool TileMap::collisionPlayerLeft(const glm::ivec2& pos,
         return false;
 }
 
+bool TileMap::collisionPUUp(const glm::ivec2& pos,
+                            const glm::ivec2& size) const {
+    int y;
+
+    y = (pos.y) / tileSize;
+    if (y <= 0)
+        return true;
+    else
+        return false;
+}
+
 bool TileMap::collisionPlayerUp(const glm::ivec2& pos,
                                 const glm::ivec2& size) const {
     int y;
 
     y = (pos.y) / tileSize;
-    if (y <= 0)
+    if (y <= 2)
         return true;
     else
         return false;
@@ -309,7 +320,7 @@ bool TileMap::collisionPlayerDown(const glm::ivec2& pos,
     int y;
 
     y = (pos.y + size.y - 1) / tileSize;
-    if (y >= (mapSize.y - 1))
+    if (y >= mapSize.y)
         return true;
     else
         return false;

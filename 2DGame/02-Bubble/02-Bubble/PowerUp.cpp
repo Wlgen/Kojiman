@@ -27,31 +27,34 @@ void PowerUp::update(int deltaTime) {
         sprite->update(deltaTime);
         posPlayer = player->getPosition();
 
-        posPU.x += movX;
-        posPU.y += movY;
-        if ((map->collisionPlayerLeft(posPU, glm::ivec2(32, 32))) ||
-            (map->collisionPlayerRight(posPU, glm::ivec2(32, 32)))) {
-            movX = -movX;
+        for (int i = 0; i < mov; i++) {
             posPU.x += movX;
-        }
-        if ((map->collisionPlayerUp(posPU, glm::ivec2(32, 32))) ||
-            (map->collisionPlayerDown(posPU, glm::ivec2(32, 32)))) {
-            movY = -movY;
             posPU.y += movY;
-        }
-        if (player->collisionWithPlayer(posPU)) {
-            rend = false;
-            sprite->free();
-            firstTime = 0;
-            // actualEffect = anim;
-            player->applyEffect(anim);
+            if ((map->collisionPlayerLeft(posPU, glm::ivec2(32, 32))) ||
+                (map->collisionPlayerRight(posPU, glm::ivec2(32, 32)))) {
+                movX = -movX;
+                posPU.x += movX;
+            }
+            if ((map->collisionPUUp(posPU, glm::ivec2(32, 32))) ||
+                (map->collisionPlayerDown(posPU, glm::ivec2(32, 32)))) {
+                movY = -movY;
+                posPU.y += movY;
+            }
+            if (player->checkCollisionPU()) {
+                rend = false;
+                sprite->free();
+                firstTime = 0;
+                // actualEffect = anim;
+                player->applyEffect(anim);
+            }
+            sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
+                                          float(tileMapDispl.y + posPU.y)));
         }
         if (firstTime % 300 == 0) {
             anim = (anim + 1) % 4;
             sprite->changeAnimation(anim);
         }
-        sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
-                                      float(tileMapDispl.y + posPU.y)));
+        player->setPUPosition(posPU);
     }
 }
 
@@ -70,28 +73,6 @@ void PowerUp::setPosition(const glm::vec2& pos) {
     posPU = pos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
                                   float(tileMapDispl.y + posPU.y)));
-}
-
-bool PowerUp::collisionWithPlayer(glm::ivec2 posUP, glm::ivec2 posPlayer) {
-    int x0, x1, xp, xp1;
-
-    x0 = posUP.x / tileSize;
-    x1 = (posUP.x + 32 - 1) / tileSize;
-
-    xp = posPlayer.x / tileSize;
-    xp1 = (posPlayer.x + 32 - 1) / tileSize;
-    for (int x = x0; x <= x1; x++) {
-        for (int j = xp; j <= xp1; j++) {
-            if (x == j) {
-                if ((posUP.y >= posPlayer.y - 32) &&
-                    (posPlayer.y > posUP.y + 31)) {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
 }
 
 void PowerUp::initSrpite() {
@@ -123,6 +104,7 @@ void PowerUp::initSrpite() {
     posPU.y = 390;
     movX = 1;
     movY = -1;
+    mov = 2;
 }
 
 /*int PowerUp::getActualEffect() {
