@@ -17,6 +17,7 @@ TileMap* TileMap::createTileMap(const string& levelFile,
 
 TileMap::TileMap(const string& levelFile, const glm::vec2& minCoords,
                  ShaderProgram& program) {
+    prog = program;
     loadLevel(levelFile);
     prepareArrays(minCoords, program);
 }
@@ -35,8 +36,21 @@ void TileMap::render() const {
     glDisable(GL_TEXTURE_2D);
     for (int j = 0; j < mapSize.y; ++j) {
         for (int i = 0; i < mapSize.x; ++i) {
-            if (blocks[j * mapSize.x + i] != NULL) {
+            if (blocks[j * mapSize.x + i] != NULL)
                 blocks[j * mapSize.x + i]->render();
+        }
+    }
+}
+
+void TileMap::restart() {
+    Block *actBlock;
+    for(int j = 0; j < mapSize.y; ++j) {
+        for(int i = 0; i < mapSize.x; ++i) {
+            actBlock = blocks[j * mapSize.x + i];
+            if (actBlock != NULL) {
+                if (!actBlock->isRendered()) {
+                    actBlock->init(actBlock->getPosBlock(), prog, &texBlock, actBlock->getBlockSize());
+                }
             }
         }
     }
