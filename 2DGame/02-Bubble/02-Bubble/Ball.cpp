@@ -1,6 +1,7 @@
 #include "Ball.h"
 
 #include <GL/glut.h>
+#include <cmath>
 
 #include "Game.h"
 
@@ -13,7 +14,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
 
-    sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 1.f),
+    sprite = Sprite::createSprite(glm::ivec2(24.f, 24.f), glm::vec2(0.5, 1.f),
                                   &spritesheet, &shaderProgram);
     sprite->setNumberAnimations(2);
 
@@ -30,7 +31,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     sprite->changeAnimation(0);
     tileMapDispl = tileMapPos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
-                                  float(tileMapDispl.y + posBall.y)));
+                        float(tileMapDispl.y + posBall.y)));
     player = Player::getInstance();
 }
 
@@ -49,35 +50,64 @@ int Ball::update(int deltaTime) {
         }
         collisionPlayer = true;
         for (int i = 0; i < checkPlayer.y; i++) {
-            if (!(map->collisionMoveUp(posBall, glm::ivec2(32, 32),
-                                       &posBall.y))) {
+            if (!(map->collisionMoveUp(posBall, glm::ivec2(24, 24),
+                &posBall.y))) {
                 posBall.y += movY;
             }
         }
     }
-    posBall.x += movX;
-    if ((map->collisionMoveLeft(posBall, glm::ivec2(32, 32))) ||
-        (map->collisionMoveRight(posBall, glm::ivec2(32, 32)))) {
-        movX = -movX;
-        posBall.x += movX;
-        activated = true;
-    }
-    posBall.y += movY;
-    if ((map->collisionMoveUp(posBall, glm::ivec2(32, 32), &posBall.y)) ||
-        (map->collisionMoveDown(posBall, glm::ivec2(32, 32), &posBall.y))) {
-        movY = -movY;
-        if (activated) {
-            movX = -movX;
-            activated = false;
+    bool actXS, actYS;
+    actXS = (movX >= 0);
+    actYS = (movY >= 0);
+    int actX = std::abs(movX);
+    int actY = std::abs(movY);
+    while (actX != 0 && actY != 0) {
+        if (actX != 0) {
+            if (actXS) 
+                posBall.x++;
+            else
+                posBall.x--;
+            --actX;
+            if ((map->collisionMoveLeft(posBall, glm::ivec2(24, 24))) ||
+                (map->collisionMoveRight(posBall, glm::ivec2(24, 24)))) {
+                movX = -movX;
+                actXS = (movX >= 0);
+                if (actXS)
+                    posBall.x++;
+                else
+                    posBall.x--;
+                activated = true;
+            }
         }
-        posBall.y += movY;
+        if (actY != 0) {
+            if (actYS)
+                posBall.y++;
+            else
+                posBall.y--;
+            --actY;
+            if ((map->collisionMoveUp(posBall, glm::ivec2(24, 24), &posBall.y)) ||
+                (map->collisionMoveDown(posBall, glm::ivec2(24, 24), &posBall.y))) {
+                movY = -movY;
+                actYS = (movY >= 0);
+                if (activated) {
+                    movX = -movX;
+                    actYS = (movY >= 0);
+                    activated = false;
+                }
+                if (actYS)
+                    posBall.y++;
+                else
+                    posBall.y--;
+            }
+        }
     }
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
-                                  float(tileMapDispl.y + posBall.y)));
+                        float(tileMapDispl.y + posBall.y)));
     player->setBallPosition(posBall);
     if (movX >= 0) {
         sprite->changeAnimation(0);
-    } else {
+    }
+    else {
         sprite->changeAnimation(1);
     }
     if (collisionPlayer && !Catch) {
@@ -97,7 +127,7 @@ void Ball::setTileMap(TileMap* tileMap) {
 void Ball::setPosition(const glm::vec2& pos) {
     posBall = pos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
-                                  float(tileMapDispl.y + posBall.y)));
+                        float(tileMapDispl.y + posBall.y)));
 }
 
 void Ball::applyEffect(int num) {}

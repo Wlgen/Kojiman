@@ -124,15 +124,15 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj) {
     int x0, x1, xp, xp1;
 
     x0 = posObj.x / tileSize;
-    x1 = (posObj.x + 32 - 1) / tileSize;
+    x1 = (posObj.x + 24 - 1) / tileSize;
 
     xp = posPlayer.x / tileSize;
-    xp1 = (posPlayer.x + 32 - 1) / tileSize;
+    xp1 = (posPlayer.x + 24 - 1) / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
-                if ((posObj.y <= posPlayer.y - 30) &&
-                    (posObj.y >= posPlayer.y - 32)) {
+                if ((posObj.y <= posPlayer.y - 22) &&
+                    (posObj.y >= posPlayer.y - 24)) {
                     return true;
                 }
             }

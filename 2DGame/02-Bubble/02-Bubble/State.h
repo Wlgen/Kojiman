@@ -18,6 +18,7 @@ class State {
 
    private:
     state actual_state;
+    state previous_state;
 };
 
 #endif  // _STATE_INCLUDE_
