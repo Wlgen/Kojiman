@@ -10,7 +10,7 @@
 #define SCREEN_Y 16
 
 #define INIT_PLAYER_X_TILES 4
-#define INIT_PLAYER_Y_TILES 25
+#define INIT_PLAYER_Y_TILES 26
 
 Scene::Scene() {
     map = NULL;
@@ -40,7 +40,7 @@ void Scene::init() {
     ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
     ball->setPosition(
         glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-                  (INIT_PLAYER_Y_TILES - 2) * map->getTileSize()));
+                  (INIT_PLAYER_Y_TILES - 1.5) * map->getTileSize()));
     ball->setTileMap(map);
     pu = new PowerUp();
     pu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
