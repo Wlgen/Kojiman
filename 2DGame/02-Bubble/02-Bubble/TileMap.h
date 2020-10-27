@@ -35,6 +35,7 @@ class TileMap {
                          int *posY) const;
     bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size,
                            int *posY) const;
+    bool collisionPUUp(const glm::ivec2 &pos, const glm::ivec2 &size) const;
     bool collisionPlayerUp(const glm::ivec2 &pos, const glm::ivec2 &size) const;
     bool collisionPlayerDown(const glm::ivec2 &pos,
                              const glm::ivec2 &size) const;
