@@ -42,15 +42,21 @@ int Ball::update(int deltaTime) {
         movX = 1;
         movY = -1;
     }
-    posBall.x += movX;
-    posBall.y += movY;
-    if (player->collisionWithPlayer(posBall)) {
+    glm::vec2 checkPlayer = player->checkColissionBall();
+    if (checkPlayer.x) {
         if (movY > 0) {
             movY = -movY;
         }
-        posBall.y += movY;
         collisionPlayer = true;
+        for (int i = 0; i < checkPlayer.y; i++) {
+            if (!(map->collisionMoveUp(posBall, glm::ivec2(32, 32),
+                                       &posBall.y))) {
+                posBall.y += movY;
+            }
+        }
     }
+    posBall.x += movX;
+    posBall.y += movY;
     if ((map->collisionMoveLeft(posBall, glm::ivec2(32, 32))) ||
         (map->collisionMoveRight(posBall, glm::ivec2(32, 32)))) {
         movX = -movX;
@@ -68,6 +74,7 @@ int Ball::update(int deltaTime) {
     }
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
                                   float(tileMapDispl.y + posBall.y)));
+    player->setBallPosition(posBall);
     if (movX >= 0) {
         sprite->changeAnimation(0);
     } else {

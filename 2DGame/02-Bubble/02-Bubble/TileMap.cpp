@@ -261,7 +261,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size,
     for (int x = x0; x <= x1; x++) {
         if (map[y * mapSize.x + x] != 0) {
             if (*posY - tileSize * y + size.y <= 4) {
-                //*posY = tileSize * y - size.y;
+                *posY = tileSize * y - size.y;
                 checkDeleteBlock(y * mapSize.x + x);
                 return true;
             }

@@ -50,78 +50,58 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram) {
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                                   float(tileMapDispl.y + posPlayer.y)));
 
-    velX = 4;
+    posBall = posPU = glm::vec2(-5, -5);
+    collisionBall = false;
+
+    velX = 3;
     velY = 3;
 }
 
 void Player::update(int deltaTime) {
     sprite->update(deltaTime);
-    if (Game::instance().getSpecialKey(GLUT_KEY_LEFT)) {
-        if (sprite->animation() != MOVE_LEFT)
-            sprite->changeAnimation(MOVE_LEFT);
-        posPlayer.x -= velX;
-        if (map->collisionPlayerLeft(posPlayer, glm::ivec2(32, 32))) {
-            posPlayer.x += velX;
-            sprite->changeAnimation(STAND_LEFT);
-        }
-    } else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT)) {
-        if (sprite->animation() != MOVE_RIGHT)
-            sprite->changeAnimation(MOVE_RIGHT);
-        posPlayer.x += velX;
-        if (map->collisionPlayerRight(posPlayer, glm::ivec2(32, 32))) {
-            posPlayer.x -= velX;
-            sprite->changeAnimation(STAND_RIGHT);
-        }
-    } else {
-        if (sprite->animation() == MOVE_LEFT)
-            sprite->changeAnimation(STAND_LEFT);
-        else if (sprite->animation() == MOVE_RIGHT)
-            sprite->changeAnimation(STAND_RIGHT);
-    }
-    if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
-        posPlayer.y -= velX;
-        if (map->collisionPlayerUp(posPlayer, glm::ivec2(32, 32))) {
-            posPlayer.y += velX;
-        }
-    } else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
-        posPlayer.y += +velX;
-        if (map->collisionPlayerDown(posPlayer, glm::ivec2(32, 32))) {
-            posPlayer.y -= velX;
-        }
-    }
-
-    /*if(bJumping)
-    {
-            jumpAngle += JUMP_ANGLE_STEP;
-            if(jumpAngle == 180)
-            {
-                    bJumping = false;
-                    posPlayer.y = startY;
+    collisionBall = false;
+    for (int i = 0; i < velY; i++) {
+        if (Game::instance().getSpecialKey(GLUT_KEY_LEFT)) {
+            if (sprite->animation() != MOVE_LEFT)
+                sprite->changeAnimation(MOVE_LEFT);
+            posPlayer.x -= 1;
+            if (map->collisionPlayerLeft(posPlayer, glm::ivec2(32, 32))) {
+                posPlayer.x += 1;
+                sprite->changeAnimation(STAND_LEFT);
             }
-            else
-            {
-                    posPlayer.y = int(startY - 96 * sin(3.14159f * jumpAngle /
-    180.f)); if(jumpAngle > 90) bJumping = !map->collisionMoveDown(posPlayer,
-    glm::ivec2(32, 32), &posPlayer.y);
+        } else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT)) {
+            if (sprite->animation() != MOVE_RIGHT)
+                sprite->changeAnimation(MOVE_RIGHT);
+            posPlayer.x += 1;
+            if (map->collisionPlayerRight(posPlayer, glm::ivec2(32, 32))) {
+                posPlayer.x -= 1;
+                sprite->changeAnimation(STAND_RIGHT);
             }
+        } else {
+            if (sprite->animation() == MOVE_LEFT)
+                sprite->changeAnimation(STAND_LEFT);
+            else if (sprite->animation() == MOVE_RIGHT)
+                sprite->changeAnimation(STAND_RIGHT);
+        }
+        if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
+            posPlayer.y -= 1;
+            if (map->collisionPlayerUp(posPlayer, glm::ivec2(32, 32))) {
+                posPlayer.y += 1;
+            }
+            if (collisionBall) numColl++;
+        } else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
+            posPlayer.y += +1;
+            if (map->collisionPlayerDown(posPlayer, glm::ivec2(32, 32))) {
+                posPlayer.y -= 1;
+            }
+        }
+        sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
+                                      float(tileMapDispl.y + posPlayer.y)));
+        if (!collisionBall) {
+            collisionBall = collisionWithPlayer(posBall);
+            numColl = 1;
+        }
     }
-    else
-    {
-            posPlayer.y += FALL_STEP;
-            if(map->collisionMoveDown(posPlayer, glm::ivec2(32, 32),
-    &posPlayer.y))
-            {
-                    if(Game::instance().getSpecialKey(GLUT_KEY_UP))
-                    {
-                            bJumping = true;
-                            jumpAngle = 0;
-                            startY = posPlayer.y;
-                    }
-            }
-    }*/
-
-    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
-                                  float(tileMapDispl.y + posPlayer.y)));
 }
 
 void Player::render() { sprite->render(); }
@@ -133,6 +113,7 @@ void Player::setTileMap(TileMap *tileMap) {
 
 void Player::setPosition(const glm::vec2 &pos) {
     posPlayer = pos;
+    prePosPlayer = pos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                                   float(tileMapDispl.y + posPlayer.y)));
 }
@@ -150,8 +131,8 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj) {
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
-                if ((posObj.y >= posPlayer.y - 32) &&
-                    (posPlayer.y > posObj.y + 30)) {
+                if ((posObj.y <= posPlayer.y - 30) &&
+                    (posObj.y >= posPlayer.y - 32)) {
                     return true;
                 }
             }
@@ -164,16 +145,16 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj) {
 void Player::applyEffect(int num) {
     switch (num) {
         case 0:
-            velX = 4;
+            velX = 3;
             velY = 3;
             break;
         case 1:
-            velX = 2;
+            velX = 1;
             velY = 1;
             break;
         case 2:
             velX = 6;
-            velY = 5;
+            velY = 6;
             break;
         case 3:
             // ball->applyEffect();
@@ -182,3 +163,10 @@ void Player::applyEffect(int num) {
             break;
     }
 }
+
+glm::vec2 Player::checkColissionBall() { 
+    //posBall = pos;
+    return glm::vec2(collisionBall, numColl);
+}
+
+void Player::setBallPosition(glm::vec2 pos) { posBall = pos; }
