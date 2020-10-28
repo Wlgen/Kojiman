@@ -1,7 +1,6 @@
 #include "PowerUp.h"
 
 void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
-    collisionPlayer = false;
     rend = false;
     // actualEffect = 0;
     texProgram = shaderProgram;
