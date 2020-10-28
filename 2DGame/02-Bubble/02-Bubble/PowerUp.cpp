@@ -109,3 +109,7 @@ void PowerUp::initSrpite() {
 /*int PowerUp::getActualEffect() {
         return actualEffect;
 } */
+
+void PowerUp::restart() {
+    firstTime = 0;
+}

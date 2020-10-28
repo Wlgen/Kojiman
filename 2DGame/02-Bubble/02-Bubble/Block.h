@@ -12,6 +12,8 @@ class Block {
     void enableRender();
     void disableRender();
     bool isRendered();
+    glm::ivec2 getPosBlock();
+    glm::ivec2 getBlockSize();
 
    private:
     glm::ivec2 posBlock, blockSize;
