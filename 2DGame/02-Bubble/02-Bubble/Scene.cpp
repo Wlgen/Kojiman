@@ -22,7 +22,7 @@ Scene::Scene() {
 Scene::~Scene() {
     if (map != NULL) delete map;
     if (player != NULL) delete player;
-    if (map != NULL) delete ball;
+    if (ball != NULL) delete ball;
     if (pu != NULL) delete pu;
 }
 
@@ -109,4 +109,18 @@ void Scene::changeMap() {
     string lvl = "levels/level0" + to_string(mapChange) + ".txt";
     map = TileMap::createTileMap(lvl, glm::vec2(SCREEN_X, SCREEN_Y),
     texProgram); player->setTileMap(map); ball->setTileMap(map);*/
+}
+
+void Scene::restart() {
+    player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
+                        INIT_PLAYER_Y_TILES * map->getTileSize()));
+    ball->stop();
+    ball->setPosition(
+        glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
+        (INIT_PLAYER_Y_TILES - 2) * map->getTileSize()));
+    pu->restart();
+    pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
+                    (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
+    currentTime = 0.0f;
+    map->restart();
 }

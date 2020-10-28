@@ -3,7 +3,6 @@
 void Block::init(const glm::ivec2 &blockPos, ShaderProgram &shaderProgram,
                  Texture *tex, const glm::vec2 &blockSize) {
     this->blockSize = blockSize;
-    if (sprite != NULL) delete sprite;
     sprite = Sprite::createSprite(blockSize, glm::vec2(1.f, 1.f), tex,
                                   &shaderProgram);
     posBlock = blockPos;

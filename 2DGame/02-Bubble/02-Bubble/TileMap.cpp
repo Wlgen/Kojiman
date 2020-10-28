@@ -50,6 +50,7 @@ void TileMap::restart() {
             if (actBlock != NULL) {
                 if (!actBlock->isRendered()) {
                     actBlock->init(actBlock->getPosBlock(), prog, &texBlock, actBlock->getBlockSize());
+                    actBlock->enableRender();
                 }
             }
         }

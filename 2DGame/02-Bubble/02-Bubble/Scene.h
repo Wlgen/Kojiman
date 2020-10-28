@@ -21,6 +21,7 @@ class Scene {
     void init();
     void update(int deltaTime);
     void render();
+    void restart();
 
    private:
     void initShaders();
