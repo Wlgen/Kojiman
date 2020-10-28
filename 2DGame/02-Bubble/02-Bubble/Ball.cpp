@@ -143,3 +143,8 @@ void Ball::setPosition(const glm::vec2& pos) {
 }
 
 void Ball::applyEffect(int num) {}
+
+void Ball::stop() {
+    movX = movY = 0;
+    Catch = true;
+}

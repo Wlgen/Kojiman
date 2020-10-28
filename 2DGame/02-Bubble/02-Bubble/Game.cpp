@@ -18,8 +18,9 @@ bool Game::update(int deltaTime) {
 
 void Game::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if (gState.getState() == State::state::play)
+    if (gState.getState() == State::state::play) {
         scene.render();
+    }
     else
         menu.render(gState.getState());
 }
@@ -29,8 +30,10 @@ void Game::keyPressed(int key) {
         bPlay = false;
     }
     if (gState.getState() == State::state::menu) {
-        if (key == ' ')
+        if (key == ' ') {
+            scene.restart();
             gState.changeState();
+        }
         else if (key == 'c')
             gState.toCredits();
         else if (key == 'i')
@@ -38,6 +41,7 @@ void Game::keyPressed(int key) {
     } else if (gState.getState() == State::state::credits) {
         if (key == 'f') gState.changeState();
     } else if (gState.getState() == State::state::play) {
+        if (key == 'r') scene.restart();
         if (key == 'x') gState.changeState();
 
     } else if (gState.getState() == State::state::instr) {
