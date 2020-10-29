@@ -132,4 +132,7 @@ void Scene::restart() {
                     (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
     currentTime = 0.0f;
     map->restart();
+    police->setPosition(glm::vec2((1) * map->getTileSize(),
+                                  (INIT_PLAYER_Y_TILES)*map->getTileSize()));
+    police->restart();
 }

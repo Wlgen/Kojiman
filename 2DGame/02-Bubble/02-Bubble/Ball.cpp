@@ -147,4 +147,5 @@ void Ball::applyEffect(int num) {}
 void Ball::stop() {
     movX = movY = 0;
     Catch = true;
+    contTime = 0;
 }

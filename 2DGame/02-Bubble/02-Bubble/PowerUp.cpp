@@ -113,4 +113,5 @@ void PowerUp::initSrpite() {
 
 void PowerUp::restart() {
     firstTime = 0;
+    rend = false;
 }
