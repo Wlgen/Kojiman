@@ -121,9 +121,10 @@ void Scene::changeMap() {
     texProgram); player->setTileMap(map); ball->setTileMap(map);*/
 }
 
-void Scene::restart() {
+void Scene::restart(bool death) {
     player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
                         INIT_PLAYER_Y_TILES * map->getTileSize()));
+    player->restart();
     ball->stop();
     ball->setPosition(
         glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
@@ -132,10 +133,10 @@ void Scene::restart() {
     pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
                     (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
     currentTime = 0.0f;
-    map->restart();
     police->setPosition(glm::vec2((1) * map->getTileSize(),
                         (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->restart();
+    if (!death) map->restart();
 }
 
 bool Scene::isInitialized() { return initialized; }

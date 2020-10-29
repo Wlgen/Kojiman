@@ -25,6 +25,7 @@ class Player {
     void setPUPosition(glm::vec2 pos);
 
     void applyEffect(int num);
+    void restart();
 
     glm::ivec2 getPosition();
 

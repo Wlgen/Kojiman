@@ -22,7 +22,7 @@ class Scene {
     void init();
     void update(int deltaTime);
     void render();
-    void restart();
+    void restart(bool death);
     bool isInitialized();
 
    private:
