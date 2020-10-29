@@ -31,7 +31,8 @@ void Game::keyPressed(int key) {
     }
     if (gState.getState() == State::state::menu) {
         if (key == ' ') {
-            scene.restart();
+            if (scene.isInitialized()) scene.restart();
+            else scene.init();
             gState.changeState();
         }
         else if (key == 'c')
@@ -39,7 +40,9 @@ void Game::keyPressed(int key) {
         else if (key == 'i')
             gState.toInst();
     } else if (gState.getState() == State::state::credits) {
-        if (key == 'f') gState.changeState();
+        if (key == 'f') {
+            gState.changeState();
+        }
     } else if (gState.getState() == State::state::play) {
         if (key == 'r') scene.restart();
         if (key == 'x') gState.changeState();
