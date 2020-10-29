@@ -341,3 +341,12 @@ bool TileMap::collisionPlayerDown(const glm::ivec2& pos,
     else
         return false;
 }
+
+bool TileMap::ballOutOfMapDown(const glm::ivec2& pos,
+                               const glm::ivec2& size) const {
+    int y = (pos.y + size.y - 1) / tileSize;
+    if (y > mapSize.y - 1)
+        return true;
+    else
+        return false;
+}
