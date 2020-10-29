@@ -143,3 +143,8 @@ bool Police::PoliceCatchPlayer() {
 
     return false;
 }
+
+void Police::restart() { 
+    rend = false;
+    firstTime = 0;
+}

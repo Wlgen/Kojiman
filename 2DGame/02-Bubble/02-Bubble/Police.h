@@ -17,6 +17,8 @@ class Police {
 
     bool PoliceCatchPlayer();
 
+    void restart();
+
    private:
     void initSrpite();
 
