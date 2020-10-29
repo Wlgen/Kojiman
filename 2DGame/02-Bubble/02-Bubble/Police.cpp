@@ -82,7 +82,7 @@ void Police::update(int deltaTime) { //canviar
 void Police::render() {
     if (rend) {
         sprite->render();
-    }
+    } 
 }
 
 void Police::setTileMap(TileMap* tileMap) {
