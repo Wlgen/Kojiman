@@ -27,7 +27,6 @@ void Police::update(int deltaTime) {  // canviar
         }
     }
     if (rend) {
-        firstTime += 1;
         if (!persecution) {
             // change animation
             sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),

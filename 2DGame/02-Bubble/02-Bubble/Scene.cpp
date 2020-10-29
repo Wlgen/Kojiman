@@ -17,6 +17,7 @@ Scene::Scene() {
     player = NULL;
     ball = NULL;
     pu = NULL;
+    police = NULL;
 }
 
 Scene::~Scene() {
@@ -24,6 +25,7 @@ Scene::~Scene() {
     if (player != NULL) delete player;
     if (ball != NULL) delete ball;
     if (pu != NULL) delete pu;
+    if (police != NULL) delete police;
 }
 
 void Scene::init() {
@@ -47,6 +49,11 @@ void Scene::init() {
     pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
                               (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
     pu->setTileMap(map);
+    police = new Police();
+    police->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    police->setPosition(glm::vec2((1)*map->getTileSize(),
+                              (INIT_PLAYER_Y_TILES) * map->getTileSize()));
+    police->setTileMap(map);
     projection =
         glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
     currentTime = 0.0f;
@@ -60,6 +67,7 @@ void Scene::update(int deltaTime) {
     if (next != 0) {
         Scene::changeMap();
     }
+    police->update(deltaTime);
 }
 
 void Scene::render() {
@@ -75,6 +83,7 @@ void Scene::render() {
     player->render();
     ball->render();
     pu->render();
+    police->render();
 }
 
 void Scene::initShaders() {
@@ -117,7 +126,7 @@ void Scene::restart() {
     ball->stop();
     ball->setPosition(
         glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-        (INIT_PLAYER_Y_TILES - 2) * map->getTileSize()));
+        (INIT_PLAYER_Y_TILES - 1.5) * map->getTileSize()));
     pu->restart();
     pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
                     (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
