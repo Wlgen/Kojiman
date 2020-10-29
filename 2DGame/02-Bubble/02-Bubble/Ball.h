@@ -13,7 +13,6 @@ class Ball {
 
     void setTileMap(TileMap* tileMap);
     void setPosition(const glm::vec2& pos);
-    void stop();
 
     void applyEffect(int num);
 

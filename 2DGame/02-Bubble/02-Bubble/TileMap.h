@@ -24,7 +24,6 @@ class TileMap {
     ~TileMap();
 
     void render() const;
-    void restart();
     void free();
 
     int getTileSize() const { return tileSize; }
@@ -61,7 +60,6 @@ class TileMap {
     glm::vec2 tileTexSize;
     int *map;
     vector<Block*> blocks;
-    ShaderProgram prog;
 };
 
 #endif  // _TILE_MAP_INCLUDE
