@@ -16,7 +16,6 @@ class PowerUp {
 
     void setTileMap(TileMap* tileMap);
     void setPosition(const glm::vec2& pos);
-    void restart();
 
     // static int getActualEffect();
 
@@ -24,7 +23,7 @@ class PowerUp {
     void initSrpite();
 
    private:
-    bool collisionPlayer, rend;
+    bool rend;
     int mov, movX, movY, tileSize, firstTime, anim;
     glm::ivec2 tileMapDispl, posPU, posPlayer;
     Texture spritesheet;

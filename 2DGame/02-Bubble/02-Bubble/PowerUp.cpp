@@ -1,7 +1,6 @@
 #include "PowerUp.h"
 
 void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
-    collisionPlayer = false;
     rend = false;
     // actualEffect = 0;
     texProgram = shaderProgram;
@@ -110,7 +109,3 @@ void PowerUp::initSrpite() {
 /*int PowerUp::getActualEffect() {
         return actualEffect;
 } */
-
-void PowerUp::restart() {
-    firstTime = 0;
-}
