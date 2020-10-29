@@ -367,7 +367,3 @@ bool TileMap::ballOutOfMapDown(const glm::ivec2& pos,
     else
         return false;
 }
-
-bool TileMap::getStateAlarm() { return alarm; }
-
-void TileMap::setStateAlarm(bool state) { alarm = state; }
