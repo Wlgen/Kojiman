@@ -16,7 +16,6 @@ void State::changeState() {
             break;
         case state::credits:
             actual_state = state::menu;
-
             break;
         default:
             break;
