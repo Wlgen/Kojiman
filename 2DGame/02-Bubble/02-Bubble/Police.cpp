@@ -42,6 +42,7 @@ void Police::update(int deltaTime) {  // canviar
                     Xmov = -Xmov;
                 }
                 if (Xmov < 1) {
+                    movX = 1;
                     Ymov = movY / movX;
                     if (Ymov < 0) Ymov = -Ymov;
                     Xmov = 0;
