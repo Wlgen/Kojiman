@@ -33,71 +33,83 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
                         float(tileMapDispl.y + posBall.y)));
     player = Player::getInstance();
+    contTime = 0;
 }
 
 int Ball::update(int deltaTime) {
     bool activated = false;
     sprite->update(deltaTime);
-    if (Catch && Game::instance().getSpecialKey(GLUT_KEY_UP)) {
-        Catch = false;
-        movX = 1;
-        movY = -1;
-    }
-    glm::vec2 checkPlayer = player->checkCollisionBall();
-    if (checkPlayer.x) {
-        if (movY > 0) {
-            movY = -movY;
+    if (Catch){
+        contTime++;
+        posPlayer = player->getPosition();
+        posBall = glm::vec2(posPlayer.x, posBall.y);
+        if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) // ||
+            //(Game::instance().getKey(' ')))  //Quan arreglem menú, descomentar
+        || (contTime == 350)){
+            Catch = false;
+            movX = 1;
+            movY = -1;
         }
-        collisionPlayer = true;
-        for (int i = 0; i < checkPlayer.y; i++) {
-            if (!(map->collisionMoveUp(posBall, glm::ivec2(24, 24),
-                &posBall.y))) {
-                posBall.y += movY;
+    }
+    if (!Catch) {
+        glm::vec2 checkPlayer = player->checkCollisionBall();
+        if (checkPlayer.x) {
+            if (movY > 0) {
+                movY = -movY;
+            }
+            collisionPlayer = true;
+            for (int i = 0; i < checkPlayer.y; i++) {
+                if (!(map->collisionMoveUp(posBall, glm::ivec2(24, 24),
+                                           &posBall.y))) {
+                    posBall.y += movY;
+                }
             }
         }
-    }
-    bool actXS, actYS;
-    actXS = (movX >= 0);
-    actYS = (movY >= 0);
-    int actX = std::abs(movX);
-    int actY = std::abs(movY);
-    while (actX != 0 && actY != 0) {
-        if (actX != 0) {
-            if (actXS) 
-                posBall.x++;
-            else
-                posBall.x--;
-            --actX;
-            if ((map->collisionMoveLeft(posBall, glm::ivec2(24, 24))) ||
-                (map->collisionMoveRight(posBall, glm::ivec2(24, 24)))) {
-                movX = -movX;
-                actXS = (movX >= 0);
+        bool actXS, actYS;
+        actXS = (movX >= 0);
+        actYS = (movY >= 0);
+        int actX = std::abs(movX);
+        int actY = std::abs(movY);
+        while (actX != 0 && actY != 0) {
+            if (actX != 0) {
                 if (actXS)
                     posBall.x++;
                 else
                     posBall.x--;
-                activated = true;
-            }
-        }
-        if (actY != 0) {
-            if (actYS)
-                posBall.y++;
-            else
-                posBall.y--;
-            --actY;
-            if ((map->collisionMoveUp(posBall, glm::ivec2(24, 24), &posBall.y)) ||
-                (map->collisionMoveDown(posBall, glm::ivec2(24, 24), &posBall.y))) {
-                movY = -movY;
-                actYS = (movY >= 0);
-                if (activated) {
+                --actX;
+                if ((map->collisionMoveLeft(posBall, glm::ivec2(24, 24))) ||
+                    (map->collisionMoveRight(posBall, glm::ivec2(24, 24)))) {
                     movX = -movX;
-                    actYS = (movY >= 0);
-                    activated = false;
+                    actXS = (movX >= 0);
+                    if (actXS)
+                        posBall.x++;
+                    else
+                        posBall.x--;
+                    activated = true;
                 }
+            }
+            if (actY != 0) {
                 if (actYS)
                     posBall.y++;
                 else
                     posBall.y--;
+                --actY;
+                if ((map->collisionMoveUp(posBall, glm::ivec2(24, 24),
+                                          &posBall.y)) ||
+                    (map->collisionMoveDown(posBall, glm::ivec2(24, 24),
+                                            &posBall.y))) {
+                    movY = -movY;
+                    actYS = (movY >= 0);
+                    if (activated) {
+                        movX = -movX;
+                        actYS = (movY >= 0);
+                        activated = false;
+                    }
+                    if (actYS)
+                        posBall.y++;
+                    else
+                        posBall.y--;
+                }
             }
         }
     }
@@ -135,4 +147,5 @@ void Ball::applyEffect(int num) {}
 void Ball::stop() {
     movX = movY = 0;
     Catch = true;
+    contTime = 0;
 }

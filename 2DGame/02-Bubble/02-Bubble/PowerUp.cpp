@@ -104,7 +104,7 @@ void PowerUp::initSrpite() {
     posPU.y = 390;
     movX = 1;
     movY = -1;
-    mov = 2;
+    mov = 1;
 }
 
 /*int PowerUp::getActualEffect() {
@@ -113,4 +113,5 @@ void PowerUp::initSrpite() {
 
 void PowerUp::restart() {
     firstTime = 0;
+    rend = false;
 }
