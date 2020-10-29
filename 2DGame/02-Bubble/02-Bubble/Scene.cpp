@@ -24,6 +24,7 @@ Scene::~Scene() {
     if (player != NULL) delete player;
     if (ball != NULL) delete ball;
     if (pu != NULL) delete pu;
+    if (police != NULL) delete police;
 }
 
 void Scene::init() {
