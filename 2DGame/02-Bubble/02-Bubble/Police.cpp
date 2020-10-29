@@ -14,7 +14,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     firstTime = 0;
 }
 
-void Police::update(int deltaTime) { //canviar
+void Police::update(int deltaTime) {  // canviar
     firstTime += 1;
     sprite->update(deltaTime);
     if (firstTime >= 500) {
@@ -26,18 +26,18 @@ void Police::update(int deltaTime) { //canviar
             firstTime = 0;
         }
     }
-    if (rend){
+    if (rend) {
         firstTime += 1;
         if (!persecution) {
-               //change animation
+            // change animation
             sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
                                           float(tileMapDispl.y + posPolice.y)));
             if (firstTime >= 350) {
-                posPlayer = player->getPosition();  
+                posPlayer = player->getPosition();
                 persecution = true;
                 movX = posPlayer.x - posPolice.x;
                 movY = posPlayer.y - posPolice.y;
-                Xmov = (movX+1) / (movY+1);
+                Xmov = (movX + 1) / (movY + 1);
                 Ymov = 0;
                 if (Xmov < 0) {
                     Xmov = -Xmov;
@@ -63,11 +63,9 @@ void Police::update(int deltaTime) { //canviar
                 movX = movY = 0;
             } else {
                 if (posPlayer.x != posPolice.x)
-                    if (firstTime % (Ymov+1) == 0)
-                        posPolice.x += movX;
+                    if (firstTime % (Ymov + 1) == 0) posPolice.x += movX;
                 if (posPlayer.y != posPolice.y)
-                    if (firstTime % (Xmov+1) == 0)
-                        posPolice.y += movY;
+                    if (firstTime % (Xmov + 1) == 0) posPolice.y += movY;
                 sprite->setPosition(
                     glm::vec2(float(tileMapDispl.x + posPolice.x),
                               float(tileMapDispl.y + posPolice.y)));
@@ -82,7 +80,7 @@ void Police::update(int deltaTime) { //canviar
 void Police::render() {
     if (rend) {
         sprite->render();
-    } 
+    }
 }
 
 void Police::setTileMap(TileMap* tileMap) {
@@ -97,7 +95,6 @@ void Police::setPosition(const glm::vec2& pos) {
 }
 
 void Police::initSrpite() {
-
     spritesheet.loadFromFile("images/policeman.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
