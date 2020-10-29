@@ -26,6 +26,12 @@ TileMap::~TileMap() {
     if (map != NULL) delete map;
 }
 
+void TileMap::initMap() {
+    for (int i = 0; i < (mapSize.x * mapSize.y); ++i) {
+        map[i] = -1;
+    }
+}
+
 void TileMap::render() const {
     glEnable(GL_TEXTURE_2D);
     tilesheet.use();
@@ -43,15 +49,18 @@ void TileMap::render() const {
 }
 
 void TileMap::restart() {
-    Block *actBlock;
-    for(int j = 0; j < mapSize.y; ++j) {
-        for(int i = 0; i < mapSize.x; ++i) {
+    Block* actBlock;
+    for (int j = 0; j < mapSize.y; ++j) {
+        for (int i = 0; i < mapSize.x; ++i) {
             actBlock = blocks[j * mapSize.x + i];
             if (actBlock != NULL) {
                 if (!actBlock->isRendered()) {
+                    if (actBlock->getBlockType() == BREAK)
                     actBlock->init(actBlock->getPosBlock(), prog, &texBlock, actBlock->getBlockSize());
+                    else
+                        actBlock->init(actBlock->getPosBlock(), prog, &texAlarm, actBlock->getBlockSize());
                     actBlock->enableRender();
-                    map[j * mapSize.x + i] = map[j * mapSize.x + i + 1] = 5;
+                    map[j * mapSize.x + i] = map[j * mapSize.x + i + 1] = actBlock->getBlockType();
                 }
             }
         }
@@ -89,32 +98,36 @@ bool TileMap::loadLevel(const string& levelFile) {
     texBlock.setWrapT(GL_REPEAT);
     texBlock.setMinFilter(GL_NEAREST);
     texBlock.setMagFilter(GL_NEAREST);
+    texAlarm.loadFromFile("images/alarma.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texAlarm.setWrapS(GL_REPEAT);
+    texAlarm.setWrapT(GL_REPEAT);
+    texAlarm.setMinFilter(GL_NEAREST);
+    texAlarm.setMagFilter(GL_NEAREST);
     getline(fin, line);
     sstream.str(line);
     sstream >> tilesheetSize.x >> tilesheetSize.y;
     tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
 
     map = new int[mapSize.x * mapSize.y];
+    initMap();
     blocks = vector<Block*>(mapSize.x * mapSize.y);
     for (int j = 0; j < mapSize.y; j++) {
         for (int i = 0; i < mapSize.x; i++) {
             fin.get(tile);
-            if (tile == ' ')
-                map[j * mapSize.x + i] = 0;
-            else {
-                map[j * mapSize.x + i] = tile - int('0');
-                if (tile >= '5') {
-                    blocks[j * mapSize.x + i] = new Block;
-                    ++i;
-                    if (i < mapSize.x) {
-                        fin.get(tile);
-                        map[j * mapSize.x + i] = tile - int('0');
+            if (map[j * mapSize.x + i] == -1) {
+                if (tile == ' ')
+                    map[j * mapSize.x + i] = 0;
+                else {
+                    map[j * mapSize.x + i] = tile - int('0');
+                    if (tile == '5') {
+                        blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, BREAK);
+                        map[j * mapSize.x + i + 1] = 5;
                     }
-                    else {
-#ifndef _WIN32
-                        fin.get(tile);
-#endif
-                        break;
+                    if (tile == '6') {
+                         blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, ALARM);
+                        map[j * mapSize.x + i + 1] = 6;
+                        map[(j + 1) * mapSize.x + i + 1] = 6;
+                        map[(j + 1) * mapSize.x + i] = 6;
                     }
                 }
             }
@@ -180,7 +193,10 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
                 }
                 else {
                     if (blocks[j * mapSize.x + i] != NULL) {
-                        blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texBlock, glm::vec2(32.f, 16.f));
+                        if (blocks[j * mapSize.x + i]->getBlockType() == ALARM) 
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texAlarm, glm::vec2(32.f, 32.f));
+                        else
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texBlock, glm::vec2(32.f, 16.f));
                         blocks[j * mapSize.x + i]->enableRender();
                     }
                 }
@@ -204,14 +220,15 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
 // Method collisionMoveDown also corrects Y coordinate if the box is
 // already intersecting a tile below.
 
-void TileMap::checkDeleteBlock(int pos) const{
-    if (map[pos] >= 5) {
+void TileMap::checkDeleteBlock(int pos) const {
+    if (map[pos] == 5) {
         if (blocks[pos] == NULL) {
             blocks[pos - 1]->disableRender();
             map[pos] = map[pos - 1] = 0;
-        } else {
+        }
+        else {
             blocks[pos]->disableRender();
-            map[pos]  = map[pos + 1] = 0;
+            map[pos] = map[pos + 1] = 0;
         }
     }
 }
@@ -258,7 +275,7 @@ bool TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size,
     x1 = (pos.x + size.x - 1) / tileSize;
     y = (pos.y) / tileSize;
     for (int x = x0; x <= x1; x++) {
-        if (map[y * mapSize.x + x] != 0){
+        if (map[y * mapSize.x + x] != 0) {
             checkDeleteBlock(y * mapSize.x + x);
             return true;
         }

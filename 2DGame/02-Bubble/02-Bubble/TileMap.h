@@ -51,6 +51,7 @@ class TileMap {
     bool loadLevel(const string &levelFile);
     void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
     void checkDeleteBlock(int pos) const;
+    void initMap();
 
    private:
     GLuint vao;
@@ -58,8 +59,7 @@ class TileMap {
     GLint posLocation, texCoordLocation;
     glm::ivec2 position, mapSize, tilesheetSize;
     int tileSize, blockSize;
-    Texture tilesheet;
-    Texture texBlock;
+    Texture tilesheet, texBlock, texAlarm;
     glm::vec2 tileTexSize;
     int *map;
     vector<Block*> blocks;
