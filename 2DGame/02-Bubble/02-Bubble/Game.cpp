@@ -31,7 +31,7 @@ void Game::keyPressed(int key) {
     }
     if (gState.getState() == State::state::menu) {
         if (key == ' ') {
-            if (scene.isInitialized()) scene.restart();
+            if (scene.isInitialized()) scene.restart(false);
             else scene.init();
             gState.changeState();
         }
@@ -44,7 +44,7 @@ void Game::keyPressed(int key) {
             gState.changeState();
         }
     } else if (gState.getState() == State::state::play) {
-        if (key == 'r') restart();
+        if (key == 'r') restart(false);
         if (key == 'x') gState.changeState();
 
     } else if (gState.getState() == State::state::instr) {
@@ -69,4 +69,4 @@ bool Game::getKey(int key) const { return keys[key]; }
 
 bool Game::getSpecialKey(int key) const { return specialKeys[key]; }
 
-void Game::restart() { scene.restart(); }
+void Game::restart(bool death) { scene.restart(death); }

@@ -47,6 +47,10 @@ class TileMap {
 
     bool ballOutOfMapDown(const glm::ivec2 &pos, const glm::ivec2 &size) const;
 
+    bool getStateAlarm();
+    
+    void setStateAlarm(bool state);
+
    private:
     bool loadLevel(const string &levelFile);
     void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
@@ -61,6 +65,7 @@ class TileMap {
     int tileSize, blockSize;
     Texture tilesheet, texBlock, texAlarm;
     glm::vec2 tileTexSize;
+    bool alarm;
     int *map;
     vector<Block*> blocks;
     ShaderProgram prog;

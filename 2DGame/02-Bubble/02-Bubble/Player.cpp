@@ -179,3 +179,5 @@ bool Player::checkCollisionPU() {
 void Player::setBallPosition(glm::vec2 pos) { posBall = pos; }
 
 void Player::setPUPosition(glm::vec2 pos) { posPU = pos; }
+
+void Player::restart() { velX = velY = 3; }

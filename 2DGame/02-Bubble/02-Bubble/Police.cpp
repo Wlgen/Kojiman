@@ -1,5 +1,7 @@
 #include "Police.h"
 
+#include "Game.h"
+
 void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     rend = false;
     // actualEffect = 0;
@@ -42,8 +44,7 @@ void Police::update(int deltaTime) {  // canviar
                     Xmov = -Xmov;
                 }
                 if (Xmov < 1) {
-                    movX = 1;
-                    Ymov = movY / movX;
+                    Ymov = (movY + 1) / (movX + 1);
                     if (Ymov < 0) Ymov = -Ymov;
                     Xmov = 0;
                 }
@@ -72,7 +73,7 @@ void Police::update(int deltaTime) {  // canviar
             }
         }
         if (PoliceCatchPlayer()) {
-            // player Dies
+            Game::instance().restart(true);
         }
     }
 }
@@ -124,20 +125,24 @@ void Police::initSrpite() {
 
 bool Police::PoliceCatchPlayer() {
     glm::vec2 actualPosPlayer;
+    actualPosPlayer = player->getPosition();
     int x0, x1, xp, xp1;
 
     x0 = posPolice.x / tileSize;
     x1 = (posPolice.x + 32 - 1) / tileSize;
 
-    xp = posPlayer.x / tileSize;
-    xp1 = (posPlayer.x + 32 - 1) / tileSize;
+    xp = actualPosPlayer.x / tileSize;
+    xp1 = (actualPosPlayer.x + 32 - 1) / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
-                if ((posPolice.y <= posPlayer.y) &&
-                    (posPolice.y >= posPlayer.y - 32)) {
+                if ((posPolice.y >= actualPosPlayer.y) &&
+                    (posPolice.y-32 <= actualPosPlayer.y)) { //mira por colisión por arriba
                     return true;
                 }
+                else if ((posPolice.y <= actualPosPlayer.y) &&
+                    (posPolice.y >= actualPosPlayer.y - 32)) //mira colisión por abajo
+                    return true;
             }
         }
     }
