@@ -15,7 +15,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     spritesheet.setMinFilter(GL_NEAREST);
 
     sprite = Sprite::createSprite(glm::ivec2(24.f, 24.f), glm::vec2(0.5, 1.f),
-                                  &spritesheet, &shaderProgram);
+        &spritesheet, &shaderProgram);
     sprite->setNumberAnimations(2);
 
     sprite->setAnimationSpeed(0, 8);
@@ -31,7 +31,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     sprite->changeAnimation(0);
     tileMapDispl = tileMapPos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
-                        float(tileMapDispl.y + posBall.y)));
+        float(tileMapDispl.y + posBall.y)));
     player = Player::getInstance();
     contTime = 0;
 }
@@ -39,13 +39,13 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 int Ball::update(int deltaTime) {
     bool activated = false;
     sprite->update(deltaTime);
-    if (Catch){
+    if (Catch) {
         contTime++;
         posPlayer = player->getPosition();
         posBall = glm::vec2(posPlayer.x, posBall.y);
         if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) // ||
             //(Game::instance().getKey(' ')))  //Quan arreglem menú, descomentar
-        || (contTime == 350)){
+            || (contTime == 350)) {
             Catch = false;
             movX = 1;
             movY = -1;
@@ -60,7 +60,7 @@ int Ball::update(int deltaTime) {
             collisionPlayer = true;
             for (int i = 0; i < checkPlayer.y; i++) {
                 if (!(map->collisionMoveUp(posBall, glm::ivec2(24, 24),
-                                           &posBall.y))) {
+                    &posBall.y))) {
                     posBall.y += movY;
                 }
             }
@@ -94,6 +94,9 @@ int Ball::update(int deltaTime) {
                 else
                     posBall.y--;
                 --actY;
+                if (map->ballOutOfMapDown(posBall, glm::ivec2(24, 24))){
+                    Game::instance().restart();
+                }   
                 if ((map->collisionMoveUp(posBall, glm::ivec2(24, 24),
                                           &posBall.y)) ||
                     (map->collisionMoveDown(posBall, glm::ivec2(24, 24),

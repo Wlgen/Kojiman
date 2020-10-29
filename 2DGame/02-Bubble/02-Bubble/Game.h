@@ -38,6 +38,8 @@ class Game {
     bool getKey(int key) const;
     bool getSpecialKey(int key) const;
 
+    void restart();
+
    private:
     bool bPlay;   // Continue to play game?
     Scene scene;  // Scene to render

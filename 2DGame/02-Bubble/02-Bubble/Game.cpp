@@ -41,7 +41,7 @@ void Game::keyPressed(int key) {
     } else if (gState.getState() == State::state::credits) {
         if (key == 'f') gState.changeState();
     } else if (gState.getState() == State::state::play) {
-        if (key == 'r') scene.restart();
+        if (key == 'r') restart();
         if (key == 'x') gState.changeState();
 
     } else if (gState.getState() == State::state::instr) {
@@ -65,3 +65,5 @@ void Game::mouseRelease(int button) {}
 bool Game::getKey(int key) const { return keys[key]; }
 
 bool Game::getSpecialKey(int key) const { return specialKeys[key]; }
+
+void Game::restart() { scene.restart(); }
