@@ -51,6 +51,7 @@ void TileMap::restart() {
                 if (!actBlock->isRendered()) {
                     actBlock->init(actBlock->getPosBlock(), prog, &texBlock, actBlock->getBlockSize());
                     actBlock->enableRender();
+                    map[j * mapSize.x + i] = map[j * mapSize.x + i + 1] = 5;
                 }
             }
         }

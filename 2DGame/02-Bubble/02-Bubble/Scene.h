@@ -23,6 +23,7 @@ class Scene {
     void update(int deltaTime);
     void render();
     void restart();
+    bool isInitialized();
 
    private:
     void initShaders();
@@ -39,6 +40,7 @@ class Scene {
     PowerUp *pu;
     Police *police;
     State *state;
+    bool initialized = false;
 };
 
 #endif  // _SCENE_INCLUDE
