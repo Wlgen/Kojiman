@@ -95,7 +95,7 @@ int Ball::update(int deltaTime) {
                     posBall.y--;
                 --actY;
                 if (map->ballOutOfMapDown(posBall, glm::ivec2(24, 24))){
-                    Game::instance().restart();
+                    Game::instance().restart(true);
                 }   
                 if ((map->collisionMoveUp(posBall, glm::ivec2(24, 24),
                                           &posBall.y)) ||
