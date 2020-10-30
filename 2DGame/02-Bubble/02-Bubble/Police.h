@@ -19,11 +19,13 @@ class Police {
 
     void restart();
 
+    void startPolice();
+
    private:
     void initSrpite();
 
    private:
-    bool rend, persecution;
+    bool rend, persecution, begin;
     int movX, movY, Xmov, Ymov, tileSize, firstTime;
     glm::ivec2 tileMapDispl, posPolice, posPlayer;
     Texture spritesheet;
