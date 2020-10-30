@@ -29,12 +29,12 @@ class TileMap {
 
     int getTileSize() const { return tileSize; }
 
-    bool collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
-    bool collisionMoveRight(const glm::ivec2 &pos,
+    int collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const;
+    int collisionMoveRight(const glm::ivec2 &pos,
                             const glm::ivec2 &size) const;
-    bool collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size,
+    int collisionMoveUp(const glm::ivec2 &pos, const glm::ivec2 &size,
                          int *posY) const;
-    bool collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size,
+    int collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size,
                            int *posY) const;
     bool collisionPUUp(const glm::ivec2 &pos, const glm::ivec2 &size) const;
     bool collisionPlayerUp(const glm::ivec2 &pos, const glm::ivec2 &size) const;
