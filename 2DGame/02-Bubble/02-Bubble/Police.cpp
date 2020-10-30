@@ -4,6 +4,7 @@
 
 void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     rend = false;
+    begin = false;
     // actualEffect = 0;
     texProgram = shaderProgram;
     Police::initSrpite();
@@ -19,7 +20,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 void Police::update(int deltaTime) {  // canviar
     firstTime += 1;
     sprite->update(deltaTime);
-    if (firstTime >= 500) { //simplemente cambiar esto por el bool que indique el chocque con la alarma alarma
+    if (begin) { //simplemente cambiar esto por el bool que indique el chocque con la alarma alarma
         if (!rend) {
             rend = true;
             Police::initSrpite();
@@ -152,5 +153,8 @@ bool Police::PoliceCatchPlayer() {
 
 void Police::restart() { 
     rend = false;
+    begin = false;
     firstTime = 0;
 }
+
+void Police::startPolice() { begin = true; }

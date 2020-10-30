@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Sprite.h"
 #include "TileMap.h"
+#include "Police.h"
 
 class Ball {
    public:
@@ -13,6 +14,7 @@ class Ball {
 
     void setTileMap(TileMap* tileMap);
     void setPosition(const glm::vec2& pos);
+    void setPolice(Police* police);
     void stop();
 
     void applyEffect(int num);
@@ -25,6 +27,7 @@ class Ball {
     Sprite* sprite;
     TileMap* map;
     Player* player;
+    Police* police;
 };
 
 #endif  // _BALL_INCLUDE_

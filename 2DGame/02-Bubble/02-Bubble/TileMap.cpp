@@ -233,60 +233,63 @@ void TileMap::checkDeleteBlock(int pos) const {
     }
 }
 
-bool TileMap::collisionMoveLeft(const glm::ivec2& pos,
+int TileMap::collisionMoveLeft(const glm::ivec2& pos,
                                 const glm::ivec2& size) const {
-    int x, y0, y1;
+    int x, y0, y1, ret;
 
     x = pos.x / tileSize;
     y0 = pos.y / tileSize;
     y1 = (pos.y + size.y - 1) / tileSize;
     for (int y = y0; y <= y1; y++) {
         if (map[y * mapSize.x + x] != 0) {
+            ret = map[y * mapSize.x + x];
             checkDeleteBlock(y * mapSize.x + x);
-            return true;
+            return ret;
         }
     }
 
     return false;
 }
 
-bool TileMap::collisionMoveRight(const glm::ivec2& pos,
+int TileMap::collisionMoveRight(const glm::ivec2& pos,
                                  const glm::ivec2& size) const {
-    int x, y0, y1;
+    int x, y0, y1, ret;
 
     x = (pos.x + size.x - 1) / tileSize;
     y0 = pos.y / tileSize;
     y1 = (pos.y + size.y - 1) / tileSize;
     for (int y = y0; y <= y1; y++) {
         if (map[y * mapSize.x + x] != 0) {
+            ret = map[y * mapSize.x + x];
             checkDeleteBlock(y * mapSize.x + x);
-            return true;
+            return ret;
         }
     }
 
     return false;
 }
 
-bool TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size,
+int TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size,
                               int* posY) const {
-    int x0, x1, y;
+    int x0, x1, y, ret;
 
-    x0 = pos.x / tileSize;
+     x0 = pos.x / tileSize;
     x1 = (pos.x + size.x - 1) / tileSize;
     y = (pos.y) / tileSize;
     for (int x = x0; x <= x1; x++) {
         if (map[y * mapSize.x + x] != 0) {
+            ret = map[y * mapSize.x + x];
             checkDeleteBlock(y * mapSize.x + x);
-            return true;
+            return ret;
         }
     }
 
     return false;
 }
 
-bool TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size,
+int TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size,
                                 int* posY) const {
-    int x0, x1, y;
+    int x0, x1, y, ret;
 
     x0 = pos.x / tileSize;
     x1 = (pos.x + size.x - 1) / tileSize;
@@ -295,8 +298,9 @@ bool TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size,
         if (map[y * mapSize.x + x] != 0) {
             if (*posY - tileSize * y + size.y <= 4) {
                 *posY = tileSize * y - size.y;
+                ret = map[y * mapSize.x + x];
                 checkDeleteBlock(y * mapSize.x + x);
-                return true;
+                return ret;
             }
         }
     }

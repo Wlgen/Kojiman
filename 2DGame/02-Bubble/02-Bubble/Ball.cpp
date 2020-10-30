@@ -70,6 +70,7 @@ int Ball::update(int deltaTime) {
         actYS = (movY >= 0);
         int actX = std::abs(movX);
         int actY = std::abs(movY);
+        int collisionBlock = 0;
         while (actX != 0 && actY != 0) {
             if (actX != 0) {
                 if (actXS)
@@ -77,8 +78,8 @@ int Ball::update(int deltaTime) {
                 else
                     posBall.x--;
                 --actX;
-                if ((map->collisionMoveLeft(posBall, glm::ivec2(24, 24))) ||
-                    (map->collisionMoveRight(posBall, glm::ivec2(24, 24)))) {
+                if ((collisionBlock = map->collisionMoveLeft(posBall, glm::ivec2(24, 24))) ||
+                    (collisionBlock = map->collisionMoveRight(posBall, glm::ivec2(24, 24)))) {
                     movX = -movX;
                     actXS = (movX >= 0);
                     if (actXS)
@@ -86,6 +87,8 @@ int Ball::update(int deltaTime) {
                     else
                         posBall.x--;
                     activated = true;
+                    if (collisionBlock == 6)
+                        police->startPolice();
                 }
             }
             if (actY != 0) {
@@ -97,10 +100,10 @@ int Ball::update(int deltaTime) {
                 if (map->ballOutOfMapDown(posBall, glm::ivec2(24, 24))){
                     Game::instance().restart(true);
                 }   
-                if ((map->collisionMoveUp(posBall, glm::ivec2(24, 24),
-                                          &posBall.y)) ||
-                    (map->collisionMoveDown(posBall, glm::ivec2(24, 24),
-                                            &posBall.y))) {
+                if ((collisionBlock = map->collisionMoveUp(posBall, glm::ivec2(24, 24),
+                                          &posBall.y)) != 0 ||
+                    (collisionBlock = map->collisionMoveDown(posBall, glm::ivec2(24, 24),
+                                            &posBall.y)) != 0) {
                     movY = -movY;
                     actYS = (movY >= 0);
                     if (activated) {
@@ -112,6 +115,8 @@ int Ball::update(int deltaTime) {
                         posBall.y++;
                     else
                         posBall.y--;
+                    if(collisionBlock == 6)
+                        police->startPolice();
                 }
             }
         }
@@ -151,4 +156,8 @@ void Ball::stop() {
     movX = movY = 0;
     Catch = true;
     contTime = 0;
+}
+
+void Ball::setPolice(Police* police) {
+    this->police = police;
 }
