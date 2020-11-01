@@ -4,6 +4,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <glm/gtc/matrix_transform.hpp>
+
 
 using namespace std;
 
@@ -17,7 +19,7 @@ TileMap* TileMap::createTileMap(const string& levelFile,
 
 TileMap::TileMap(const string& levelFile, const glm::vec2& minCoords,
                  ShaderProgram& program) {
-    prog = program;
+    prog = &program;
     loadLevel(levelFile);
     prepareArrays(minCoords, program);
 }
@@ -33,6 +35,9 @@ void TileMap::initMap() {
 }
 
 void TileMap::render() const {
+    glm::mat4 modelview =
+        glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * actLevel * (mapSize.y/numLevels) * tileSize), 0.f));
+    prog->setUniformMatrix4f("modelview", modelview);
     glEnable(GL_TEXTURE_2D);
     tilesheet.use();
     glBindVertexArray(vao);
@@ -42,8 +47,10 @@ void TileMap::render() const {
     glDisable(GL_TEXTURE_2D);
     for (int j = 0; j < mapSize.y; ++j) {
         for (int i = 0; i < mapSize.x; ++i) {
-            if (blocks[j * mapSize.x + i] != NULL)
+            if (blocks[j * mapSize.x + i] != NULL) {
+                blocks[j * mapSize.x + i]->moveY(float(-30 * tileSize));
                 blocks[j * mapSize.x + i]->render();
+            }
         }
     }
 }
@@ -56,9 +63,9 @@ void TileMap::restart() {
             if (actBlock != NULL) {
                 if (!actBlock->isRendered()) {
                     if (actBlock->getBlockType() == BREAK)
-                    actBlock->init(actBlock->getPosBlock(), prog, &texBlock, actBlock->getBlockSize());
+                        actBlock->init(actBlock->getPosBlock(), *prog, &texBlock, actBlock->getBlockSize());
                     else
-                        actBlock->init(actBlock->getPosBlock(), prog, &texAlarm, actBlock->getBlockSize());
+                        actBlock->init(actBlock->getPosBlock(), *prog, &texAlarm, actBlock->getBlockSize());
                     actBlock->enableRender();
                     map[j * mapSize.x + i] = map[j * mapSize.x + i + 1] = actBlock->getBlockType();
                 }
@@ -107,7 +114,10 @@ bool TileMap::loadLevel(const string& levelFile) {
     sstream.str(line);
     sstream >> tilesheetSize.x >> tilesheetSize.y;
     tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
-
+    getline(fin, line);
+    sstream.str(line);
+    sstream >> numLevels;
+    actLevel = numLevels - 1;
     map = new int[mapSize.x * mapSize.y];
     initMap();
     blocks = vector<Block*>(mapSize.x * mapSize.y);
@@ -124,7 +134,7 @@ bool TileMap::loadLevel(const string& levelFile) {
                         map[j * mapSize.x + i + 1] = 5;
                     }
                     if (tile == '6') {
-                         blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, ALARM);
+                        blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, ALARM);
                         map[j * mapSize.x + i + 1] = 6;
                         map[(j + 1) * mapSize.x + i + 1] = 6;
                         map[(j + 1) * mapSize.x + i] = 6;
@@ -136,11 +146,11 @@ bool TileMap::loadLevel(const string& levelFile) {
 #ifndef _WIN32
         fin.get(tile);
 #endif
-    }
+            }
     fin.close();
 
     return true;
-}
+        }
 
 void TileMap::prepareArrays(const glm::vec2& minCoords,
                             ShaderProgram& program) {
@@ -193,7 +203,7 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
                 }
                 else {
                     if (blocks[j * mapSize.x + i] != NULL) {
-                        if (blocks[j * mapSize.x + i]->getBlockType() == ALARM) 
+                        if (blocks[j * mapSize.x + i]->getBlockType() == ALARM)
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texAlarm, glm::vec2(32.f, 32.f));
                         else
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texBlock, glm::vec2(32.f, 16.f));
@@ -203,7 +213,9 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
             }
         }
     }
-
+    glm::mat4 modelview =
+        glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float(actLevel * mapSize.y * tileSize), 0.f));
+    program.setUniformMatrix4f("modelview", modelview);
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
@@ -234,12 +246,12 @@ void TileMap::checkDeleteBlock(int pos) const {
 }
 
 int TileMap::collisionMoveLeft(const glm::ivec2& pos,
-                                const glm::ivec2& size) const {
+                               const glm::ivec2& size) const {
     int x, y0, y1, ret;
 
     x = pos.x / tileSize;
-    y0 = pos.y / tileSize;
-    y1 = (pos.y + size.y - 1) / tileSize;
+    y0 = pos.y / tileSize + 30;
+    y1 = (pos.y + size.y - 1) / tileSize + 30;
     for (int y = y0; y <= y1; y++) {
         if (map[y * mapSize.x + x] != 0) {
             ret = map[y * mapSize.x + x];
@@ -252,12 +264,12 @@ int TileMap::collisionMoveLeft(const glm::ivec2& pos,
 }
 
 int TileMap::collisionMoveRight(const glm::ivec2& pos,
-                                 const glm::ivec2& size) const {
+                                const glm::ivec2& size) const {
     int x, y0, y1, ret;
 
     x = (pos.x + size.x - 1) / tileSize;
-    y0 = pos.y / tileSize;
-    y1 = (pos.y + size.y - 1) / tileSize;
+    y0 = pos.y / tileSize + 30;
+    y1 = (pos.y + size.y - 1) / tileSize + 30;
     for (int y = y0; y <= y1; y++) {
         if (map[y * mapSize.x + x] != 0) {
             ret = map[y * mapSize.x + x];
@@ -270,12 +282,12 @@ int TileMap::collisionMoveRight(const glm::ivec2& pos,
 }
 
 int TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size,
-                              int* posY) const {
+                             int* posY) const {
     int x0, x1, y, ret;
 
-     x0 = pos.x / tileSize;
+    x0 = pos.x / tileSize;
     x1 = (pos.x + size.x - 1) / tileSize;
-    y = (pos.y) / tileSize;
+    y = (pos.y) / tileSize + 30;
     for (int x = x0; x <= x1; x++) {
         if (map[y * mapSize.x + x] != 0) {
             ret = map[y * mapSize.x + x];
@@ -288,16 +300,16 @@ int TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size,
 }
 
 int TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size,
-                                int* posY) const {
+                               int* posY) const {
     int x0, x1, y, ret;
 
     x0 = pos.x / tileSize;
     x1 = (pos.x + size.x - 1) / tileSize;
-    y = (pos.y + size.y - 1) / tileSize;
+    y = (pos.y + size.y - 1) / tileSize + 30;
     for (int x = x0; x <= x1; x++) {
         if (map[y * mapSize.x + x] != 0) {
             if (*posY - tileSize * y + size.y <= 4) {
-                *posY = tileSize * y - size.y;
+                //*posY = tileSize * y - size.y;
                 ret = map[y * mapSize.x + x];
                 checkDeleteBlock(y * mapSize.x + x);
                 return ret;
@@ -366,7 +378,7 @@ bool TileMap::collisionPlayerDown(const glm::ivec2& pos,
 bool TileMap::ballOutOfMapDown(const glm::ivec2& pos,
                                const glm::ivec2& size) const {
     int y = (pos.y + size.y - 1) / tileSize;
-    if (y > mapSize.y - 1)
+    if (y > (mapSize.y / numLevels))
         return true;
     else
         return false;

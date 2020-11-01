@@ -58,12 +58,12 @@ class TileMap {
     GLuint vbo;
     GLint posLocation, texCoordLocation;
     glm::ivec2 position, mapSize, tilesheetSize;
-    int tileSize, blockSize;
+    int tileSize, blockSize, numLevels, actLevel;
     Texture tilesheet, texBlock, texAlarm;
     glm::vec2 tileTexSize;
     int *map;
     vector<Block*> blocks;
-    ShaderProgram prog;
+    ShaderProgram* prog;
 };
 
 #endif  // _TILE_MAP_INCLUDE

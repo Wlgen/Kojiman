@@ -47,8 +47,8 @@ int Ball::update(int deltaTime) {
             //(Game::instance().getKey(' ')))  //Quan arreglem menú, descomentar
             || (contTime == 350)) {
             Catch = false;
-            movX = 1;
-            movY = -1;
+            movX = 3;
+            movY = -3;
         }
     }
     if (!Catch) {
