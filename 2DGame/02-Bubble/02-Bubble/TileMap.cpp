@@ -48,7 +48,7 @@ void TileMap::render() const {
     for (int j = 0; j < mapSize.y; ++j) {
         for (int i = 0; i < mapSize.x; ++i) {
             if (blocks[j * mapSize.x + i] != NULL) {
-                blocks[j * mapSize.x + i]->moveY(float(-30 * tileSize));
+                blocks[j * mapSize.x + i]->moveY(float(-(mapSize.y / numLevels) * actLevel * tileSize));
                 blocks[j * mapSize.x + i]->render();
             }
         }
@@ -250,8 +250,8 @@ int TileMap::collisionMoveLeft(const glm::ivec2& pos,
     int x, y0, y1, ret;
 
     x = pos.x / tileSize;
-    y0 = pos.y / tileSize + 30;
-    y1 = (pos.y + size.y - 1) / tileSize + 30;
+    y0 = pos.y / tileSize + (actLevel * (mapSize.y / numLevels));
+    y1 = (pos.y + size.y - 1) / tileSize + (actLevel * (mapSize.y / numLevels));
     for (int y = y0; y <= y1; y++) {
         if (map[y * mapSize.x + x] != 0) {
             ret = map[y * mapSize.x + x];
@@ -268,8 +268,8 @@ int TileMap::collisionMoveRight(const glm::ivec2& pos,
     int x, y0, y1, ret;
 
     x = (pos.x + size.x - 1) / tileSize;
-    y0 = pos.y / tileSize + 30;
-    y1 = (pos.y + size.y - 1) / tileSize + 30;
+    y0 = pos.y / tileSize + (actLevel * (mapSize.y / numLevels));
+    y1 = (pos.y + size.y - 1) / tileSize + (actLevel * (mapSize.y / numLevels));
     for (int y = y0; y <= y1; y++) {
         if (map[y * mapSize.x + x] != 0) {
             ret = map[y * mapSize.x + x];
@@ -287,7 +287,7 @@ int TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size,
 
     x0 = pos.x / tileSize;
     x1 = (pos.x + size.x - 1) / tileSize;
-    y = (pos.y) / tileSize + 30;
+    y = (pos.y) / tileSize + (actLevel * (mapSize.y / numLevels));
     for (int x = x0; x <= x1; x++) {
         if (map[y * mapSize.x + x] != 0) {
             ret = map[y * mapSize.x + x];
@@ -305,7 +305,7 @@ int TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size,
 
     x0 = pos.x / tileSize;
     x1 = (pos.x + size.x - 1) / tileSize;
-    y = (pos.y + size.y - 1) / tileSize + 30;
+    y = (pos.y + size.y - 1) / tileSize + (actLevel * (mapSize.y / numLevels));
     for (int x = x0; x <= x1; x++) {
         if (map[y * mapSize.x + x] != 0) {
             if (*posY - tileSize * y + size.y <= 4) {
@@ -369,7 +369,7 @@ bool TileMap::collisionPlayerDown(const glm::ivec2& pos,
     int y;
 
     y = (pos.y + size.y - 1) / tileSize;
-    if (y >= mapSize.y)
+    if (y >= (mapSize.y / numLevels))
         return true;
     else
         return false;
