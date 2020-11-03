@@ -71,7 +71,7 @@ int Ball::update(int deltaTime) {
         int actX = std::abs(movX);
         int actY = std::abs(movY);
         int collisionBlock = 0;
-        while (actX != 0 && actY != 0) {
+        while (actX != 0 || actY != 0) {
             if (actX != 0) {
                 if (actXS)
                     posBall.x++;
@@ -97,10 +97,17 @@ int Ball::update(int deltaTime) {
                 else
                     posBall.y--;
                 --actY;
-                if (map->ballOutOfMapDown(posBall, glm::ivec2(24, 24))){
-                    Game::instance().restart(true);
-                }   
-                if ((collisionBlock = map->collisionMoveUp(posBall, glm::ivec2(24, 24),
+                int ballreturn;
+                if (ballreturn = map->ballOutOfMapDown(posBall, glm::ivec2(24, 24))){
+                    if (ballreturn == 1)
+                        Game::instance().restart(true);
+                    else 
+                        posBall.y = 1;
+                }
+                else if (ballreturn = map->ballOutOfMapUp(posBall)) {
+                    posBall.y = map->getTileSize() * (map->getMapSize().y) - 25;
+                }
+                else if ((collisionBlock = map->collisionMoveUp(posBall, glm::ivec2(24, 24),
                                           &posBall.y)) != 0 ||
                     (collisionBlock = map->collisionMoveDown(posBall, glm::ivec2(24, 24),
                                             &posBall.y)) != 0) {

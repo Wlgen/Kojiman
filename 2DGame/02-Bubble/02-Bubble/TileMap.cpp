@@ -57,6 +57,7 @@ void TileMap::render() const {
 
 void TileMap::restart() {
     Block* actBlock;
+    actLevel = numLevels - 1;
     for (int j = 0; j < mapSize.y; ++j) {
         for (int i = 0; i < mapSize.x; ++i) {
             actBlock = blocks[j * mapSize.x + i];
@@ -213,9 +214,6 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
             }
         }
     }
-    glm::mat4 modelview =
-        glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float(actLevel * mapSize.y * tileSize), 0.f));
-    program.setUniformMatrix4f("modelview", modelview);
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
@@ -375,11 +373,31 @@ bool TileMap::collisionPlayerDown(const glm::ivec2& pos,
         return false;
 }
 
-bool TileMap::ballOutOfMapDown(const glm::ivec2& pos,
-                               const glm::ivec2& size) const {
+int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
+                               const glm::ivec2& size)  {
     int y = (pos.y + size.y - 1) / tileSize;
-    if (y > (mapSize.y / numLevels))
+    if (y > (mapSize.y / numLevels) - 1) {
+        if(actLevel == numLevels - 1) {
+            return 1;
+        } else {
+            ++actLevel;
+            return 2;
+        }
+    }
+    return 0;
+}
+
+bool TileMap::ballOutOfMapUp(const glm::ivec2& pos) {
+    if(pos.y <= 0) {
+        --actLevel;
         return true;
-    else
-        return false;
+    }
+    return false;
+}
+
+glm::ivec2 TileMap::getMapSize() {
+    glm::ivec2 ret;
+    ret.x = mapSize.x;
+    ret.y = mapSize.y / numLevels;
+    return ret;
 }

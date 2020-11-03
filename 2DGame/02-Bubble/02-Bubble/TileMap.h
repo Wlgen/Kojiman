@@ -45,7 +45,10 @@ class TileMap {
     bool collisionPlayerRight(const glm::ivec2 &pos,
                               const glm::ivec2 &size) const;
 
-    bool ballOutOfMapDown(const glm::ivec2 &pos, const glm::ivec2 &size) const;
+    int ballOutOfMapDown(const glm::ivec2 &pos, const glm::ivec2 &size);
+    bool ballOutOfMapUp(const glm::ivec2 &pos);
+
+    glm::ivec2 getMapSize();
 
    private:
     bool loadLevel(const string &levelFile);
