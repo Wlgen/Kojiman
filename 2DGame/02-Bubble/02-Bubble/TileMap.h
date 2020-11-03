@@ -45,7 +45,10 @@ class TileMap {
     bool collisionPlayerRight(const glm::ivec2 &pos,
                               const glm::ivec2 &size) const;
 
-    bool ballOutOfMapDown(const glm::ivec2 &pos, const glm::ivec2 &size) const;
+    int ballOutOfMapDown(const glm::ivec2 &pos, const glm::ivec2 &size);
+    bool ballOutOfMapUp(const glm::ivec2 &pos);
+
+    glm::ivec2 getMapSize();
 
    private:
     bool loadLevel(const string &levelFile);
@@ -58,12 +61,12 @@ class TileMap {
     GLuint vbo;
     GLint posLocation, texCoordLocation;
     glm::ivec2 position, mapSize, tilesheetSize;
-    int tileSize, blockSize;
+    int tileSize, blockSize, numLevels, actLevel;
     Texture tilesheet, texBlock, texAlarm;
     glm::vec2 tileTexSize;
     int *map;
     vector<Block*> blocks;
-    ShaderProgram prog;
+    ShaderProgram* prog;
 };
 
 #endif  // _TILE_MAP_INCLUDE

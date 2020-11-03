@@ -12,7 +12,7 @@ void Block::init(const glm::ivec2& blockPos, ShaderProgram& shaderProgram,
     sprite = Sprite::createSprite(blockSize, glm::vec2(1.f, 1.f), tex,
                                   &shaderProgram);
     posBlock = blockPos;
-    sprite->setPosition(blockPos);
+    sprite->setPosition(posBlock);
 }
 
 void Block::render() {
@@ -41,3 +41,7 @@ glm::ivec2 Block::getBlockSize() { return blockSize; }
 int Block::getMapPos() { return mapPos; }
 
 int Block::getBlockType() { return blockType; }
+
+void Block::moveY(float Y) {
+    sprite->setPosition(glm::vec2(posBlock.x, posBlock.y + Y));
+}
