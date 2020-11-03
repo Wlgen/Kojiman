@@ -24,8 +24,9 @@ Player *Player::getInstance() {
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram) {
     bJumping = false;
+    sizePlayer = glm::ivec2(32, 32);
     spritesheet.loadFromFile("images/bub.png", TEXTURE_PIXEL_FORMAT_RGBA);
-    sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.25, 0.25),
+    sprite = Sprite::createSprite(sizePlayer, glm::vec2(0.25, 0.25),
                                   &spritesheet, &shaderProgram);
     sprite->setNumberAnimations(4);
 
@@ -50,7 +51,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram) {
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                                   float(tileMapDispl.y + posPlayer.y)));
 
-    posBall = posPU = glm::vec2(-5, -5);
+    prePosBall = posBall = posPU = glm::vec2(-5, -5);
     collisionBall = collisionPU = false;
 
     velX = 3;
@@ -66,7 +67,7 @@ void Player::update(int deltaTime) {
             if (sprite->animation() != MOVE_LEFT)
                 sprite->changeAnimation(MOVE_LEFT);
             posPlayer.x -= 1;
-            if (map->collisionPlayerLeft(posPlayer, glm::ivec2(32, 32))) {
+            if (map->collisionPlayerLeft(posPlayer, sizePlayer)) {
                 posPlayer.x += 1;
                 sprite->changeAnimation(STAND_LEFT);
             }
@@ -74,7 +75,7 @@ void Player::update(int deltaTime) {
             if (sprite->animation() != MOVE_RIGHT)
                 sprite->changeAnimation(MOVE_RIGHT);
             posPlayer.x += 1;
-            if (map->collisionPlayerRight(posPlayer, glm::ivec2(32, 32))) {
+            if (map->collisionPlayerRight(posPlayer, sizePlayer)) {
                 posPlayer.x -= 1;
                 sprite->changeAnimation(STAND_RIGHT);
             }
@@ -86,13 +87,13 @@ void Player::update(int deltaTime) {
         }
         if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
             posPlayer.y -= 1;
-            if (map->collisionPlayerUp(posPlayer, glm::ivec2(32, 32))) {
+            if (map->collisionPlayerUp(posPlayer, sizePlayer)) {
                 posPlayer.y += 1;
             }
             if (collisionBall) numColl++;
         } else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
             posPlayer.y += +1;
-            if (map->collisionPlayerDown(posPlayer, glm::ivec2(32, 32))) {
+            if (map->collisionPlayerDown(posPlayer, sizePlayer)) {
                 posPlayer.y -= 1;
             }
         }
@@ -131,13 +132,16 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj) {
     x1 = (posObj.x + 24 - 1) / tileSize;
 
     xp = posPlayer.x / tileSize;
-    xp1 = (posPlayer.x + 32 - 1) / tileSize;
+    xp1 = (posPlayer.x + sizePlayer.x - 1) / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
                 if ((posObj.y <= posPlayer.y - 22) &&
                     (posObj.y >= posPlayer.y - 24)) {
-                    return true;
+                    if (prePosBall.y <= posPlayer.y - 20) {
+                        calcRebBall();
+                        return true;
+                    }
                 }
             }
         }
@@ -176,8 +180,47 @@ bool Player::checkCollisionPU() {
     return collisionPU;
 }
 
-void Player::setBallPosition(glm::vec2 pos) { posBall = pos; }
+void Player::setBallPosition(glm::vec2 pos) {
+    prePosBall = posBall;    
+    posBall = pos;
+}
 
 void Player::setPUPosition(glm::vec2 pos) { posPU = pos; }
 
 void Player::restart() { velX = velY = 3; }
+
+void Player::calcRebBall() { 
+    int midBall = (posBall.x + 12 - 1); 
+    int sizePart = sizePlayer.x / 6;
+    int varSize = sizePlayer.x;
+    int init = 0;
+    int rebPlay[5];
+    for (int i = 0; i < 3; i++) {
+        rebPlay[i] = posPlayer.x + init + sizePart;
+        if(i != 2) rebPlay[4-i] = posPlayer.x + (sizePlayer.x-init) - sizePart;
+        init += sizePart;
+        varSize -= sizePart * 2;
+        sizePart = varSize / (4 / (i+1));
+    }
+    if (midBall < rebPlay[0]) {
+        rebBall.x = -3;
+        rebBall.y = -1;
+    } else if(midBall < rebPlay[1]) {
+        rebBall.x = -3;
+        rebBall.y = -3;
+    } else if(midBall < rebPlay[2]) {
+        rebBall.x = -1;
+        rebBall.y = -3;
+    } else if (midBall < rebPlay[3]){
+        rebBall.x = 1;
+        rebBall.y = -3;
+    } else if (midBall <= rebPlay[4]){
+        rebBall.x = 3;
+        rebBall.y = -3;
+    } else {
+        rebBall.x = 3;
+        rebBall.y = -1;
+    }
+}
+
+glm::ivec2 Player::getRebBall() { return rebBall; }

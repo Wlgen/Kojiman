@@ -54,9 +54,10 @@ int Ball::update(int deltaTime) {
     if (!Catch) {
         glm::vec2 checkPlayer = player->checkCollisionBall();
         if (checkPlayer.x) {
-            if (movY > 0) {
-                movY = -movY;
-            }
+            movBall = player->getRebBall();
+            movX = movBall.x;
+            movY = movBall.y;
+           // if (movY > 0) movY = -movY;
             collisionPlayer = true;
             for (int i = 0; i < checkPlayer.y; i++) {
                 if (!(map->collisionMoveUp(posBall, glm::ivec2(24, 24),

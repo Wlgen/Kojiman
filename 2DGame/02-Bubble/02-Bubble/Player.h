@@ -29,9 +29,14 @@ class Player {
 
     glm::ivec2 getPosition();
 
+    glm::ivec2 getRebBall();
+
    private:
+
+    void calcRebBall();
+
     bool bJumping, collisionBall, collisionPU;
-    glm::ivec2 tileMapDispl, posPlayer, posBall, posPU;
+    glm::ivec2 tileMapDispl, posPlayer, posBall, prePosBall, posPU, rebBall, sizePlayer;
     int jumpAngle, startY, tileSize, velX, velY, numColl;
     Texture spritesheet;
     Sprite *sprite;
