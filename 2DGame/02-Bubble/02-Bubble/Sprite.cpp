@@ -7,7 +7,6 @@ Sprite *Sprite::createSprite(const glm::vec2 &quadSize,
                              Texture *spritesheet, ShaderProgram *program) {
     Sprite *quad =
         new Sprite(quadSize, sizeInSpritesheet, spritesheet, program);
-
     return quad;
 }
 

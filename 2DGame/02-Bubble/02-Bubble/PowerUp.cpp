@@ -8,6 +8,7 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     PowerUp::initSrpite();
 
     tileMapDispl = tileMapPos;
+    sizePU = glm::ivec2(18, 18);
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
                                   float(tileMapDispl.y + posPU.y)));
 
@@ -30,13 +31,13 @@ void PowerUp::update(int deltaTime) {
         for (int i = 0; i < mov; i++) {
             posPU.x += movX;
             posPU.y += movY;
-            if ((map->collisionPlayerLeft(posPU, glm::ivec2(32, 32))) ||
-                (map->collisionPlayerRight(posPU, glm::ivec2(32, 32)))) {
+            if ((map->collisionPlayerLeft(posPU, sizePU)) ||
+                (map->collisionPlayerRight(posPU, sizePU))) {
                 movX = -movX;
                 posPU.x += movX;
             }
-            if ((map->collisionPUUp(posPU, glm::ivec2(32, 32))) ||
-                (map->collisionPlayerDown(posPU, glm::ivec2(32, 32)))) {
+            if ((map->collisionPUUp(posPU, sizePU)) ||
+                (map->collisionPlayerDown(posPU, sizePU))) {
                 movY = -movY;
                 posPU.y += movY;
             }
@@ -82,7 +83,7 @@ void PowerUp::initSrpite() {
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
 
-    sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.5, 0.5),
+    sprite = Sprite::createSprite(sizePU, glm::vec2(0.5, 0.5),
                                   &spritesheet, &texProgram);
     sprite->setNumberAnimations(4);
 
