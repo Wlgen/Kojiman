@@ -22,9 +22,11 @@ class Block {
     glm::ivec2 getBlockSize();
     int getMapPos();
     int getBlockType();
+    void moveY(float y);
 
    private:
-    glm::ivec2 posBlock, blockSize;
+    glm::ivec2 blockSize;
+    glm::vec2 posBlock;
     Sprite *sprite;
     bool canRender = true;
     bool rendered = false;

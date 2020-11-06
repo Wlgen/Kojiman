@@ -6,11 +6,11 @@
 #include "Game.h"
 #include "Scene.h"
 
-#define SCREEN_X 32
-#define SCREEN_Y 16
+#define SCREEN_X 0
+#define SCREEN_Y 0
 
 #define INIT_PLAYER_X_TILES 4
-#define INIT_PLAYER_Y_TILES 26
+#define INIT_PLAYER_Y_TILES 28
 
 Scene::Scene() {
     map = NULL;

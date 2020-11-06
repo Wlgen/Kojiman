@@ -47,8 +47,8 @@ int Ball::update(int deltaTime) {
             //(Game::instance().getKey(' ')))  //Quan arreglem menú, descomentar
             || (contTime == 350)) {
             Catch = false;
-            movX = 1;
-            movY = -1;
+            movX = 3;
+            movY = -3;
         }
     }
     if (!Catch) {
@@ -98,10 +98,17 @@ int Ball::update(int deltaTime) {
                 else
                     posBall.y--;
                 --actY;
-                if (map->ballOutOfMapDown(posBall, glm::ivec2(24, 24))){
-                    Game::instance().restart(true);
-                }   
-                if ((collisionBlock = map->collisionMoveUp(posBall, glm::ivec2(24, 24),
+                int ballreturn;
+                if (ballreturn = map->ballOutOfMapDown(posBall, glm::ivec2(24, 24))){
+                    if (ballreturn == 1)
+                        Game::instance().restart(true);
+                    else 
+                        posBall.y = 1;
+                }
+                else if (ballreturn = map->ballOutOfMapUp(posBall)) {
+                    posBall.y = map->getTileSize() * (map->getMapSize().y) - 25;
+                }
+                else if ((collisionBlock = map->collisionMoveUp(posBall, glm::ivec2(24, 24),
                                           &posBall.y)) != 0 ||
                     (collisionBlock = map->collisionMoveDown(posBall, glm::ivec2(24, 24),
                                             &posBall.y)) != 0) {
