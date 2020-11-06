@@ -123,9 +123,10 @@ void Scene::changeMap() {
 }
 
 void Scene::restart(bool death) {
-    player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-                        INIT_PLAYER_Y_TILES * map->getTileSize()));
-    player->restart();
+    /*player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
+                        INIT_PLAYER_Y_TILES * map->getTileSize())); */
+    player->restart(death, glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
+                                     INIT_PLAYER_Y_TILES * map->getTileSize()));
     ball->stop();
     ball->setPosition(
         glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
