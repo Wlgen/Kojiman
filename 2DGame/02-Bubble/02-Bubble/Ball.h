@@ -21,7 +21,7 @@ class Ball {
     void applyEffect(int num);
 
    private:
-    bool Catch, collisionPlayer, paused;
+    bool Catch, collisionPlayer, paused, puCatch;
     int movX, movY, contTime;
     glm::ivec2 tileMapDispl, posBall, posPlayer, movBall, sizeBall;
     Texture spritesheet;

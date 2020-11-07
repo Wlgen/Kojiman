@@ -7,6 +7,7 @@
 
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     Catch = true;
+    puCatch = false;
     collisionPlayer = paused = false;
     movX = 0;
     movY = 0;
@@ -16,17 +17,17 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 
     sizeBall = glm::ivec2(18.f, 18.f);
 
-    sprite = Sprite::createSprite(sizeBall, glm::vec2(1., 1.f),
+    sprite = Sprite::createSprite(sizeBall, glm::vec2(0.5, 1.f),
                                   &spritesheet, &shaderProgram);
     sprite->setNumberAnimations(2);
 
-    sprite->setAnimationSpeed(0, 8);
-    sprite->addKeyframe(0, glm::vec2(1., 1.f));
-
     sprite->setAnimationSpeed(1, 8);
-    sprite->addKeyframe(1, glm::vec2(1.f, 1.f));
+    sprite->addKeyframe(1, glm::vec2(0, 1.f));
 
-    sprite->addKeyframe(0, glm::vec2(0.0f, 0.0f));
+    sprite->setAnimationSpeed(0, 8);
+    sprite->addKeyframe(0, glm::vec2(0.5f, 1.f));
+
+    //sprite->addKeyframe(0, glm::vec2(0.0f, 0.0f));
 
     // sprite->addKeyframe(0, glm::vec2(0.0f, 0.0f));
 
@@ -46,7 +47,8 @@ int Ball::update(int deltaTime) {
             contTime++;
             posPlayer = player->getPosition();
             posBall = glm::vec2(posPlayer.x, posBall.y);
-            if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) // ||
+            if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) ||
+                (Game::instance().getSpecialKey(GLUT_KEY_DOWN))// ||
                 //(Game::instance().getKey(' ')))  //Quan arreglem menú, descomentar
                 || (contTime == 350)) {
                 Catch = false;
@@ -62,9 +64,12 @@ int Ball::update(int deltaTime) {
                 movY = movBall.y;
                 // if (movY > 0) movY = -movY;
                 collisionPlayer = true;
+                if (puCatch) {
+                    Catch = true;
+                }
                 for (int i = 0; i < checkPlayer.y; i++) {
                     if (!(map->collisionMoveUp(posBall, sizeBall,
-                        &posBall.y))) {
+                                                &posBall.y))) {
                         posBall.y += movY;
                     }
                 }
@@ -162,11 +167,10 @@ void Ball::setPosition(const glm::vec2& pos) {
                         float(tileMapDispl.y + posBall.y)));
 }
 
-void Ball::applyEffect(int num) {}
-
 void Ball::stop() {
     movX = movY = 0;
     Catch = true;
+    puCatch = false;
     contTime = 0;
 }
 
@@ -176,4 +180,27 @@ void Ball::setPolice(Police* police) {
 
 void Ball::togglePause() {
     paused = !paused;
+}
+
+void Ball::applyEffect(int num) {
+    switch (num) {
+        case 0:
+           //sprite->changeAnimation(YELLOW);
+            puCatch = false;
+            break;
+        case 1:
+            //sprite->changeAnimation(BLUE);
+            puCatch = true;
+            break;
+        case 2:
+            //sprite->changeAnimation(RED);
+            puCatch = false;
+            break;
+        case 3:
+            // ball->applyEffect();
+            puCatch = false;
+            break;
+        default:
+            break;
+    }
 }

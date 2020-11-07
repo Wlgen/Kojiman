@@ -55,6 +55,7 @@ void Scene::init() {
                         (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->setTileMap(map);
     ball->setPolice(police);
+    pu->setBall(ball);
     projection =
         glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
     currentTime = 0.0f;
