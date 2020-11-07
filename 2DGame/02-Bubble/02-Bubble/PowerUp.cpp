@@ -1,7 +1,7 @@
 #include "PowerUp.h"
 
 void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
-    collisionPlayer = false;
+    collisionPlayer = paused = false;
     rend = false;
     // actualEffect = 0;
     texProgram = shaderProgram;
@@ -10,52 +10,54 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     tileMapDispl = tileMapPos;
     sizePU = glm::ivec2(18, 18);
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
-                                  float(tileMapDispl.y + posPU.y)));
+                        float(tileMapDispl.y + posPU.y)));
 
     player = Player::getInstance();
     firstTime = 0;
 }
 
 void PowerUp::update(int deltaTime) {
-    firstTime += 1;
-    if (firstTime >= 500) {
-        if (!rend) {
-            rend = true;
-            PowerUp::initSrpite();
-            sprite->setPosition(glm::vec2(float(tileMapDispl.x + 10),
-                                          float(tileMapDispl.y + 1)));
-        }
-        sprite->update(deltaTime);
-        posPlayer = player->getPosition();
+    if (!paused) {
+        firstTime += 1;
+        if (firstTime >= 500) {
+            if (!rend) {
+                rend = true;
+                PowerUp::initSrpite();
+                sprite->setPosition(glm::vec2(float(tileMapDispl.x + 10),
+                                    float(tileMapDispl.y + 1)));
+            }
+            sprite->update(deltaTime);
+            posPlayer = player->getPosition();
 
-        for (int i = 0; i < mov; i++) {
-            posPU.x += movX;
-            posPU.y += movY;
-            if ((map->collisionPlayerLeft(posPU, sizePU)) ||
-                (map->collisionPlayerRight(posPU, sizePU))) {
-                movX = -movX;
+            for (int i = 0; i < mov; i++) {
                 posPU.x += movX;
-            }
-            if ((map->collisionPUUp(posPU, sizePU)) ||
-                (map->collisionPlayerDown(posPU, sizePU))) {
-                movY = -movY;
                 posPU.y += movY;
+                if ((map->collisionPlayerLeft(posPU, sizePU)) ||
+                    (map->collisionPlayerRight(posPU, sizePU))) {
+                    movX = -movX;
+                    posPU.x += movX;
+                }
+                if ((map->collisionPUUp(posPU, sizePU)) ||
+                    (map->collisionPlayerDown(posPU, sizePU))) {
+                    movY = -movY;
+                    posPU.y += movY;
+                }
+                if (player->checkCollisionPU()) {
+                    rend = false;
+                    sprite->free();
+                    firstTime = 0;
+                    // actualEffect = anim;
+                    player->applyEffect(anim);
+                }
+                sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
+                                    float(tileMapDispl.y + posPU.y)));
             }
-            if (player->checkCollisionPU()) {
-                rend = false;
-                sprite->free();
-                firstTime = 0;
-                // actualEffect = anim;
-                player->applyEffect(anim);
+            if (firstTime % 300 == 0) {
+                anim = (anim + 1) % 4;
+                sprite->changeAnimation(anim);
             }
-            sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
-                                          float(tileMapDispl.y + posPU.y)));
+            player->setPUPosition(posPU);
         }
-        if (firstTime % 300 == 0) {
-            anim = (anim + 1) % 4;
-            sprite->changeAnimation(anim);
-        }
-        player->setPUPosition(posPU);
     }
 }
 
@@ -73,7 +75,7 @@ void PowerUp::setTileMap(TileMap* tileMap) {
 void PowerUp::setPosition(const glm::vec2& pos) {
     posPU = pos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
-                                  float(tileMapDispl.y + posPU.y)));
+                        float(tileMapDispl.y + posPU.y)));
 }
 
 void PowerUp::initSrpite() {
@@ -116,3 +118,5 @@ void PowerUp::restart() {
     firstTime = 0;
     rend = false;
 }
+
+void PowerUp::togglePause() { paused = !paused; }

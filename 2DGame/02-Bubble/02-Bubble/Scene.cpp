@@ -142,3 +142,10 @@ void Scene::restart(bool death) {
 }
 
 bool Scene::isInitialized() { return initialized; }
+
+void Scene::togglePause() {
+    ball->togglePause();
+    player->togglePause();
+    police->togglePause();
+    pu->togglePause();
+}

@@ -46,6 +46,7 @@ void Game::keyPressed(int key) {
     } else if (gState.getState() == State::state::play) {
         if (key == 'r') restart(false);
         if (key == 'x') gState.changeState();
+        if (key == 'p') scene.togglePause();
 
     } else if (gState.getState() == State::state::instr) {
         if (key == 'm') gState.toMenu();

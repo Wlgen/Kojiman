@@ -16,11 +16,12 @@ class Ball {
     void setPosition(const glm::vec2& pos);
     void setPolice(Police* police);
     void stop();
+    void togglePause();
 
     void applyEffect(int num);
 
    private:
-    bool Catch, collisionPlayer;
+    bool Catch, collisionPlayer, paused;
     int movX, movY, contTime;
     glm::ivec2 tileMapDispl, posBall, posPlayer, movBall, sizeBall;
     Texture spritesheet;

@@ -24,6 +24,7 @@ class Scene {
     void render();
     void restart(bool death);
     bool isInitialized();
+    void togglePause();
 
    private:
     void initShaders();
