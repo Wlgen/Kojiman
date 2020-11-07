@@ -27,30 +27,12 @@ Player* Player::getInstance() {
 void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     bJumping = paused = false;
     texProgram = shaderProgram;
-    /*sprite = Sprite::createSprite(sizePlayer, glm::vec2(0.25, 0.25),
-                                  &spritesheet, &shaderProgram);
-    sprite->setNumberAnimations(4);
-
-    sprite->setAnimationSpeed(STAND_LEFT, 8);
-    sprite->addKeyframe(STAND_LEFT, glm::vec2(0.f, 0.f));
-
-    sprite->setAnimationSpeed(STAND_RIGHT, 8);
-    sprite->addKeyframe(STAND_RIGHT, glm::vec2(0.25f, 0.f));
-
-    sprite->setAnimationSpeed(MOVE_LEFT, 8);
-    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.f));
-    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.25f));
-    sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.5f));
-
-    sprite->setAnimationSpeed(MOVE_RIGHT, 8);
-    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.f));
-    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.25f));
-    sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.5f));*/
-
+    
     initNormalSprite();
 
-    prePosBall = posBall = posPU = glm::vec2(-5, -5);
-    collisionBall = collisionPU = death = false;
+    initInfoBalls();
+    //prePosBall = posBall = posPU = glm::vec2(-5, -5);
+    collisionPU = death = false;
     first = true;
     sizeBall = glm::vec2(18.f, 18.f);
     anim = 0;
@@ -61,7 +43,10 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 void Player::update(int deltaTime) {
     if (!paused) {
         sprite->update(deltaTime);
-        collisionBall = false;
+        for (int i = 0; i < infoBalls.size(); i++) {
+            infoBalls[i].collision = false;
+        }
+        //collisionBall = false;
         collisionPU = false;
         if (death) {
             if (first) {
@@ -106,7 +91,9 @@ void Player::update(int deltaTime) {
                     if (map->collisionPlayerUp(posPlayer, sizePlayer)) {
                         posPlayer.y += 1;
                     }
-                    if (collisionBall) numColl++;
+                    for (int i = 0; i < infoBalls.size(); i++) {
+                        if (infoBalls[i].collision) infoBalls[i].numColl++;
+                    }
                 }
                 else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
                     posPlayer.y += +1;
@@ -116,12 +103,14 @@ void Player::update(int deltaTime) {
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                                     float(tileMapDispl.y + posPlayer.y)));
-                if (!collisionBall) {
-                    collisionBall = collisionWithPlayer(posBall);
-                    numColl = 1;
+                for (int i = 0; i < infoBalls.size(); i++) {
+                    if (!infoBalls[i].collision) {
+                        infoBalls[i].collision = collisionWithPlayer(infoBalls[i].pos, i);
+                        infoBalls[i].numColl = 1;
+                    }
                 }
                 if (!collisionPU) {
-                    collisionPU = collisionWithPlayer(posPU);
+                    collisionPU = collisionWithPlayer(posPU, -1);
                     posPU = glm::vec2(-5, -5);
                 }
             }
@@ -144,7 +133,7 @@ void Player::setPosition(const glm::vec2& pos) {
 
 glm::ivec2 Player::getPosition() { return posPlayer; }
 
-bool Player::collisionWithPlayer(glm::ivec2 posObj) {
+bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
     int x0, x1, xp, xp1;
 
     x0 = posObj.x / tileSize;
@@ -158,7 +147,7 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj) {
                 if ((posObj.y <= posPlayer.y - (sizeBall.y - 2)) &&
                     (posObj.y >= posPlayer.y - sizeBall.y)) {
                     //if (prePosBall.y <= posPlayer.y - (sizeBall.y-4)) {
-                    calcRebBall();
+                    if(pos != -1) calcRebBall(pos);
                     return true;
                     //}
                 }
@@ -188,17 +177,19 @@ void Player::applyEffect(int num) {
     }
 }
 
-glm::vec2 Player::checkCollisionBall() {
-    return glm::vec2(collisionBall, numColl);
+glm::vec2 Player::checkCollisionBall(int i) {
+    while (i >= infoBalls.size()) initInfoBalls();
+    return glm::vec2(infoBalls[i].collision, infoBalls[i].numColl);
 }
 
 bool Player::checkCollisionPU() {
     return collisionPU;
 }
 
-void Player::setBallPosition(glm::vec2 pos) {
-    prePosBall = posBall;
-    posBall = pos;
+void Player::setBallPosition(glm::vec2 pos, int i) {
+    while (i >= infoBalls.size()) initInfoBalls();
+    infoBalls[i].prePosition = infoBalls[i].pos;
+    infoBalls[i].pos = pos;
 }
 
 void Player::setPUPosition(glm::vec2 pos) { posPU = pos; }
@@ -213,8 +204,8 @@ void Player::restart(bool death, glm::vec2 pos) {
     }
 }
 
-void Player::calcRebBall() {
-    int midBall = (posBall.x + (sizeBall.x / 2) - 1);
+void Player::calcRebBall(int pos) {
+    int midBall = (infoBalls[pos].pos.x + (sizeBall.x / 2) - 1);
     int sizePart = sizePlayer.x / 6;
     int varSize = sizePlayer.x;
     int init = 0;
@@ -227,32 +218,25 @@ void Player::calcRebBall() {
         sizePart = varSize / (4 / (i + 1));
     }
     if (midBall < rebPlay[0]) {
-        rebBall.x = -3;
-        rebBall.y = -1;
+        infoBalls[pos].reb = glm::ivec2(-3, -1);
     }
     else if (midBall < rebPlay[1]) {
-        rebBall.x = -3;
-        rebBall.y = -3;
-    }
-    else if (midBall < rebPlay[2]) {
-        rebBall.x = -1;
-        rebBall.y = -3;
-    }
-    else if (midBall < rebPlay[3]) {
-        rebBall.x = 1;
-        rebBall.y = -3;
-    }
-    else if (midBall <= rebPlay[4]) {
-        rebBall.x = 3;
-        rebBall.y = -3;
-    }
-    else {
-        rebBall.x = 3;
-        rebBall.y = -1;
+        infoBalls[pos].reb = glm::ivec2(-3, -3);
+    } else if (midBall < rebPlay[2]) {
+        infoBalls[pos].reb = glm::ivec2(-1, -3);
+    } else if (midBall < rebPlay[3]) {
+        infoBalls[pos].reb = glm::ivec2(1, -3);
+    } else if (midBall <= rebPlay[4]) {
+        infoBalls[pos].reb = glm::ivec2(3, -3);
+    } else {
+        infoBalls[pos].reb = glm::ivec2(3, -1);
     }
 }
 
-glm::ivec2 Player::getRebBall() { return rebBall; }
+glm::ivec2 Player::getRebBall(int pos) { 
+    while (pos >= infoBalls.size()) initInfoBalls();
+    return infoBalls[pos].reb;
+}
 
 void Player::initSpriteDeath() {
     sizePlayer = glm::ivec2(32, 16);
@@ -323,3 +307,15 @@ void Player::initNormalSprite() {
 void Player::togglePause() {
     paused = !paused;
 }
+
+void Player::initInfoBalls() { 
+    infoBall iB;
+    iB.collision = false;
+    iB.numColl = 0;
+    iB.pos = glm::vec2(-5, -5);
+    iB.prePosition = glm::vec2(-5, -5);
+    iB.reb = glm::vec2(1, -3);
+    infoBalls.push_back(iB);
+}
+
+void Player::deleteInfoBall(int pos) { infoBalls.erase(infoBalls.begin() + pos); }

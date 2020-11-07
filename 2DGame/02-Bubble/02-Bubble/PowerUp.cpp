@@ -48,6 +48,7 @@ void PowerUp::update(int deltaTime) {
                     firstTime = 0;
                     // actualEffect = anim;
                     player->applyEffect(anim);
+                    ball->applyEffect(anim);
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
                                     float(tileMapDispl.y + posPU.y)));
@@ -120,3 +121,5 @@ void PowerUp::restart() {
 }
 
 void PowerUp::togglePause() { paused = !paused; }
+
+void PowerUp::setBall(Ball* ball) { this->ball = ball; }

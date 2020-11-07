@@ -6,150 +6,171 @@
 #include "Game.h"
 
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
-    Catch = true;
+    puCatch = false;
     collisionPlayer = paused = false;
-    movX = 0;
-    movY = 0;
-    spritesheet.loadFromFile("images/kirby.png", TEXTURE_PIXEL_FORMAT_RGBA);
-    spritesheet.setMagFilter(GL_NEAREST);
-    spritesheet.setMinFilter(GL_NEAREST);
-
-    sizeBall = glm::ivec2(18.f, 18.f);
-
-    sprite = Sprite::createSprite(sizeBall, glm::vec2(1., 1.f),
-                                  &spritesheet, &shaderProgram);
-    sprite->setNumberAnimations(2);
-
-    sprite->setAnimationSpeed(0, 8);
-    sprite->addKeyframe(0, glm::vec2(1., 1.f));
-
-    sprite->setAnimationSpeed(1, 8);
-    sprite->addKeyframe(1, glm::vec2(1.f, 1.f));
-
-    sprite->addKeyframe(0, glm::vec2(0.0f, 0.0f));
-
-    // sprite->addKeyframe(0, glm::vec2(0.0f, 0.0f));
-
-    sprite->changeAnimation(0);
+    texProgram = shaderProgram;
     tileMapDispl = tileMapPos;
-    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
-                        float(tileMapDispl.y + posBall.y)));
+    sizeBall = glm::ivec2(18.f, 18.f);
+    initSprite();
+    initBall(true, posBall, glm::ivec2(0, 0));
     player = Player::getInstance();
-    contTime = 0;
 }
 
-int Ball::update(int deltaTime) {
+void Ball::update(int deltaTime) {
     if (!paused) {
-        bool activated = false;
-        sprite->update(deltaTime);
-        if (Catch) {
-            contTime++;
-            posPlayer = player->getPosition();
-            posBall = glm::vec2(posPlayer.x, posBall.y);
-            if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) // ||
-                //(Game::instance().getKey(' ')))  //Quan arreglem menú, descomentar
-                || (contTime == 350)) {
-                Catch = false;
-                movX = 3;
-                movY = -3;
-            }
-        }
-        if (!Catch) {
-            glm::vec2 checkPlayer = player->checkCollisionBall();
-            if (checkPlayer.x) {
-                movBall = player->getRebBall();
-                movX = movBall.x;
-                movY = movBall.y;
-                // if (movY > 0) movY = -movY;
-                collisionPlayer = true;
-                for (int i = 0; i < checkPlayer.y; i++) {
-                    if (!(map->collisionMoveUp(posBall, sizeBall,
-                        &posBall.y))) {
-                        posBall.y += movY;
-                    }
+        int i = 0;
+        int maxIt = balls.size();
+        while(i <=  maxIt-1) {
+            bool activated = false;
+            skip = false;
+            sprites[i]->update(deltaTime);
+            if (balls[i].Catch) {
+                balls[i].cont++;
+                posPlayer = player->getPosition();
+                balls[i].pos = glm::vec2(posPlayer.x, balls[i].pos.y);
+                if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) ||
+                    (Game::instance().getSpecialKey(GLUT_KEY_DOWN))  // ||
+                    //(Game::instance().getKey(' ')))  //Quan arreglem menú,
+                    //descomentar
+                    || (balls[i].cont >= 100)) {
+                    balls[i].Catch = false;
+                    balls[i].vel = glm::ivec2(1, -3);
                 }
             }
-            bool actXS, actYS;
-            actXS = (movX >= 0);
-            actYS = (movY >= 0);
-            int actX = std::abs(movX);
-            int actY = std::abs(movY);
-            int collisionBlock = 0;
-            while (actX != 0 || actY != 0) {
-                if (actX != 0) {
-                    if (actXS)
-                        posBall.x++;
-                    else
-                        posBall.x--;
-                    --actX;
-                    if ((collisionBlock = map->collisionMoveLeft(posBall, sizeBall)) ||
-                        (collisionBlock = map->collisionMoveRight(posBall, sizeBall))) {
-                        movX = -movX;
-                        actXS = (movX >= 0);
-                        if (actXS)
-                            posBall.x++;
-                        else
-                            posBall.x--;
-                        activated = true;
-                        if (collisionBlock == 6)
-                            police->startPolice();
+            if (!balls[i].Catch) {
+                glm::vec2 checkPlayer = player->checkCollisionBall(i);
+                if (checkPlayer.x) {
+                    balls[i].vel = player->getRebBall(i);
+                    // if (movY > 0) movY = -movY;
+                    collisionPlayer = true;
+                    if (puCatch) {
+                         balls[i].Catch = true;
+                        balls[i].cont = 0;
                     }
-                }
-                if (actY != 0) {
-                    if (actYS)
-                        posBall.y++;
-                    else
-                        posBall.y--;
-                    --actY;
-                    int ballreturn;
-                    if (ballreturn = map->ballOutOfMapDown(posBall, sizeBall)) {
-                        if (ballreturn == 1)
-                            Game::instance().restart(true);
-                        else
-                            posBall.y = 1;
-                    }
-                    else if (ballreturn = map->ballOutOfMapUp(posBall)) {
-                        posBall.y = map->getTileSize() * (map->getMapSize().y) - 25;
-                    }
-                    else if ((collisionBlock = map->collisionMoveUp(posBall, sizeBall,
-                             &posBall.y)) != 0 ||
-                             (collisionBlock = map->collisionMoveDown(posBall, sizeBall,
-                             &posBall.y)) != 0) {
-                        movY = -movY;
-                        actYS = (movY >= 0);
-                        if (activated) {
-                            movX = -movX;
-                            actYS = (movY >= 0);
-                            activated = false;
+                    for (int j = 0; j < checkPlayer.y; j++) {
+                        if (!(map->collisionMoveUp(balls[i].pos, sizeBall,
+                                                   &balls[i].pos.y))) {
+                            balls[i].pos.y += balls[i].vel.y;
                         }
-                        if (actYS)
-                            posBall.y++;
+                    }
+                }
+                bool actXS, actYS;
+                actXS = (balls[i].vel.x>= 0);
+                actYS = (balls[i].vel.y>= 0);
+                int actX = std::abs(balls[i].vel.x);
+                int actY = std::abs(balls[i].vel.y);
+                int collisionBlock = 0;
+                while ((actX != 0 || actY != 0) && !skip) {
+                    if (actX != 0) {
+                        if (actXS)
+                            balls[i].pos.x++;
                         else
-                            posBall.y--;
-                        if (collisionBlock == 6)
-                            police->startPolice();
+                            balls[i].pos.x--;
+                        --actX;
+                        if ((collisionBlock =
+                                 map->collisionMoveLeft(balls[i].pos, sizeBall)) ||
+                            (collisionBlock =
+                                 map->collisionMoveRight( balls[i].pos, sizeBall))) {
+                            balls[i].vel.x = -balls[i].vel.x;
+                            actXS = (balls[i].vel.x >= 0);
+                            if (actXS)
+                                balls[i].pos.x++;
+                            else
+                                balls[i].pos.x--;
+                            activated = true;
+                            if (collisionBlock == 6) police->startPolice();
+                        }
+                    }
+                    if (actY != 0) {
+                        if (actYS)
+                            balls[i].pos.y++;
+                        else
+                            balls[i].pos.y--;
+                        --actY;
+                        int ballreturn;
+                        if (ballreturn =
+                                map->ballOutOfMapDown(balls[i].pos, sizeBall)) {
+                            if (ballreturn == 1) {
+                                if (balls.size() >= 2) {
+                                    balls.erase(balls.begin() + i);
+                                    sprites[i]->free();
+                                    sprites.erase(sprites.begin() + i);
+                                    player->deleteInfoBall(i);
+                                    skip = true;
+                                    --i;
+                                    --maxIt;
+                                } else
+                                    Game::instance().restart(true);
+                            } else {
+                                balls[i].pos.y = 1;
+                                for (int k = balls.size()-1; k >= 0; k--) {
+                                    if (k != i) {
+                                        balls.erase(balls.begin() + k);
+                                        sprites[k]->free();
+                                        sprites.erase(sprites.begin() + k);
+                                        player->deleteInfoBall(k);
+                                        --maxIt;
+                                    }
+                                }
+                                i = 0;
+                            }
+                        } else if (ballreturn = map->ballOutOfMapUp(balls[i].pos)) {
+                            balls[i].pos.y =
+                                map->getTileSize() * (map->getMapSize().y) - 25;
+                            for (int k = balls.size() - 1; k >= 0; k--) {
+                                if (k != i) {
+                                    balls.erase(balls.begin() + k);
+                                    sprites[k]->free();
+                                    sprites.erase(sprites.begin() + k);
+                                    player->deleteInfoBall(k);
+                                    --maxIt;
+                                }
+                            }
+                            i = 0;
+                        } else if ((collisionBlock = map->collisionMoveUp(
+                                        balls[i].pos, sizeBall,
+                                        &balls[i].pos.y)) !=
+                                       0 ||
+                                   (collisionBlock = map->collisionMoveDown(
+                                        balls[i].pos, sizeBall, &balls[i].pos.y)) !=
+                                       0) {
+                            balls[i].vel.y = -balls[i].vel.y;
+                            actYS = (balls[i].vel.y>= 0);
+                            if (activated) {
+                                balls[i].vel.x = -balls[i].vel.x;
+                                actYS = (balls[i].vel.y>= 0);
+                                activated = false;
+                            }
+                            if (actYS)
+                                balls[i].pos.y++;
+                            else
+                                balls[i].pos.y--;
+                            if (collisionBlock == 6) police->startPolice();
+                        }
                     }
                 }
             }
-        }
-        sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
-                            float(tileMapDispl.y + posBall.y)));
-        player->setBallPosition(posBall);
-        if (movX >= 0) {
-            sprite->changeAnimation(0);
-        }
-        else {
-            sprite->changeAnimation(1);
-        }
-        if (collisionPlayer && !Catch) {
-            collisionPlayer = false;
-            return 1;
+            if (!skip) {
+                sprites[i]->setPosition(
+                    glm::vec2(float(tileMapDispl.x + balls[i].pos.x),
+                              float(tileMapDispl.y + balls[i].pos.y)));
+                player->setBallPosition(balls[i].pos, i);
+                if (balls[i].vel.x >= 0) {
+                    sprites[i]->changeAnimation(0);
+                } else {
+                    sprites[i]->changeAnimation(1);
+                }
+            }
+            ++i;
         }
     }
-    return 0;
 }
 
-void Ball::render() { sprite->render(); }
+void Ball::render() { 
+    for (int i = 0; i < sprites.size(); i++) {
+        sprites[i]->render();
+    }
+}
 
 void Ball::setTileMap(TileMap* tileMap) {
     map = tileMap;
@@ -158,16 +179,18 @@ void Ball::setTileMap(TileMap* tileMap) {
 
 void Ball::setPosition(const glm::vec2& pos) {
     posBall = pos;
-    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
-                        float(tileMapDispl.y + posBall.y)));
+    sprites[0]->setPosition(glm::vec2(float(tileMapDispl.x + balls[0].pos.x),
+                                      float(tileMapDispl.y + balls[0].pos.y)));
+    balls[0].pos = posBall;
 }
 
-void Ball::applyEffect(int num) {}
-
 void Ball::stop() {
-    movX = movY = 0;
-    Catch = true;
-    contTime = 0;
+    for (int i = 0; i < balls.size(); i++) {
+        balls[i].vel = glm::vec2(0, 0);
+        balls[i].Catch = true;
+        balls[i].cont = 0;
+    }
+    puCatch = false;
 }
 
 void Ball::setPolice(Police* police) {
@@ -176,4 +199,66 @@ void Ball::setPolice(Police* police) {
 
 void Ball::togglePause() {
     paused = !paused;
+}
+
+void Ball::applyEffect(int num) {
+    switch (num) {
+        case 0:
+           //sprites[0]->changeAnimation(YELLOW);
+            puCatch = false;
+            break;
+        case 1:
+            //sprites[0]->changeAnimation(BLUE);
+            puCatch = true;
+            break;
+        case 2:
+            //sprites[0]->changeAnimation(RED);
+            puCatch = false;
+            break;
+        case 3:
+            // ball->applyEffect();
+            addBall();
+            break;
+        default:
+            break;
+    }
+}
+
+void Ball::addBall() {
+    posBall = balls[0].pos;
+    while (balls.size() < 3) {
+        initSprite();
+        if (sprites.size() == 2) initBall(false, posBall, glm::ivec2(1, -1));
+        if (sprites.size() == 3) initBall(false, posBall, glm::ivec2(-1, 1));
+    }
+}
+
+void Ball::initSprite() {
+    spritesheet.loadFromFile("images/kirby.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.setMagFilter(GL_NEAREST);
+    spritesheet.setMinFilter(GL_NEAREST);
+
+    sprites.push_back(Sprite::createSprite(sizeBall, glm::vec2(0.5, 1.f),
+                                           &spritesheet, &texProgram));
+    int i = sprites.size() - 1;
+    sprites[i]->setNumberAnimations(2);
+
+    sprites[i]->setAnimationSpeed(1, 8);
+    sprites[i]->addKeyframe(1, glm::vec2(0, 1.f));
+
+    sprites[i]->setAnimationSpeed(0, 8);
+    sprites[i]->addKeyframe(0, glm::vec2(0.5f, 1.f));
+
+    sprites[i]->changeAnimation(0);
+    sprites[i]->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
+                                      float(tileMapDispl.y + posBall.y)));
+}
+
+void Ball::initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel) { 
+    ball b;
+    b.Catch = Catch;
+    b.pos = pos;
+    b.vel = vel;
+    b.cont = 0;
+    balls.push_back(b);
 }
