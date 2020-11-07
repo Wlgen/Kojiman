@@ -5,76 +5,81 @@
 void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     rend = false;
     begin = false;
+    paused = false;
     // actualEffect = 0;
     texProgram = shaderProgram;
     Police::initSrpite();
 
     tileMapDispl = tileMapPos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
-                                  float(tileMapDispl.y + posPolice.y)));
+                        float(tileMapDispl.y + posPolice.y)));
 
     player = Player::getInstance();
     firstTime = 0;
 }
 
 void Police::update(int deltaTime) {  // canviar
-    firstTime += 1;
-    sprite->update(deltaTime);
-    if (begin) { //simplemente cambiar esto por el bool que indique el chocque con la alarma alarma
-        if (!rend) {
-            rend = true;
-            Police::initSrpite();
-            sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
-                                          float(tileMapDispl.y + posPolice.y)));
-            firstTime = 0;
-        }
-    }
-    if (rend) {
-        if (!persecution) {
-            // change animation
-            sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
-                                          float(tileMapDispl.y + posPolice.y)));
-            if (firstTime >= 350) {
-                posPlayer = player->getPosition();
-                persecution = true;
-                movX = posPlayer.x - posPolice.x;
-                movY = posPlayer.y - posPolice.y;
-                Xmov = (movX + 1) / (movY + 1);
-                Ymov = 0;
-                if (Xmov < 0) {
-                    Xmov = -Xmov;
-                }
-                if (Xmov < 1) {
-                    Ymov = (movY + 1) / (movX + 1);
-                    if (Ymov < 0) Ymov = -Ymov;
-                    Xmov = 0;
-                }
-                if (movY < 0)
-                    movY = -1;
-                else
-                    movY = 1;
-                if (movX < 0)
-                    movX = -1;
-                else
-                    movX = 1;
-            }
-        } else {
-            if (posPlayer == posPolice) {
+    if (!paused) {
+        firstTime += 1;
+        sprite->update(deltaTime);
+        if (begin) { //simplemente cambiar esto por el bool que indique el chocque con la alarma alarma
+            if (!rend) {
+                rend = true;
+                Police::initSrpite();
+                sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
+                                    float(tileMapDispl.y + posPolice.y)));
                 firstTime = 0;
-                persecution = false;
-                movX = movY = 0;
-            } else {
-                if (posPlayer.x != posPolice.x)
-                    if (firstTime % (Ymov + 1) == 0) posPolice.x += movX;
-                if (posPlayer.y != posPolice.y)
-                    if (firstTime % (Xmov + 1) == 0) posPolice.y += movY;
-                sprite->setPosition(
-                    glm::vec2(float(tileMapDispl.x + posPolice.x),
-                              float(tileMapDispl.y + posPolice.y)));
             }
         }
-        if (PoliceCatchPlayer()) {
-            Game::instance().restart(true);
+        if (rend) {
+            if (!persecution) {
+                // change animation
+                sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
+                                    float(tileMapDispl.y + posPolice.y)));
+                if (firstTime >= 350) {
+                    posPlayer = player->getPosition();
+                    persecution = true;
+                    movX = posPlayer.x - posPolice.x;
+                    movY = posPlayer.y - posPolice.y;
+                    Xmov = (movX + 1) / (movY + 1);
+                    Ymov = 0;
+                    if (Xmov < 0) {
+                        Xmov = -Xmov;
+                    }
+                    if (Xmov < 1) {
+                        Ymov = (movY + 1) / (movX + 1);
+                        if (Ymov < 0) Ymov = -Ymov;
+                        Xmov = 0;
+                    }
+                    if (movY < 0)
+                        movY = -1;
+                    else
+                        movY = 1;
+                    if (movX < 0)
+                        movX = -1;
+                    else
+                        movX = 1;
+                }
+            }
+            else {
+                if (posPlayer == posPolice) {
+                    firstTime = 0;
+                    persecution = false;
+                    movX = movY = 0;
+                }
+                else {
+                    if (posPlayer.x != posPolice.x)
+                        if (firstTime % (Ymov + 1) == 0) posPolice.x += movX;
+                    if (posPlayer.y != posPolice.y)
+                        if (firstTime % (Xmov + 1) == 0) posPolice.y += movY;
+                    sprite->setPosition(
+                        glm::vec2(float(tileMapDispl.x + posPolice.x),
+                        float(tileMapDispl.y + posPolice.y)));
+                }
+            }
+            if (PoliceCatchPlayer()) {
+                Game::instance().restart(true);
+            }
         }
     }
 }
@@ -93,7 +98,7 @@ void Police::setTileMap(TileMap* tileMap) {
 void Police::setPosition(const glm::vec2& pos) {
     posPolice = pos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
-                                  float(tileMapDispl.y + posPolice.y)));
+                        float(tileMapDispl.y + posPolice.y)));
 }
 
 void Police::initSrpite() {
@@ -138,11 +143,11 @@ bool Police::PoliceCatchPlayer() {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
                 if ((posPolice.y >= actualPosPlayer.y) &&
-                    (posPolice.y-32 <= actualPosPlayer.y)) { //mira por colisión por arriba
+                    (posPolice.y - 32 <= actualPosPlayer.y)) { //mira por colisión por arriba
                     return true;
                 }
                 else if ((posPolice.y <= actualPosPlayer.y) &&
-                    (posPolice.y >= actualPosPlayer.y - 32)) //mira colisión por abajo
+                         (posPolice.y >= actualPosPlayer.y - 32)) //mira colisión por abajo
                     return true;
             }
         }
@@ -151,10 +156,12 @@ bool Police::PoliceCatchPlayer() {
     return false;
 }
 
-void Police::restart() { 
+void Police::restart() {
     rend = false;
     begin = false;
     firstTime = 0;
 }
 
 void Police::startPolice() { begin = true; }
+
+void Police::togglePause() { paused = !paused; }

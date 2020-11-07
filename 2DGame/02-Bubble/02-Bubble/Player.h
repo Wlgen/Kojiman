@@ -27,6 +27,7 @@ class Player {
 
     void applyEffect(int num);
     void restart(bool death, glm::vec2 pos);
+    void togglePause();
 
     glm::ivec2 getPosition();
 
@@ -37,7 +38,7 @@ class Player {
     void calcRebBall();
     void initSpriteDeath();
     void initNormalSprite();
-    bool bJumping, collisionBall, collisionPU, death, first;
+    bool bJumping, collisionBall, collisionPU, death, first, paused;
     glm::ivec2 tileMapDispl, newPos, posPlayer, posBall, prePosBall, posPU, rebBall, sizePlayer, sizeBall;
     int jumpAngle, startY, tileSize, velX, velY, numColl, anim, time;
     float TimeAnimation;
