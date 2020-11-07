@@ -28,7 +28,6 @@ class Scene {
 
    private:
     void initShaders();
-    void changeMap();
 
    private:
     TileMap *map;
