@@ -10,16 +10,18 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     collisionPlayer = false;
     movX = 0;
     movY = 0;
-    spritesheet.loadFromFile("images/farquad.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.loadFromFile("images/kirby.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
 
-    sprite = Sprite::createSprite(glm::ivec2(24.f, 24.f), glm::vec2(0.5, 1.f),
+    sizeBall = glm::ivec2(18.f, 18.f);
+
+    sprite = Sprite::createSprite(sizeBall, glm::vec2(1., 1.f),
         &spritesheet, &shaderProgram);
     sprite->setNumberAnimations(2);
 
     sprite->setAnimationSpeed(0, 8);
-    sprite->addKeyframe(0, glm::vec2(0.5, 1.f));
+    sprite->addKeyframe(0, glm::vec2(1., 1.f));
 
     sprite->setAnimationSpeed(1, 8);
     sprite->addKeyframe(1, glm::vec2(1.f, 1.f));
@@ -60,7 +62,7 @@ int Ball::update(int deltaTime) {
            // if (movY > 0) movY = -movY;
             collisionPlayer = true;
             for (int i = 0; i < checkPlayer.y; i++) {
-                if (!(map->collisionMoveUp(posBall, glm::ivec2(24, 24),
+                if (!(map->collisionMoveUp(posBall, sizeBall,
                     &posBall.y))) {
                     posBall.y += movY;
                 }
@@ -79,8 +81,8 @@ int Ball::update(int deltaTime) {
                 else
                     posBall.x--;
                 --actX;
-                if ((collisionBlock = map->collisionMoveLeft(posBall, glm::ivec2(24, 24))) ||
-                    (collisionBlock = map->collisionMoveRight(posBall, glm::ivec2(24, 24)))) {
+                if ((collisionBlock = map->collisionMoveLeft(posBall, sizeBall)) ||
+                    (collisionBlock = map->collisionMoveRight(posBall, sizeBall))) {
                     movX = -movX;
                     actXS = (movX >= 0);
                     if (actXS)
@@ -99,7 +101,7 @@ int Ball::update(int deltaTime) {
                     posBall.y--;
                 --actY;
                 int ballreturn;
-                if (ballreturn = map->ballOutOfMapDown(posBall, glm::ivec2(24, 24))){
+                if (ballreturn = map->ballOutOfMapDown(posBall, sizeBall)){
                     if (ballreturn == 1)
                         Game::instance().restart(true);
                     else 
@@ -108,9 +110,9 @@ int Ball::update(int deltaTime) {
                 else if (ballreturn = map->ballOutOfMapUp(posBall)) {
                     posBall.y = map->getTileSize() * (map->getMapSize().y) - 25;
                 }
-                else if ((collisionBlock = map->collisionMoveUp(posBall, glm::ivec2(24, 24),
+                else if ((collisionBlock = map->collisionMoveUp(posBall, sizeBall,
                                           &posBall.y)) != 0 ||
-                    (collisionBlock = map->collisionMoveDown(posBall, glm::ivec2(24, 24),
+                    (collisionBlock = map->collisionMoveDown(posBall, sizeBall,
                                             &posBall.y)) != 0) {
                     movY = -movY;
                     actYS = (movY >= 0);

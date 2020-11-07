@@ -26,7 +26,7 @@ class PowerUp {
    private:
     bool collisionPlayer, rend;
     int mov, movX, movY, tileSize, firstTime, anim;
-    glm::ivec2 tileMapDispl, posPU, posPlayer;
+    glm::ivec2 tileMapDispl, posPU, posPlayer, sizePU;
     Texture spritesheet;
     Sprite* sprite;
     TileMap* map;
