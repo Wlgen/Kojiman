@@ -44,8 +44,8 @@ images/bloques.png 	-- Tilesheet
 1   aaaaaaaaaaaaaaaaaaaaaa   1
 1     ffffffffffffffffff     1
 1       eeeeeeeeeeeeee       1
-1                            1
-1                            1
+1       bbbbbbbbbbbbbb       1
+1       bbbbbbbbbbbbbb       1
 1                            1
 1                            1
 1                            1
