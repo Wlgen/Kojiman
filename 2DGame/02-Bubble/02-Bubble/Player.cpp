@@ -16,6 +16,7 @@ Player* Player::player = NULL;
 //enum PlayerAnims { STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT };
 enum PlayerStates { YELLOW, RED, BLUE };
 enum PlayerDeath { YELLOW_DIES, RED_DIES, BLUE_DIES };
+enum PlayerBig { BIG_DIES, BIG_LIVES };
 
 Player* Player::getInstance() {
     if (!player) {
@@ -34,7 +35,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     //prePosBall = posBall = posPU = glm::vec2(-5, -5);
     shot = new Shot();
     shot->init(tileMapPos, shaderProgram);
-    count = shoot = collisionPU = death = false;
+    big = count = shoot = collisionPU = death = false;
     first = true;
     sizeBall = glm::vec2(18.f, 18.f);
     anim = timeShot = 0;
@@ -53,12 +54,24 @@ void Player::update(int deltaTime) {
         collisionPU = false;
         if (death) {
             if (first) {
-                initSpriteDeath();
-                first = false;
-                time = 0;
+                if (big) {
+                    sprite->changeAnimation(BIG_DIES);
+                    first = false;
+                    time = 0;
+                } else{
+                    initSpriteDeath();
+                    first = false;
+                    time = 0;
+                }
             }
             time += deltaTime;
-            if (time >= 625) {
+            if (big && (timeDies <= time)) {
+                posPlayer.x += 8;
+                initSpriteDeath();
+                big = false;
+                time = 0;
+            }
+            else if (time >= timeDies) {
                 death = false;
                 first = true;
                 restart(false, newPos);
@@ -177,21 +190,27 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
 }
 
 void Player::applyEffect(int num) {
+    if (big && (num != 3)) initNormalSprite();
     switch (num) {
         case 0:
             shoot = false;
+            big = false;
             sprite->changeAnimation(YELLOW);
             break;
         case 1:
             shoot = false;
+            big = false;
             sprite->changeAnimation(BLUE);
             break;
         case 2:
             shoot = true;
+            big = false;
             sprite->changeAnimation(RED);
             break;
         case 3:
             shoot = false;
+            if (!big) initBigSprite();
+            big = true;
             // ball->applyEffect();
             break;
         default:
@@ -263,6 +282,7 @@ glm::ivec2 Player::getRebBall(int pos) {
 }
 
 void Player::initSpriteDeath() {
+    timeDies = 750;
     sizePlayer = glm::ivec2(32, 16);
     spritesheet.loadFromFile("images/PlayerDead.png",
                              TEXTURE_PIXEL_FORMAT_RGBA);
@@ -300,12 +320,12 @@ void Player::initSpriteDeath() {
 
     sprite->changeAnimation(anim);
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
-                        float(tileMapDispl.y + posPlayer.y)));
+                        float(tileMapDispl.y + posPlayer.y-4)));
 
 }
 
 void Player::initNormalSprite() {
-
+    timeDies = 750;
     sizePlayer = glm::ivec2(32, 8);
 
     spritesheet.loadFromFile("images/PlayerBase.png",
@@ -326,6 +346,31 @@ void Player::initNormalSprite() {
     sprite->changeAnimation(0);
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                         float(tileMapDispl.y + posPlayer.y)));
+}
+
+void Player::initBigSprite() {
+    timeDies = 675;
+    sizePlayer = glm::ivec2(48, 8);
+
+    spritesheet.loadFromFile("images/bigYellow.png",
+                             TEXTURE_PIXEL_FORMAT_RGBA);
+    sprite = Sprite::createSprite(sizePlayer, glm::vec2(0.2, 0.5),
+                                  &spritesheet, &texProgram);
+    sprite->setNumberAnimations(2);
+
+    sprite->setAnimationSpeed(BIG_LIVES, 8);
+    sprite->addKeyframe(BIG_LIVES, glm::vec2(0.f, 0.5f));
+
+    sprite->setAnimationSpeed(BIG_DIES, 8);
+    sprite->addKeyframe(BIG_DIES, glm::vec2(0.f, 0.0f));
+    sprite->addKeyframe(BIG_DIES, glm::vec2(0.2f, 0.f));
+    sprite->addKeyframe(BIG_DIES, glm::vec2(0.4f, 0.f));
+    sprite->addKeyframe(BIG_DIES, glm::vec2(0.6f, 0.f));
+    sprite->addKeyframe(BIG_DIES, glm::vec2(0.8f, 0.f));
+
+    sprite->changeAnimation(BIG_LIVES);
+    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
+                                  float(tileMapDispl.y + posPlayer.y)));
 }
 
 void Player::togglePause() {

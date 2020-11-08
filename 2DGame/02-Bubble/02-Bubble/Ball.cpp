@@ -78,7 +78,7 @@ void Ball::update(int deltaTime) {
                             else
                                 balls[i].pos.x--;
                             activated = true;
-                            if (collisionBlock == 6) police->startPolice();
+                            if (collisionBlock == 11) police->startPolice();
                         }
                     }
                     if (actY != 0) {
@@ -187,6 +187,12 @@ void Ball::setPosition(const glm::vec2& pos) {
 }
 
 void Ball::stop() {
+    for (int i = balls.size() - 1; i >= 1; i--) {
+        balls.erase(balls.begin() + i);
+        sprites[i]->free();
+        sprites.erase(sprites.begin() + i);
+        player->deleteInfoBall(i);
+    }
     for (int i = 0; i < balls.size(); i++) {
         balls[i].vel = glm::vec2(0, 0);
         balls[i].Catch = true;
@@ -207,7 +213,7 @@ void Ball::applyEffect(int num) {
     switch (num) {
         case 0:
            //sprites[0]->changeAnimation(YELLOW);
-            puCatch = false;
+            addBall();
             break;
         case 1:
             //sprites[0]->changeAnimation(BLUE);
@@ -219,7 +225,7 @@ void Ball::applyEffect(int num) {
             break;
         case 3:
             // ball->applyEffect();
-            addBall();
+            puCatch = false;
             break;
         default:
             break;
