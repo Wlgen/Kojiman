@@ -68,6 +68,7 @@ void Scene::update(int deltaTime) {
     pu->update(deltaTime);
     ball->update(deltaTime);
     police->update(deltaTime);
+    map->update(deltaTime);
 }
 
 void Scene::render() {

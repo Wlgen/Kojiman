@@ -3,20 +3,26 @@
 
 #include "Sprite.h"
 
-#define BREAK 5
-#define ALARM 6
+#define BREAK      0xa
+#define ALARM      0xb
+#define KEY        0xc
+#define DOOR       0xd
+#define MULTBREAK1 0xe
+#define MULTBREAK2 0xf
+
 
 class Block {
-   public:
+public:
 
     Block(int mapPos, int blockType);
 
-    void init(const glm::ivec2 &blockPos, ShaderProgram &shaderProgram,
-              Texture *tex, const glm::vec2 &blockSize);
+    void init(const glm::ivec2& blockPos, ShaderProgram& shaderProgram,
+              Texture* tex, const glm::vec2& blockSize, const glm::vec2& texPos);
     void render();
+    void update(int deltaTime);
 
     void enableRender();
-    void disableRender();
+    bool disableRender();
     bool isRendered();
     glm::ivec2 getPosBlock();
     glm::ivec2 getBlockSize();
@@ -24,13 +30,13 @@ class Block {
     int getBlockType();
     void moveY(float y);
 
-   private:
+private:
     glm::ivec2 blockSize;
     glm::vec2 posBlock;
-    Sprite *sprite;
+    Sprite* sprite;
     bool canRender = true;
     bool rendered = false;
-    int mapPos;
+    int mapPos, blockLife, maxBlockLife;
     int blockType;
 
 };
