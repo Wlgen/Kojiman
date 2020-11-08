@@ -55,6 +55,7 @@ void Scene::init() {
                         (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->setTileMap(map);
     ball->setPolice(police);
+    pu->setBall(ball);
     projection =
         glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
     currentTime = 0.0f;
@@ -65,10 +66,7 @@ void Scene::update(int deltaTime) {
     currentTime += deltaTime;
     player->update(deltaTime);
     pu->update(deltaTime);
-    int next = ball->update(deltaTime);
-    if (next != 0) {
-        Scene::changeMap();
-    }
+    ball->update(deltaTime);
     police->update(deltaTime);
     map->update(deltaTime);
 }
@@ -113,14 +111,6 @@ void Scene::initShaders() {
     texProgram.bindFragmentOutput("outColor");
     vShader.free();
     fShader.free();
-}
-
-void Scene::changeMap() {
-    /*mapChange = (mapChange + 1)%3;
-    if (mapChange == 0) mapChange = 1;
-    string lvl = "levels/level0" + to_string(mapChange) + ".txt";
-    map = TileMap::createTileMap(lvl, glm::vec2(SCREEN_X, SCREEN_Y),
-    texProgram); player->setTileMap(map); ball->setTileMap(map);*/
 }
 
 void Scene::restart(bool death) {

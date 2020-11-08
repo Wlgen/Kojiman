@@ -5,6 +5,7 @@
 #include "ShaderProgram.h"
 #include "Sprite.h"
 #include "TileMap.h"
+#include "Ball.h"
 
 class PowerUp {
    public:
@@ -18,6 +19,8 @@ class PowerUp {
     void setPosition(const glm::vec2& pos);
     void restart();
     void togglePause();
+
+    void setBall(Ball* ball);
 
     // static int getActualEffect();
 
@@ -33,6 +36,7 @@ class PowerUp {
     TileMap* map;
     Player* player;
     ShaderProgram texProgram;
+    Ball* ball;
 };
 
 #endif  // _POWERUP_INCLUDE_
