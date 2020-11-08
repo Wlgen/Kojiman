@@ -76,7 +76,8 @@ void TileMap::restart() {
                     actBlock->restart();
                     actBlock->enableRender();
                     map[j * mapSize.x + i] = map[j * mapSize.x + i + 1] = actBlock->getBlockType();
-                } else if (actBlock->getBlockType() == MULTBREAK1 || actBlock->getBlockType() == MULTBREAK2) {
+                }
+                else if (actBlock->getBlockType() == MULTBREAK1 || actBlock->getBlockType() == MULTBREAK2) {
                     actBlock->restart();
                 }
             }
@@ -259,7 +260,7 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texDoor, glm::vec2(float(16 * doorSize), 16.f), glm::vec2(doorSize, 0.25));
                         }
                         else
-                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texBlock, glm::vec2(32.f, 16.f), glm::vec2((1.f/3.f), 1.f));
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texBlock, glm::vec2(32.f, 16.f), glm::vec2((1.f / 3.f), 1.f));
                         blocks[j * mapSize.x + i]->enableRender();
                     }
                 }
@@ -303,6 +304,18 @@ void TileMap::checkDeleteBlock(int pos) const {
                     }
                 }
             }
+        }
+        if (blocks[pos] != NULL) pos = pos;
+        else if (blocks[pos + 1] != NULL) pos = pos + 1;
+        else if (blocks[pos - 1] != NULL) pos = pos - 1;
+        else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
+        else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
+        else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
+        else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
+        else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
+        else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
+        if (blocks[pos]->disableRender()) {
+            map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
         }
     }
 }
