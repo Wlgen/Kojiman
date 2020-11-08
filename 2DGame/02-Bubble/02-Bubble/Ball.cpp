@@ -78,7 +78,9 @@ void Ball::update(int deltaTime) {
                             else
                                 balls[i].pos.x--;
                             activated = true;
-                            if (collisionBlock == 11) police->startPolice();
+                            if (collisionBlock == 11){
+                                police->startPolice();
+                            }
                         }
                     }
                     if (actY != 0) {
