@@ -6,6 +6,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     rend = false;
     begin = false;
     paused = false;
+    first = true;
     // actualEffect = 0;
     texProgram = shaderProgram;
     Police::initSrpite();
@@ -78,6 +79,10 @@ void Police::update(int deltaTime) {  // canviar
                 }
             }
             if (PoliceCatchPlayer()) {
+                if (first) {
+                    Game::instance().toggleRend();
+                    first = false;
+                }
                 Game::instance().restart(true);
             }
         }
@@ -102,6 +107,7 @@ void Police::setPosition(const glm::vec2& pos) {
 }
 
 void Police::initSrpite() {
+    //first = true;
     spritesheet.loadFromFile("images/policeman.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
@@ -131,14 +137,16 @@ void Police::initSrpite() {
 
 bool Police::PoliceCatchPlayer() {
     glm::vec2 actualPosPlayer;
+    glm::ivec2 sizePlayer;
     actualPosPlayer = player->getPosition();
+    sizePlayer = player->getSizePlayer();
     int x0, x1, xp, xp1;
 
     x0 = posPolice.x / tileSize;
     x1 = (posPolice.x + 32 - 1) / tileSize;
 
     xp = actualPosPlayer.x / tileSize;
-    xp1 = (actualPosPlayer.x + 32 - 1) / tileSize;
+    xp1 = (actualPosPlayer.x + sizePlayer.x - 1) / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
@@ -147,7 +155,7 @@ bool Police::PoliceCatchPlayer() {
                     return true;
                 }
                 else if ((posPolice.y <= actualPosPlayer.y) &&
-                         (posPolice.y >= actualPosPlayer.y - 32)) //mira colisión por abajo
+                         (posPolice.y >= actualPosPlayer.y - sizePlayer.y)) //mira colisión por abajo
                     return true;
             }
         }
@@ -159,9 +167,15 @@ bool Police::PoliceCatchPlayer() {
 void Police::restart() {
     rend = false;
     begin = false;
+    first = true;
     firstTime = 0;
 }
 
-void Police::startPolice() { begin = true; }
+void Police::startPolice() {
+    first = true;
+    begin = true;
+}
 
 void Police::togglePause() { paused = !paused; }
+
+void Police::setPauseFalse() { paused = false; }

@@ -122,4 +122,6 @@ void PowerUp::restart() {
 
 void PowerUp::togglePause() { paused = !paused; }
 
+void PowerUp::setPauseFalse() { paused = false; }
+
 void PowerUp::setBall(Ball* ball) { this->ball = ball; }

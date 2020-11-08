@@ -19,6 +19,7 @@ class PowerUp {
     void setPosition(const glm::vec2& pos);
     void restart();
     void togglePause();
+    void setPauseFalse();
 
     void setBall(Ball* ball);
 

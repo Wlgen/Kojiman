@@ -46,7 +46,7 @@ void Game::keyPressed(int key) {
     } else if (gState.getState() == State::state::play) {
         if (key == 'r') restart(false);
         if (key == 'x') gState.changeState();
-        if (key == 'p') scene.togglePause();
+        if (key == 'p') pause(false);
 
     } else if (gState.getState() == State::state::instr) {
         if (key == 'm') gState.toMenu();
@@ -71,3 +71,7 @@ bool Game::getKey(int key) const { return keys[key]; }
 bool Game::getSpecialKey(int key) const { return specialKeys[key]; }
 
 void Game::restart(bool death) { scene.restart(death); }
+
+void Game::pause(bool player) { scene.togglePause(player); }
+
+void Game::toggleRend() { scene.toggleRend(); }
