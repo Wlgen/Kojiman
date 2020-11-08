@@ -54,6 +54,7 @@ void Player::update(int deltaTime) {
         collisionPU = false;
         if (death) {
             if (first) {
+                Game::instance().pause(true);
                 if (big) {
                     sprite->changeAnimation(BIG_DIES);
                     first = false;
@@ -74,6 +75,8 @@ void Player::update(int deltaTime) {
             else if (time >= timeDies) {
                 death = false;
                 first = true;
+                Game::instance().pause(true);
+                Game::instance().toggleRend();
                 restart(false, newPos);
             }
         }
@@ -390,3 +393,5 @@ void Player::initInfoBalls() {
 void Player::deleteInfoBall(int pos) { infoBalls.erase(infoBalls.begin() + pos); }
 
 void Player::deleteShots() { shot->deleteAll(); }
+
+void Player::setPauseFalse() { paused = false; }

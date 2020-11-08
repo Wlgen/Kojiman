@@ -43,6 +43,8 @@ class Player {
 
     void deleteShots();
 
+    void setPauseFalse();
+
     glm::ivec2 getPosition();
 
     glm::ivec2 getRebBall(int pos);

@@ -6,6 +6,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     rend = false;
     begin = false;
     paused = false;
+    first = true;
     // actualEffect = 0;
     texProgram = shaderProgram;
     Police::initSrpite();
@@ -78,6 +79,10 @@ void Police::update(int deltaTime) {  // canviar
                 }
             }
             if (PoliceCatchPlayer()) {
+                if (first) {
+                    Game::instance().toggleRend();
+                    first = false;
+                }
                 Game::instance().restart(true);
             }
         }
@@ -102,6 +107,7 @@ void Police::setPosition(const glm::vec2& pos) {
 }
 
 void Police::initSrpite() {
+    //first = true;
     spritesheet.loadFromFile("images/policeman.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
@@ -159,9 +165,15 @@ bool Police::PoliceCatchPlayer() {
 void Police::restart() {
     rend = false;
     begin = false;
+    first = true;
     firstTime = 0;
 }
 
-void Police::startPolice() { begin = true; }
+void Police::startPolice() {
+    first = true;
+    begin = true;
+}
 
 void Police::togglePause() { paused = !paused; }
+
+void Police::setPauseFalse() { paused = false; }

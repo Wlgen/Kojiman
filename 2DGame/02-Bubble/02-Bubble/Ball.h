@@ -24,10 +24,14 @@ class Ball {
     void setTileMap(TileMap* tileMap);
     void setPosition(const glm::vec2& pos);
     void setPolice(Police* police);
-    void stop();
+    void stop(bool death);
     void togglePause();
 
+    void setPauseFalse();
+
     void applyEffect(int num);
+
+    void toggleRend();
 
    private:
 
@@ -36,7 +40,7 @@ class Ball {
     void initSprite();
     void initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel);
 
-    bool Catch, collisionPlayer, paused, puCatch, skip;
+    bool Catch, collisionPlayer, paused, puCatch, skip, rend;
     int movX, movY, contTime;
     glm::ivec2 tileMapDispl, posBall, posPlayer, movBall, sizeBall;
     Texture spritesheet;

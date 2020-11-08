@@ -99,8 +99,10 @@ void Ball::update(int deltaTime) {
                                     skip = true;
                                     --i;
                                     --maxIt;
-                                } else
+                                } else {
+                                    rend = false;
                                     Game::instance().restart(true);
+                                }
                             } else {
                                 balls[i].pos.y = 1;
                                 for (int k = balls.size()-1; k >= 0; k--) {
@@ -147,7 +149,7 @@ void Ball::update(int deltaTime) {
                                 balls[i].pos.y++;
                             else
                                 balls[i].pos.y--;
-                            if (collisionBlock == 6) police->startPolice();
+                            if (collisionBlock == 11) police->startPolice();
                         }
                     }
                 }
@@ -169,8 +171,10 @@ void Ball::update(int deltaTime) {
 }
 
 void Ball::render() { 
-    for (int i = 0; i < sprites.size(); i++) {
-        sprites[i]->render();
+    if (rend) {
+        for (int i = 0; i < sprites.size(); i++) {
+            sprites[i]->render();
+        }
     }
 }
 
@@ -186,7 +190,8 @@ void Ball::setPosition(const glm::vec2& pos) {
     balls[0].pos = posBall;
 }
 
-void Ball::stop() {
+void Ball::stop(bool death) {
+    if (!death) rend = true;
     for (int i = balls.size() - 1; i >= 1; i--) {
         balls.erase(balls.begin() + i);
         sprites[i]->free();
@@ -208,6 +213,8 @@ void Ball::setPolice(Police* police) {
 void Ball::togglePause() {
     paused = !paused;
 }
+
+void Ball::toggleRend() { rend = !rend; }
 
 void Ball::applyEffect(int num) {
     switch (num) {
@@ -270,3 +277,5 @@ void Ball::initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel) {
     b.cont = 0;
     balls.push_back(b);
 }
+
+void Ball::setPauseFalse() { paused = false; }

@@ -118,25 +118,38 @@ void Scene::restart(bool death) {
                         INIT_PLAYER_Y_TILES * map->getTileSize())); */
     player->restart(death, glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
                                      INIT_PLAYER_Y_TILES * map->getTileSize()));
-    ball->stop();
+    ball->stop(death);
     ball->setPosition(
         glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-        (INIT_PLAYER_Y_TILES - 1.5) * map->getTileSize()));
+                  (INIT_PLAYER_Y_TILES - 1.5) * map->getTileSize()));
     pu->restart();
     pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
-                    (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
+                              (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
     currentTime = 0.0f;
     police->setPosition(glm::vec2((1) * map->getTileSize(),
-                        (INIT_PLAYER_Y_TILES)*map->getTileSize()));
+                                  (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->restart();
-    if (!death) map->restart();
+    if (!death) {
+        map->restart();
+        setPauseFalse();
+    }
 }
 
 bool Scene::isInitialized() { return initialized; }
 
-void Scene::togglePause() {
+void Scene::togglePause(bool player) {
+    if (!player)
+        this->player->togglePause();
     ball->togglePause();
-    player->togglePause();
     police->togglePause();
     pu->togglePause();
+}
+
+void Scene::toggleRend() { ball->toggleRend(); }
+
+void Scene::setPauseFalse() {
+    player->setPauseFalse();
+    ball->setPauseFalse();
+    police->setPauseFalse();
+    pu->setPauseFalse();
 }
