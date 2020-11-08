@@ -70,6 +70,7 @@ void Scene::update(int deltaTime) {
         Scene::changeMap();
     }
     police->update(deltaTime);
+    map->update(deltaTime);
 }
 
 void Scene::render() {
