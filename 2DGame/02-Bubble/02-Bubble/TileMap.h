@@ -25,6 +25,7 @@ class TileMap {
 
     void render() const;
     void restart();
+    void update(int deltaTime);
     void free();
 
     int getTileSize() const { return tileSize; }
