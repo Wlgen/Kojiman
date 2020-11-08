@@ -9,6 +9,7 @@
 #define DOOR       0xd
 #define MULTBREAK1 0xe
 #define MULTBREAK2 0xf
+#define FOOD       0X10
 
 
 class Block {

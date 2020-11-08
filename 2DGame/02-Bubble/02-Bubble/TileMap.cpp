@@ -75,7 +75,9 @@ void TileMap::restart() {
                 if (!actBlock->isRendered()) {
                     actBlock->restart();
                     actBlock->enableRender();
-                    map[j * mapSize.x + i] = map[j * mapSize.x + i + 1] = actBlock->getBlockType();
+                    for (int k = i; k < (i + (actBlock->getBlockSize().x / tileSize)); ++k) {
+                        map[j * mapSize.x + k] = actBlock->getBlockType();
+                    }
                 }
                 else if (actBlock->getBlockType() == MULTBREAK1 || actBlock->getBlockType() == MULTBREAK2) {
                     actBlock->restart();
@@ -370,7 +372,6 @@ int TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size,
             return ret;
         }
     }
-
     return false;
 }
 
