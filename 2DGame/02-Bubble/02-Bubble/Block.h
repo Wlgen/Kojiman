@@ -29,6 +29,8 @@ public:
     int getMapPos();
     int getBlockType();
     void moveY(float y);
+    void open();
+    void close();
 
 private:
     glm::ivec2 blockSize;
@@ -37,7 +39,8 @@ private:
     bool canRender = true;
     bool rendered = false;
     int mapPos, blockLife, maxBlockLife;
-    int blockType;
+    int blockType, openTime, time;
+    bool opened = false;
 
 };
 

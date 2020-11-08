@@ -36,7 +36,7 @@ void TileMap::initMap() {
 
 void TileMap::render() const {
     glm::mat4 modelview =
-        glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * actLevel * (mapSize.y/numLevels) * tileSize), 0.f));
+        glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * actLevel * (mapSize.y / numLevels) * tileSize), 0.f));
     prog->setUniformMatrix4f("modelview", modelview);
     glEnable(GL_TEXTURE_2D);
     tilesheet.use();
@@ -55,7 +55,7 @@ void TileMap::render() const {
     }
 }
 
-void TileMap::update(int deltaTime) {               
+void TileMap::update(int deltaTime) {
     for (int j = 0; j < mapSize.y; ++j) {
         for (int i = 0; i < mapSize.x; ++i) {
             if (blocks[j * mapSize.x + i] != NULL) {
@@ -74,7 +74,11 @@ void TileMap::restart() {
             if (actBlock != NULL) {
                 if (!actBlock->isRendered()) {
                     if (actBlock->getBlockType() == BREAK || actBlock->getBlockType() == MULTBREAK1 || actBlock->getBlockType() == MULTBREAK2)
-                        actBlock->init(actBlock->getPosBlock(), *prog, &texBlock, actBlock->getBlockSize(), glm::vec2((1.f/3.f), 1.f));
+                        actBlock->init(actBlock->getPosBlock(), *prog, &texBlock, actBlock->getBlockSize(), glm::vec2((1.f / 3.f), 1.f));
+                    else if (actBlock->getBlockType() == KEY)
+                        actBlock->init(actBlock->getPosBlock(), *prog, &texKey, actBlock->getBlockSize(), glm::vec2(1.f, 1.f));
+                    else if (actBlock->getBlockType() == DOOR)
+                        actBlock->init(actBlock->getPosBlock(), *prog, &texDoor, actBlock->getBlockSize(), glm::vec2(float(actBlock->getBlockSize().x / 16), 0.25));
                     else
                         actBlock->init(actBlock->getPosBlock(), *prog, &texAlarm, actBlock->getBlockSize(), glm::vec2(1.f, 1.f));
                     actBlock->enableRender();
@@ -121,6 +125,16 @@ bool TileMap::loadLevel(const string& levelFile) {
     texAlarm.setWrapT(GL_REPEAT);
     texAlarm.setMinFilter(GL_NEAREST);
     texAlarm.setMagFilter(GL_NEAREST);
+    texKey.loadFromFile("images/llave.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texKey.setWrapS(GL_REPEAT);
+    texKey.setWrapT(GL_REPEAT);
+    texKey.setMinFilter(GL_NEAREST);
+    texKey.setMagFilter(GL_NEAREST);
+    texDoor.loadFromFile("images/breakingdoor.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texDoor.setWrapS(GL_REPEAT);
+    texDoor.setWrapT(GL_REPEAT);
+    texDoor.setMinFilter(GL_NEAREST);
+    texDoor.setMagFilter(GL_NEAREST);
     getline(fin, line);
     sstream.str(line);
     sstream >> tilesheetSize.x >> tilesheetSize.y;
@@ -150,15 +164,30 @@ bool TileMap::loadLevel(const string& levelFile) {
                         map[j * mapSize.x + i + 1] = ALARM;
                         map[(j + 1) * mapSize.x + i + 1] = ALARM;
                         map[(j + 1) * mapSize.x + i] = ALARM;
-                    } else if (tile == 'e') {
+                    }
+                    else if (tile == 'e') {
                         blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, MULTBREAK1);
                         map[j * mapSize.x + i] = MULTBREAK1;
                         map[j * mapSize.x + i + 1] = MULTBREAK1;
-                    } else if (tile == 'f') {
+                    }
+                    else if (tile == 'f') {
                         blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, MULTBREAK2);
                         map[j * mapSize.x + i] = MULTBREAK2;
                         map[j * mapSize.x + i + 1] = MULTBREAK2;
-                    } else {
+                    }
+                    else if (tile == 'c') {
+                        blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, KEY);
+                        map[j * mapSize.x + i] = KEY;
+                        map[j * mapSize.x + i + 1] = KEY;
+                        map[(j + 1) * mapSize.x + i + 1] = KEY;
+                        map[(j + 1) * mapSize.x + i] = KEY;
+                    }
+                    else if (tile == 'd') {
+                        if (map[j * mapSize.x + i - 1] != DOOR)
+                            blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, DOOR);
+                        map[j * mapSize.x + i] = DOOR;
+                    }
+                    else {
                         map[j * mapSize.x + i] = tile - int('0');
                     }
                 }
@@ -168,11 +197,11 @@ bool TileMap::loadLevel(const string& levelFile) {
 #ifndef _WIN32
         fin.get(tile);
 #endif
-            }
+    }
     fin.close();
 
     return true;
-        }
+}
 
 void TileMap::prepareArrays(const glm::vec2& minCoords,
                             ShaderProgram& program) {
@@ -227,6 +256,13 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
                     if (blocks[j * mapSize.x + i] != NULL) {
                         if (blocks[j * mapSize.x + i]->getBlockType() == ALARM)
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texAlarm, glm::vec2(32.f, 32.f), glm::vec2(1.f, 1.f));
+                        else if (blocks[j * mapSize.x + i]->getBlockType() == KEY)
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texKey, glm::vec2(32.f, 32.f), glm::vec2(1.f, 1.f));
+                        else if (blocks[j * mapSize.x + i]->getBlockType() == DOOR) {
+                            int doorSize = 0;
+                            while (map[j * mapSize.x + i + doorSize] == DOOR) ++doorSize;
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texDoor, glm::vec2(float(16 * doorSize), 16.f), glm::vec2(1.f, 0.25));
+                        }
                         else
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texBlock, glm::vec2(32.f, 16.f), glm::vec2(1.f, 1.f));
                         blocks[j * mapSize.x + i]->enableRender();
@@ -260,6 +296,18 @@ void TileMap::checkDeleteBlock(int pos) const {
         else {
             if (blocks[pos]->disableRender())
                 map[pos] = map[pos + 1] = 0;
+        }
+    }
+    if (map[pos] == 0xc) {
+        for (int i = pos; i >= (mapSize.y / numLevels) * actLevel * mapSize.x; --i) {
+            if (blocks[i] != NULL) {
+                if (blocks[i]->getBlockType() == DOOR) {
+                    blocks[i]->open();
+                    for (int j = i; map[j] == DOOR; ++j) {
+                        map[j] = 0;
+                    }
+                }
+            }
         }
     }
 }
@@ -395,12 +443,13 @@ bool TileMap::collisionPlayerDown(const glm::ivec2& pos,
 }
 
 int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
-                               const glm::ivec2& size)  {
+                              const glm::ivec2& size) {
     int y = (pos.y + size.y - 1) / tileSize;
     if (y > (mapSize.y / numLevels) - 1) {
-        if(actLevel == numLevels - 1) {
+        if (actLevel == numLevels - 1) {
             return 1;
-        } else {
+        }
+        else {
             ++actLevel;
             return 2;
         }
@@ -409,7 +458,7 @@ int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
 }
 
 bool TileMap::ballOutOfMapUp(const glm::ivec2& pos) {
-    if(pos.y <= 0) {
+    if (pos.y <= 0) {
         --actLevel;
         return true;
     }
@@ -422,3 +471,5 @@ glm::ivec2 TileMap::getMapSize() {
     ret.y = mapSize.y / numLevels;
     return ret;
 }
+
+int TileMap::getActLevel() { return actLevel; }
