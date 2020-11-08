@@ -52,11 +52,12 @@ class Player {
     void calcRebBall(int pos);
     void initSpriteDeath();
     void initNormalSprite();
+    void initBigSprite();
     void initInfoBalls();
 
-    bool bJumping, collisionPU, death, first, paused, shoot, count;
+    bool bJumping, collisionPU, death, first, paused, shoot, count, big;
     glm::ivec2 tileMapDispl, newPos, posPlayer,posPU, sizePlayer, sizeBall;
-    int jumpAngle, startY, tileSize, velX, velY, numColl, anim, time, timeShot;
+    int jumpAngle, startY, tileSize, velX, velY, numColl, anim, time, timeShot, timeDies;
     float TimeAnimation;
     vector<infoBall> infoBalls;
     Texture spritesheet;
