@@ -113,6 +113,7 @@ void Ball::update(int deltaTime) {
                                     }
                                 }
                                 i = 0;
+                                player->deleteShots();
                             }
                         } else if (ballreturn = map->ballOutOfMapUp(balls[i].pos)) {
                             balls[i].pos.y =
@@ -127,6 +128,7 @@ void Ball::update(int deltaTime) {
                                 }
                             }
                             i = 0;
+                            player->deleteShots();
                         } else if ((collisionBlock = map->collisionMoveUp(
                                         balls[i].pos, sizeBall,
                                         &balls[i].pos.y)) !=
