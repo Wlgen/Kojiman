@@ -137,14 +137,16 @@ void Police::initSrpite() {
 
 bool Police::PoliceCatchPlayer() {
     glm::vec2 actualPosPlayer;
+    glm::ivec2 sizePlayer;
     actualPosPlayer = player->getPosition();
+    sizePlayer = player->getSizePlayer();
     int x0, x1, xp, xp1;
 
     x0 = posPolice.x / tileSize;
     x1 = (posPolice.x + 32 - 1) / tileSize;
 
     xp = actualPosPlayer.x / tileSize;
-    xp1 = (actualPosPlayer.x + 32 - 1) / tileSize;
+    xp1 = (actualPosPlayer.x + sizePlayer.x - 1) / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
@@ -153,7 +155,7 @@ bool Police::PoliceCatchPlayer() {
                     return true;
                 }
                 else if ((posPolice.y <= actualPosPlayer.y) &&
-                         (posPolice.y >= actualPosPlayer.y - 32)) //mira colisión por abajo
+                         (posPolice.y >= actualPosPlayer.y - sizePlayer.y)) //mira colisión por abajo
                     return true;
             }
         }

@@ -41,8 +41,8 @@ void Scene::init() {
     ball = new Ball();
     ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
     ball->setPosition(
-        glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-        (INIT_PLAYER_Y_TILES - 1.5) * map->getTileSize()));
+        glm::vec2((INIT_PLAYER_X_TILES)* map->getTileSize() + 8,
+        (INIT_PLAYER_Y_TILES) * map->getTileSize()-18));
     ball->setTileMap(map);
     pu = new PowerUp();
     pu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -120,8 +120,8 @@ void Scene::restart(bool death) {
                                      INIT_PLAYER_Y_TILES * map->getTileSize()));
     ball->stop(death);
     ball->setPosition(
-        glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-                  (INIT_PLAYER_Y_TILES - 1.5) * map->getTileSize()));
+        glm::vec2((INIT_PLAYER_X_TILES) * map->getTileSize()+8,
+                  (INIT_PLAYER_Y_TILES) * map->getTileSize()-18));
     pu->restart();
     pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
                               (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));

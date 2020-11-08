@@ -27,7 +27,8 @@ void Ball::update(int deltaTime) {
             if (balls[i].Catch) {
                 balls[i].cont++;
                 posPlayer = player->getPosition();
-                balls[i].pos = glm::vec2(posPlayer.x, balls[i].pos.y);
+                int despl = player->getDespl(i);
+                balls[i].pos = glm::vec2(balls[i].pos.x+despl, balls[i].pos.y);
                 if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) ||
                     (Game::instance().getSpecialKey(GLUT_KEY_DOWN))  // ||
                     //(Game::instance().getKey(' ')))  //Quan arreglem menú,
@@ -45,11 +46,10 @@ void Ball::update(int deltaTime) {
                     collisionPlayer = true;
                     if (puCatch) {
                          balls[i].Catch = true;
-                        balls[i].cont = 0;
-                    }
-                    for (int j = 0; j < checkPlayer.y; j++) {
+                         balls[i].cont = 0;
+                    } for (int j = 0; j < checkPlayer.y; j++) {
                         if (!(map->collisionMoveUp(balls[i].pos, sizeBall,
-                                                   &balls[i].pos.y))) {
+                                                    &balls[i].pos.y))) {
                             balls[i].pos.y += balls[i].vel.y;
                         }
                     }
@@ -185,8 +185,8 @@ void Ball::setTileMap(TileMap* tileMap) {
 
 void Ball::setPosition(const glm::vec2& pos) {
     posBall = pos;
-    sprites[0]->setPosition(glm::vec2(float(tileMapDispl.x + balls[0].pos.x),
-                                      float(tileMapDispl.y + balls[0].pos.y)));
+    sprites[0]->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
+                                      float(tileMapDispl.y + posBall.y)));
     balls[0].pos = posBall;
 }
 
