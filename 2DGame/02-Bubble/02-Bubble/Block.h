@@ -31,11 +31,14 @@ public:
     void moveY(float y);
     void open();
     void close();
+    void restart();
 
 private:
     glm::ivec2 blockSize;
-    glm::vec2 posBlock;
+    glm::vec2 posBlock, texPos;
     Sprite* sprite;
+    Texture* tex;
+    ShaderProgram program;
     bool canRender = true;
     bool rendered = false;
     int mapPos, blockLife, maxBlockLife;

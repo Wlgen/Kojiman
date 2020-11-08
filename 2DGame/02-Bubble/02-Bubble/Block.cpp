@@ -9,19 +9,22 @@ Block::Block(int mapPos, int blockType) {
     if (blockType == MULTBREAK1) maxBlockLife = 2;
     else if (blockType == MULTBREAK2) maxBlockLife = 3;
     else maxBlockLife = 1;
-    blockLife = maxBlockLife;
     sprite = NULL;
+    time = 0;
+    opened = false;
+    blockLife = maxBlockLife;
 }
 
 void Block::init(const glm::ivec2& blockPos, ShaderProgram& shaderProgram,
                  Texture* tex, const glm::vec2& blockSize, const glm::vec2& texPos) {
     this->blockSize = blockSize;
-
+    this->texPos = texPos;
+    this->tex = tex;
+    program = shaderProgram;
     sprite = Sprite::createSprite(blockSize, texPos, tex,
                                   &shaderProgram);
     posBlock = blockPos;
     if (blockType == BREAK || blockType == MULTBREAK1 || blockType == MULTBREAK2) {
-        sprite->setPosition(posBlock);
         sprite->setNumberAnimations(3);
 
         sprite->setAnimationSpeed(RED, 8);
@@ -47,7 +50,40 @@ void Block::init(const glm::ivec2& blockPos, ShaderProgram& shaderProgram,
 
         sprite->changeAnimation(CLOSED);
     }
+}
+
+void Block::restart() {
+    delete sprite;
+    sprite = Sprite::createSprite(blockSize, texPos, tex, &program);
     time = 0;
+    opened = false;
+    blockLife = maxBlockLife;
+    if (blockType == BREAK || blockType == MULTBREAK1 || blockType == MULTBREAK2) {
+        sprite->setNumberAnimations(3);
+
+        sprite->setAnimationSpeed(RED, 8);
+        sprite->addKeyframe(RED, glm::vec2(0.f, 0.f));
+
+        sprite->setAnimationSpeed(PINK, 8);
+        sprite->addKeyframe(PINK, glm::vec2((1.f / 3.f), 0.f));
+
+        sprite->setAnimationSpeed(BLUE, 8);
+        sprite->addKeyframe(BLUE, glm::vec2((2.f / 3.f), 0.f));
+    }
+    if (blockType == DOOR) {
+        sprite->setNumberAnimations(2);
+
+        sprite->setAnimationSpeed(CLOSED, 8);
+        sprite->addKeyframe(CLOSED, glm::vec2(0.f, 0.f));
+
+        sprite->setAnimationSpeed(OPENING, 8);
+        sprite->addKeyframe(OPENING, glm::vec2(0.f, 0.f));
+        sprite->addKeyframe(OPENING, glm::vec2(0.f, 0.25));
+        sprite->addKeyframe(OPENING, glm::vec2(0.f, 0.5));
+        sprite->addKeyframe(OPENING, glm::vec2(0.f, 0.75));
+
+        sprite->changeAnimation(CLOSED);
+    }
 }
 
 void Block::render() {
