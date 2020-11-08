@@ -27,15 +27,17 @@ Player* Player::getInstance() {
 void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     bJumping = paused = false;
     texProgram = shaderProgram;
-    
+    tileMapDispl = tileMapPos;
     initNormalSprite();
 
     initInfoBalls();
     //prePosBall = posBall = posPU = glm::vec2(-5, -5);
-    collisionPU = death = false;
+    shot = new Shot();
+    shot->init(tileMapPos, shaderProgram);
+    count = shoot = collisionPU = death = false;
     first = true;
     sizeBall = glm::vec2(18.f, 18.f);
-    anim = 0;
+    anim = timeShot = 0;
     velX = 3;
     velY = 3;
 }
@@ -43,6 +45,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 void Player::update(int deltaTime) {
     if (!paused) {
         sprite->update(deltaTime);
+        shot->update(deltaTime);
         for (int i = 0; i < infoBalls.size(); i++) {
             infoBalls[i].collision = false;
         }
@@ -62,6 +65,17 @@ void Player::update(int deltaTime) {
             }
         }
         else {
+            if (shoot){
+                if ((Game::instance().getKey(' ')) && (timeShot == 0)) {
+                    shot->addShot(posPlayer);
+                    count = true;
+                }
+                if (count) timeShot += deltaTime;
+                if (timeShot >= 800) {
+                    timeShot = 0;
+                    count = false;
+                }
+            }
             for (int i = 0; i < velY; i++) {
                 if (Game::instance().getSpecialKey(GLUT_KEY_LEFT)) {
                     /*if (sprite->animation() != MOVE_LEFT)
@@ -118,10 +132,14 @@ void Player::update(int deltaTime) {
     }
 }
 
-void Player::render() { sprite->render(); }
+void Player::render() {
+    sprite->render();
+    shot->render();
+}
 
 void Player::setTileMap(TileMap* tileMap) {
     map = tileMap;
+    shot->setTileMap(tileMap);
     tileSize = map->getTileSize();
 }
 
@@ -161,15 +179,19 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
 void Player::applyEffect(int num) {
     switch (num) {
         case 0:
+            shoot = false;
             sprite->changeAnimation(YELLOW);
             break;
         case 1:
+            shoot = false;
             sprite->changeAnimation(BLUE);
             break;
         case 2:
+            shoot = true;
             sprite->changeAnimation(RED);
             break;
         case 3:
+            shoot = false;
             // ball->applyEffect();
             break;
         default:
@@ -198,6 +220,8 @@ void Player::restart(bool death, glm::vec2 pos) {
     velX = velY = 3;
     this->death = death;
     newPos = pos;
+    shoot = false;
+    deleteShots();
     if (!death) {
         setPosition(pos);
         initNormalSprite();
@@ -319,3 +343,5 @@ void Player::initInfoBalls() {
 }
 
 void Player::deleteInfoBall(int pos) { infoBalls.erase(infoBalls.begin() + pos); }
+
+void Player::deleteShots() { shot->deleteAll(); }
