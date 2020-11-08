@@ -51,6 +51,8 @@ class TileMap {
 
     glm::ivec2 getMapSize();
 
+    int getActLevel();
+
    private:
     bool loadLevel(const string &levelFile);
     void prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program);
@@ -63,7 +65,7 @@ class TileMap {
     GLint posLocation, texCoordLocation;
     glm::ivec2 position, mapSize, tilesheetSize;
     int tileSize, blockSize, numLevels, actLevel;
-    Texture tilesheet, texBlock, texAlarm;
+    Texture tilesheet, texBlock, texAlarm, texKey, texDoor;
     glm::vec2 tileTexSize;
     int *map;
     vector<Block*> blocks;
