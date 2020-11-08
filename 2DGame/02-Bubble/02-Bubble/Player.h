@@ -4,6 +4,7 @@
 #include "Sprite.h"
 #include "TileMap.h"
 #include "ShaderProgram.h"
+#include "shot.h"
 
 // Player is basically a Sprite that represents the player. As such it has
 // all properties it needs to track its movement, jumping, and collisions.
@@ -40,6 +41,8 @@ class Player {
 
     void deleteInfoBall(int Pos);
 
+    void deleteShots();
+
     glm::ivec2 getPosition();
 
     glm::ivec2 getRebBall(int pos);
@@ -51,9 +54,9 @@ class Player {
     void initNormalSprite();
     void initInfoBalls();
 
-    bool bJumping, collisionBall, collisionPU, death, first, paused;
-    glm::ivec2 tileMapDispl, newPos, posPlayer, posBall, prePosBall, posPU, rebBall, sizePlayer, sizeBall;
-    int jumpAngle, startY, tileSize, velX, velY, numColl, anim, time;
+    bool bJumping, collisionPU, death, first, paused, shoot, count;
+    glm::ivec2 tileMapDispl, newPos, posPlayer,posPU, sizePlayer, sizeBall;
+    int jumpAngle, startY, tileSize, velX, velY, numColl, anim, time, timeShot;
     float TimeAnimation;
     vector<infoBall> infoBalls;
     Texture spritesheet;
@@ -62,6 +65,7 @@ class Player {
     TileMap *map;
     static Player *player;
     ShaderProgram texProgram;
+    Shot *shot;
 };
 
 #endif  // _PLAYER_INCLUDE
