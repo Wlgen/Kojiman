@@ -32,6 +32,7 @@ class Scene {
     void getInTransitionUp();
     void getInTransitionDown();
     void outOfTransition();
+    void changeLevel(int level);
 
    private:
     void initShaders();
@@ -45,6 +46,7 @@ class Scene {
     glm::mat4 projection;
     int mapChange;
     PowerUp *pu;
+    vector<string> levels;
     Police *police;
     State *state;
     Background *back;

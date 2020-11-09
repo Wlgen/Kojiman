@@ -12,7 +12,10 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     first = true;
     activated = false;
     for (int i = 0; i < 3; i++) {
-        flatAlarm.push_back(false);
+        if (flatAlarm.size() <= i)
+            flatAlarm.push_back(false);
+        else
+            flatAlarm[i] = false;
     }
     sizePolice = glm::ivec2(16, 30);
     // actualEffect = 0;

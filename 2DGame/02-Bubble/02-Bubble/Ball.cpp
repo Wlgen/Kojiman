@@ -11,8 +11,14 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     texProgram = shaderProgram;
     tileMapDispl = tileMapPos;
     sizeBall = glm::ivec2(18.f, 18.f);
-    initSprite();
-    initBall(true, posBall, glm::ivec2(0, 0));
+    if(sprites.size() < 1) initSprite();
+    if (balls.size() < 1)
+        initBall(true, posBall, glm::ivec2(0, 0));
+    else {
+        balls[0].vel = glm::ivec2(0, 0);
+        balls[0].Catch = true;
+        balls[0].cont = 0;
+    }
     player = Player::getInstance();
     rend = true;
     contTime = 0;

@@ -47,6 +47,7 @@ class Game {
     void toggleRend();
     void getSceneInTransitionUp();
     void getSceneInTransitionDown();
+    void changeLevel(int level);
 
     void loopMusic(char* fileName);
     void stopMusic();
