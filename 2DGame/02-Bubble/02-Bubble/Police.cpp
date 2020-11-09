@@ -58,6 +58,7 @@ void Police::update(int deltaTime) {  // canviar
                                     float(tileMapDispl.y + posPolice.y)));
                 if (firstTime >= 350) {
                     posPlayer = player->getPosition();
+                    posPlayer.y -= 16; 
                     persecution = true;
                     skipX = skipY = false;
                     movX = posPlayer.x - posPolice.x;
@@ -65,6 +66,7 @@ void Police::update(int deltaTime) {  // canviar
                     if (movX <= 0) sprite->changeAnimation(LEFT);
                     else
                         sprite->changeAnimation(RIGHT);
+                    if (movY == -1) movY += 1;
                     Xmov = (movX + 1) / (movY + 1);
                     Ymov = 0;
                     if (Xmov < 0) {
