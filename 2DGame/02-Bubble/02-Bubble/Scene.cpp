@@ -150,7 +150,6 @@ void Scene::restart(bool death) {
                         (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->restart();
     if (!death) {
-        Game::instance().stopMusic();
         Game::instance().loopMusic("music/kirbySong.wav");
         map->restart();
         setPauseFalse();

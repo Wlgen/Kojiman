@@ -85,7 +85,7 @@ void Game::loopMusic(char* fileName) {
         stopMusic();
         music = engine->play2D(fileName, true, false, true);
         music->setVolume(0.3f);
-    }
+    } 
 }
 
 void Game::stopMusic() {
