@@ -1,4 +1,5 @@
 #include "PowerUp.h"
+#include "Game.h"
 
 void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     collisionPlayer = paused = false;
@@ -43,6 +44,7 @@ void PowerUp::update(int deltaTime) {
                     posPU.y += movY;
                 }
                 if (player->checkCollisionPU()) {
+                    Game::instance().playSound("music/powerup.wav");
                     rend = false;
                     sprite->free();
                     firstTime = 0;
