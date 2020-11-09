@@ -1,4 +1,5 @@
 #include "Shot.h"
+#include "Game.h"
 
 #include <GL/glew.h>
 #include <GL/glut.h>
@@ -62,11 +63,13 @@ void Shot::addShot(const glm::ivec2& posPlayer) {
     sprites[sprites.size()-1]->setPosition(
         glm::vec2(float(tileMapDispl.x + shots[shots.size() - 1].x),
                   float(tileMapDispl.y + shots[shots.size() - 1].y)));
+    Game::instance().playSound("music/shotSound.wav");
     shots.push_back(glm::vec2(posPlayer.x + 26, posPlayer.y - 8));
     initSprite();
     sprites[sprites.size() - 1]->setPosition(
         glm::vec2(float(tileMapDispl.x + shots[shots.size() - 1].x),
                   float(tileMapDispl.y + shots[shots.size() - 1].y)));
+    Game::instance().playSound("music/shotSound.wav");
 }
 
 void Shot::render() {
