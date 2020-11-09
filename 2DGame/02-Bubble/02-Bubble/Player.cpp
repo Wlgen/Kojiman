@@ -194,10 +194,13 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
-                if ((posObj.y <= posPlayer.y - (sizeBall.y - 2)) &&
+                if ((posObj.y <= posPlayer.y - (sizeBall.y - 3)) &&
                     (posObj.y >= posPlayer.y - sizeBall.y)) {
-                    //if (prePosBall.y <= posPlayer.y - (sizeBall.y-4)) {
-                    if(pos != -1) calcRebBall(pos);
+                    if(pos != -1){
+                        //int y1 = infoBalls[pos].prePosition.y + sizeBall.y-1;
+                        //if (y1 < posPlayer.y)
+                            calcRebBall(pos);
+                        }
                     return true;
                     //}
                 }
