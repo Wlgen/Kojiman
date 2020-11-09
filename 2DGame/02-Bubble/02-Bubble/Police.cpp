@@ -38,10 +38,12 @@ void Police::update(int deltaTime) {  // canviar
                 Police::initSrpite();
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
                                     float(tileMapDispl.y + posPolice.y)));
+                Game::instance().loopMusic("music/alarm.wav");
                 firstTime = 0;
             }
         } else {
             rend = false;
+            Game::instance().stopMusic();
         }
         if (rend) {
             if (!persecution) {

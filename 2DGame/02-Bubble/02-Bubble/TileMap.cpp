@@ -1,4 +1,5 @@
 #include "TileMap.h"
+#include "Game.h"
 
 #include <fstream>
 #include <iostream>
@@ -297,6 +298,7 @@ void TileMap::checkDeleteBlock(int pos) const {
         }
     }
     if (map[pos] == 0xc) {
+        Game::instance().playSound("music/key.wav");
         for (int i = pos; i >= (mapSize.y / numLevels) * actLevel * mapSize.x; --i) {
             if (blocks[i] != NULL) {
                 if (blocks[i]->getBlockType() == DOOR) {
