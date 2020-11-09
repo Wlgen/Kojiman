@@ -16,9 +16,11 @@ class Shot {
 	   void addShot(const glm::ivec2 &posPlayer);
        void render();
 	   void deleteAll();
+
+       bool getShotAlarm();
 	
    private:
-        bool exit;
+        bool exit, shotAlarm;
         glm::vec2 sizeShot, tileMapDispl;
 		vector<glm::ivec2> shots;
 		TileMap *map;
