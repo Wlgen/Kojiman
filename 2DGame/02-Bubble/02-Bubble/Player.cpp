@@ -47,6 +47,7 @@ void Player::update(int deltaTime) {
     if (!paused) {
         sprite->update(deltaTime);
         shot->update(deltaTime);
+        activeAlarm = shot->getShotAlarm();
         for (int i = 0; i < infoBalls.size(); i++) {
             infoBalls[i].collision = false;
             infoBalls[i].despl = 0;
@@ -417,3 +418,5 @@ void Player::deleteInfoBall(int pos) { infoBalls.erase(infoBalls.begin() + pos);
 void Player::deleteShots() { shot->deleteAll(); }
 
 void Player::setPauseFalse() { paused = false; }
+
+bool Player::getActiveAlarm() { return activeAlarm; }
