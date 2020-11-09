@@ -54,7 +54,7 @@ void PowerUp::update(int deltaTime) {
                                     float(tileMapDispl.y + posPU.y)));
             }
             if (firstTime % 300 == 0) {
-                anim = (anim + 1) % 4;
+                anim = (anim + 1) % 6;
                 sprite->changeAnimation(anim);
             }
             player->setPUPosition(posPU);
@@ -82,25 +82,31 @@ void PowerUp::setPosition(const glm::vec2& pos) {
 void PowerUp::initSrpite() {
     anim = 0;
 
-    spritesheet.loadFromFile("images/varied.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.loadFromFile("images/powerUps.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
 
-    sprite = Sprite::createSprite(sizePU, glm::vec2(0.5, 0.5),
+    sprite = Sprite::createSprite(sizePU, glm::vec2(0.25, 0.5),
                                   &spritesheet, &texProgram);
-    sprite->setNumberAnimations(4);
+    sprite->setNumberAnimations(6);
 
-    sprite->setAnimationSpeed(0, 8);
+    sprite->setAnimationSpeed(0, 8); //White
     sprite->addKeyframe(0, glm::vec2(0.0, 0.f));
 
-    sprite->setAnimationSpeed(1, 8);
-    sprite->addKeyframe(1, glm::vec2(0.f, 0.5f));
+    sprite->setAnimationSpeed(1, 8); //Blue
+    sprite->addKeyframe(1, glm::vec2(0.25f, 0.f));
 
-    sprite->setAnimationSpeed(2, 8);
+    sprite->setAnimationSpeed(2, 8); //Yellow
     sprite->addKeyframe(2, glm::vec2(0.5f, 0.f));
 
-    sprite->setAnimationSpeed(3, 8);
-    sprite->addKeyframe(3, glm::vec2(0.5f, 0.5f));
+    sprite->setAnimationSpeed(3, 8); //Red
+    sprite->addKeyframe(3, glm::vec2(0.f, 0.5f));
+    
+    sprite->setAnimationSpeed(4, 8); //Green
+    sprite->addKeyframe(4, glm::vec2(0.25, 0.5f));
+
+    sprite->setAnimationSpeed(5, 8); //Pink
+    sprite->addKeyframe(5, glm::vec2(0.5, 0.5f));
 
     sprite->changeAnimation(anim);
 

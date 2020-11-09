@@ -222,7 +222,7 @@ void Ball::applyEffect(int num) {
     switch (num) {
         case 0:
            //sprites[0]->changeAnimation(YELLOW);
-            addBall();
+            puCatch = false;
             break;
         case 1:
             //sprites[0]->changeAnimation(BLUE);
@@ -230,11 +230,19 @@ void Ball::applyEffect(int num) {
             break;
         case 2:
             //sprites[0]->changeAnimation(RED);
-            puCatch = false;
+            addBall();
             break;
         case 3:
             // ball->applyEffect();
             puCatch = false;
+            break;
+        case 4:
+            // sprites[0]->changeAnimation(RED);
+            puCatch = false;
+            break;
+        case 5:
+            // sprites[0]->changeAnimation(RED);
+            //puCatch = false;
             break;
         default:
             break;
