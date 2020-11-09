@@ -28,6 +28,8 @@ Scene::~Scene() {
 }
 
 void Scene::init() {
+    Game::instance().stopMusic();
+    Game::instance().loopMusic("music/kirbySong.wav");
     initShaders();
     mapChange = 1;
     map = TileMap::createTileMap("levels/level01.txt",
@@ -148,6 +150,8 @@ void Scene::restart(bool death) {
                         (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->restart();
     if (!death) {
+        Game::instance().stopMusic();
+        Game::instance().loopMusic("music/kirbySong.wav");
         map->restart();
         setPauseFalse();
     }
@@ -190,5 +194,6 @@ void Scene::getInTransitionDown() {
 }
 
 void Scene::outOfTransition() {
+    Game::instance().loopMusic("music/kirbySong.wav");
     inTransition = false;
 }

@@ -57,6 +57,7 @@ void Player::update(int deltaTime) {
         collisionPU = false;
         if (death) {
             if (first) {
+                Game::instance().stopMusic();
                 Game::instance().pause(true);
                 if (big) {
                     sprite->changeAnimation(BIG_DIES);
@@ -83,6 +84,8 @@ void Player::update(int deltaTime) {
                 Game::instance().pause(true);
                 Game::instance().toggleRend();
                 restart(false, newPos);
+                Game::instance().stopMusic();
+                Game::instance().loopMusic("music/kirbySong.wav");
             }
         }
         else {

@@ -15,10 +15,12 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     initBall(true, posBall, glm::ivec2(0, 0));
     player = Player::getInstance();
     rend = true;
+    contTime = 0;
 }
 
 void Ball::update(int deltaTime) {
     if (!paused) {
+        contTime += deltaTime;
         int i = 0;
         int maxIt = balls.size();
         while(i <=  maxIt-1) {
@@ -37,10 +39,11 @@ void Ball::update(int deltaTime) {
                     balls[i].pos =
                         glm::vec2(posNew, balls[i].pos.y);
                 if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) ||
-                    (Game::instance().getSpecialKey(GLUT_KEY_DOWN))  // ||
-                    //(Game::instance().getKey(' ')))  //Quan arreglem menú,
+                    (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) ||
+                    (Game::instance().getKey(' ') && contTime >=25)  //Quan arreglem menú,
                     //descomentar
                     || (balls[i].cont >= 100)) {
+                    contTime = 0;
                     balls[i].Catch = false;
                     /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
                     else*/ balls[i].vel = glm::ivec2(1, -3);
@@ -56,6 +59,7 @@ void Ball::update(int deltaTime) {
                     if (balls[i].cont >= 80) {
                         Game::instance().playSound("music/bleep.wav");
                         balls[i].cont = 0;
+                        contTime = 0;
                     }
                     balls[i].vel = player->getRebBall(i);
                     // if (movY > 0) movY = -movY;
@@ -228,6 +232,7 @@ void Ball::setPosition(const glm::vec2& pos) {
 
 void Ball::stop(bool death) {
     if (!death) rend = true;
+    contTime = 0;
     for (int i = balls.size() - 1; i >= 1; i--) {
         balls.erase(balls.begin() + i);
         sprites[i]->free();
