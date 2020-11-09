@@ -45,6 +45,8 @@ class Game {
     void restart(bool death);
     void pause(bool player);
     void toggleRend();
+    void getSceneInTransitionUp();
+    void getSceneInTransitionDown();
 
     void loopMusic(char* fileName);
     void stopMusic();

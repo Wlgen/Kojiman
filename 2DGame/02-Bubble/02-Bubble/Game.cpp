@@ -99,3 +99,10 @@ void Game::playSound(char* fileName) {
     sound->setVolume(0.2f);
     sound->setPlaybackSpeed();
 }
+void Game::getSceneInTransitionUp() {
+    scene.getInTransitionUp();
+}
+
+void Game::getSceneInTransitionDown() {
+    scene.getInTransitionDown();
+}

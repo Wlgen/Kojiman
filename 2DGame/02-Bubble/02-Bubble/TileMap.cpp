@@ -1,4 +1,5 @@
 #include "TileMap.h"
+#include "Game.h"
 
 #include <fstream>
 #include <iostream>
@@ -20,6 +21,7 @@ TileMap* TileMap::createTileMap(const string& levelFile,
 TileMap::TileMap(const string& levelFile, const glm::vec2& minCoords,
                  ShaderProgram& program) {
     prog = &program;
+    inTransition = false;
     loadLevel(levelFile);
     prepareArrays(minCoords, program);
 }
@@ -35,8 +37,11 @@ void TileMap::initMap() {
 }
 
 void TileMap::render() const {
-    glm::mat4 modelview =
-        glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * actLevel * (mapSize.y / numLevels) * tileSize), 0.f));
+    glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * actLevel * (mapSize.y / numLevels) * tileSize), 0.f));
+    if (inTransition && transitionUp)
+        modelview = glm::translate(modelview, glm::vec3(0.f, float((-1) * ((mapSize.y / numLevels) * tileSize - transitionTime)), 0.f));
+    else if(inTransition && !transitionUp)
+        modelview = glm::translate(modelview, glm::vec3(0.f, float((mapSize.y / numLevels) * tileSize - transitionTime), 0.f));
     prog->setUniformMatrix4f("modelview", modelview);
     glEnable(GL_TEXTURE_2D);
     tilesheet.use();
@@ -45,11 +50,13 @@ void TileMap::render() const {
     glEnableVertexAttribArray(texCoordLocation);
     glDrawArrays(GL_TRIANGLES, 0, 6 * mapSize.x * mapSize.y);
     glDisable(GL_TEXTURE_2D);
-    for (int j = 0; j < mapSize.y; ++j) {
-        for (int i = 0; i < mapSize.x; ++i) {
-            if (blocks[j * mapSize.x + i] != NULL) {
-                blocks[j * mapSize.x + i]->moveY(float(-(mapSize.y / numLevels) * actLevel * tileSize));
-                blocks[j * mapSize.x + i]->render();
+    if (!inTransition) {
+        for (int j = 0; j < mapSize.y; ++j) {
+            for (int i = 0; i < mapSize.x; ++i) {
+                if (blocks[j * mapSize.x + i] != NULL) {
+                    blocks[j * mapSize.x + i]->moveY(float(-(mapSize.y / numLevels) * actLevel * tileSize));
+                    blocks[j * mapSize.x + i]->render();
+                }
             }
         }
     }
@@ -62,6 +69,12 @@ void TileMap::update(int deltaTime) {
                 blocks[j * mapSize.x + i]->update(deltaTime);
             }
         }
+    }
+    if (inTransition) {
+        if (transitionTime >= tileSize * getMapSize().y) {
+            inTransition = false;
+        }
+        transitionTime += deltaTime;
     }
 }
 
@@ -77,6 +90,11 @@ void TileMap::restart() {
                     actBlock->enableRender();
                     for (int k = i; k < (i + (actBlock->getBlockSize().x / tileSize)); ++k) {
                         map[j * mapSize.x + k] = actBlock->getBlockType();
+                    }
+                    if (actBlock->getBlockType() == KEY || actBlock->getBlockType() == FOOD) {
+                        for (int k = i + mapSize.x; k < (i + mapSize.x + (actBlock->getBlockSize().x / tileSize)); ++k) {
+                            map[j * mapSize.x + k] = actBlock->getBlockType();
+                        }
                     }
                 }
                 else if (actBlock->getBlockType() == MULTBREAK1 || actBlock->getBlockType() == MULTBREAK2) {
@@ -133,6 +151,16 @@ bool TileMap::loadLevel(const string& levelFile) {
     texDoor.setWrapT(GL_REPEAT);
     texDoor.setMinFilter(GL_NEAREST);
     texDoor.setMagFilter(GL_NEAREST);
+    texFood.loadFromFile("images/galletas.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texFood.setWrapS(GL_REPEAT);
+    texFood.setWrapT(GL_REPEAT);
+    texFood.setMinFilter(GL_NEAREST);
+    texFood.setMagFilter(GL_NEAREST);
+    texDrink.loadFromFile("images/chocolate.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texDrink.setWrapS(GL_REPEAT);
+    texDrink.setWrapT(GL_REPEAT);
+    texDrink.setMinFilter(GL_NEAREST);
+    texDrink.setMagFilter(GL_NEAREST);
     getline(fin, line);
     sstream.str(line);
     sstream >> tilesheetSize.x >> tilesheetSize.y;
@@ -184,6 +212,20 @@ bool TileMap::loadLevel(const string& levelFile) {
                         if (map[j * mapSize.x + i - 1] != DOOR)
                             blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, DOOR);
                         map[j * mapSize.x + i] = DOOR;
+                    }
+                    else if (tile == 'g') {
+                        blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, FOOD);
+                        map[j * mapSize.x + i] = FOOD;
+                        map[j * mapSize.x + i + 1] = FOOD;
+                        map[(j + 1) * mapSize.x + i + 1] = FOOD;
+                        map[(j + 1) * mapSize.x + i] = FOOD;
+                    }
+                    else if (tile == 'h') {
+                        blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, DRINK);
+                        map[j * mapSize.x + i] = DRINK;
+                        map[j * mapSize.x + i + 1] = DRINK;
+                        map[(j + 1) * mapSize.x + i + 1] = DRINK;
+                        map[(j + 1) * mapSize.x + i] = DRINK;
                     }
                     else {
                         map[j * mapSize.x + i] = tile - int('0');
@@ -261,6 +303,10 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
                             while (map[j * mapSize.x + i + doorSize] == DOOR) ++doorSize;
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texDoor, glm::vec2(float(16 * doorSize), 16.f), glm::vec2(doorSize, 0.25));
                         }
+                        else if (blocks[j * mapSize.x + i]->getBlockType() == FOOD)
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texFood, glm::vec2(32.f, 32.f), glm::vec2(1.f, 1.f));
+                        else if (blocks[j * mapSize.x + i]->getBlockType() == DRINK)
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texDrink, glm::vec2(32.f, 32.f), glm::vec2(1.f, 1.f));
                         else
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texBlock, glm::vec2(32.f, 16.f), glm::vec2((1.f / 3.f), 1.f));
                         blocks[j * mapSize.x + i]->enableRender();
@@ -307,6 +353,20 @@ void TileMap::checkDeleteBlock(int pos) const {
                 }
             }
         }
+        if (blocks[pos] != NULL) pos = pos;
+        else if (blocks[pos + 1] != NULL) pos = pos + 1;
+        else if (blocks[pos - 1] != NULL) pos = pos - 1;
+        else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
+        else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
+        else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
+        else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
+        else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
+        else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
+        if (blocks[pos]->disableRender()) {
+            map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
+        }
+    }
+    if (map[pos] == 0x10 || map[pos] == 0x11) {
         if (blocks[pos] != NULL) pos = pos;
         else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
@@ -459,6 +519,10 @@ int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
             return 1;
         }
         else {
+            Game::instance().getSceneInTransitionDown();
+            inTransition = true;
+            transitionUp = false;
+            transitionTime = 0;
             ++actLevel;
             return 2;
         }
@@ -468,6 +532,10 @@ int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
 
 bool TileMap::ballOutOfMapUp(const glm::ivec2& pos) {
     if (pos.y <= 0) {
+        Game::instance().getSceneInTransitionUp();
+        transitionTime = 0;
+        inTransition = true;
+        transitionUp = true;
         --actLevel;
         return true;
     }
@@ -482,3 +550,5 @@ glm::ivec2 TileMap::getMapSize() {
 }
 
 int TileMap::getActLevel() { return actLevel; }
+
+int TileMap::getNumLevels() { return numLevels; }

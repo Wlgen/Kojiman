@@ -10,6 +10,7 @@
 #include "TileMap.h"
 #include "State.h"
 #include "Police.h"
+#include "Background.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -28,6 +29,9 @@ class Scene {
     void toggleRend();
     void setPauseFalse();
     void toggleGodMode();
+    void getInTransitionUp();
+    void getInTransitionDown();
+    void outOfTransition();
 
    private:
     void initShaders();
@@ -37,13 +41,17 @@ class Scene {
     Player *player;
     Ball *ball;
     ShaderProgram texProgram;
-    float currentTime;
+    float currentTime, transitionTime;
     glm::mat4 projection;
     int mapChange;
     PowerUp *pu;
     Police *police;
     State *state;
+    Background *back;
+    Texture texBack;
     bool initialized = false;
+    bool inTransition = false;
+    bool transitionUp;
 };
 
 #endif  // _SCENE_INCLUDE

@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "Game.h"
-#include "Scene.h"
 
 #define SCREEN_X 0
 #define SCREEN_Y 0
@@ -33,6 +32,12 @@ void Scene::init() {
     mapChange = 1;
     map = TileMap::createTileMap("levels/level01.txt",
                                  glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+    glm::vec2 geom[2] = { glm::vec2(0.f), glm::vec2(map->getMapSize().x * map->getTileSize(), map->getMapSize().y * map->getNumLevels() * map->getTileSize()) };
+    glm::vec2 texCoords[2] = { glm::vec2(0.f), glm::vec2(1.f) };
+    back = Background::createBackground(geom, texCoords, texProgram);
+    texBack.loadFromFile("images/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texBack.setMinFilter(GL_NEAREST);
+    texBack.setMagFilter(GL_NEAREST);
     player = Player::getInstance();
     player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
     player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
@@ -41,8 +46,8 @@ void Scene::init() {
     ball = new Ball();
     ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
     ball->setPosition(
-        glm::vec2((INIT_PLAYER_X_TILES)* map->getTileSize() + 8,
-        (INIT_PLAYER_Y_TILES) * map->getTileSize()-18));
+        glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize() + 8,
+        (INIT_PLAYER_Y_TILES)*map->getTileSize() - 18));
     ball->setTileMap(map);
     pu = new PowerUp();
     pu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -63,6 +68,14 @@ void Scene::init() {
 }
 
 void Scene::update(int deltaTime) {
+    if (inTransition) {
+        if (transitionTime == 0) togglePause(false);
+        else if (transitionTime >= map->getTileSize() * map->getMapSize().y) {
+            togglePause(false);
+            outOfTransition();
+        }
+        transitionTime += deltaTime;
+    }
     currentTime += deltaTime;
     player->update(deltaTime);
     pu->update(deltaTime);
@@ -73,18 +86,23 @@ void Scene::update(int deltaTime) {
 
 void Scene::render() {
     glm::mat4 modelview;
-
+    modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * map->getActLevel() * map->getMapSize().y * map->getTileSize()), 0.f));
+    if (inTransition && transitionUp) modelview = glm::translate(modelview, glm::vec3(0.f, float((-1) * (map->getMapSize().y * map->getTileSize() - transitionTime)), 0.f));
+    else if(inTransition && !transitionUp) modelview = glm::translate(modelview, glm::vec3(0.f, float(map->getMapSize().y * map->getTileSize() -  transitionTime), 0.f));
     texProgram.use();
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
-    modelview = glm::mat4(1.0f);
+    //modelview = glm::mat4(1.0f);
     texProgram.setUniformMatrix4f("modelview", modelview);
     texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
+    back->render(texBack, modelview);
     map->render();
-    player->render();
-    ball->render();
-    pu->render();
-    police->render();
+    if (!inTransition) {
+        player->render();
+        ball->render();
+        pu->render();
+        police->render();
+    }
 }
 
 void Scene::initShaders() {
@@ -117,17 +135,17 @@ void Scene::restart(bool death) {
     /*player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
                         INIT_PLAYER_Y_TILES * map->getTileSize())); */
     player->restart(death, glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-                                     INIT_PLAYER_Y_TILES * map->getTileSize()));
+                    INIT_PLAYER_Y_TILES * map->getTileSize()));
     ball->stop(death);
     ball->setPosition(
-        glm::vec2((INIT_PLAYER_X_TILES) * map->getTileSize()+8,
-                  (INIT_PLAYER_Y_TILES) * map->getTileSize()-18));
+        glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize() + 8,
+        (INIT_PLAYER_Y_TILES)*map->getTileSize() - 18));
     pu->restart();
     pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
-                              (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
+                    (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
     currentTime = 0.0f;
     police->setPosition(glm::vec2((1) * map->getTileSize(),
-                                  (INIT_PLAYER_Y_TILES)*map->getTileSize()));
+                        (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->restart();
     if (!death) {
         map->restart();
@@ -154,7 +172,23 @@ void Scene::setPauseFalse() {
     pu->setPauseFalse();
 }
 
-void Scene::toggleGodMode() { 
+void Scene::toggleGodMode() {
     ball->toggleGodMode();
     police->toggleGodMode();
+}
+
+void Scene::getInTransitionUp() {
+    transitionTime = 0;
+    inTransition = true;
+    transitionUp = true;
+}
+
+void Scene::getInTransitionDown() {
+    transitionTime = 0;
+    inTransition = true;
+    transitionUp = false;
+}
+
+void Scene::outOfTransition() {
+    inTransition = false;
 }
