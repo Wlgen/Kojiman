@@ -10,13 +10,27 @@ void Game::init() {
     engine = createIrrKlangDevice();
     gState.init();
     menu.init();
+    loopMusic("music/Menu.wav");
     godMode = false;
+    first = true;
 }
 
 bool Game::update(int deltaTime) {
     if (scene.isInitialized()) {
         scene.update(deltaTime); 
     }
+    if (gState.getState() == State::state::menu)
+        loopMusic("music/Menu.wav");
+    else if (gState.getState() == State::state::instr)
+        loopMusic("music/Menu.wav");
+    else if (gState.getState() == State::state::credits) {
+        loopMusic("music/Credits.wav");
+        if (first && scene.isInitialized()) {
+            scene.togglePause(false);
+            first = false;
+        }
+    } else
+        first = true;
     return bPlay;
 }
 
