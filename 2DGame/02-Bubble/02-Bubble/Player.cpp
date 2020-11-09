@@ -49,11 +49,14 @@ void Player::update(int deltaTime) {
         shot->update(deltaTime);
         for (int i = 0; i < infoBalls.size(); i++) {
             infoBalls[i].collision = false;
+            infoBalls[i].despl = 0;
+
         }
         //collisionBall = false;
         collisionPU = false;
         if (death) {
             if (first) {
+                Game::instance().pause(true);
                 if (big) {
                     sprite->changeAnimation(BIG_DIES);
                     first = false;
@@ -74,6 +77,8 @@ void Player::update(int deltaTime) {
             else if (time >= timeDies) {
                 death = false;
                 first = true;
+                Game::instance().pause(true);
+                Game::instance().toggleRend();
                 restart(false, newPos);
             }
         }
@@ -89,7 +94,7 @@ void Player::update(int deltaTime) {
                     count = false;
                 }
             }
-            for (int i = 0; i < velY; i++) {
+            for (int k = 0; k < velY; k++) {
                 if (Game::instance().getSpecialKey(GLUT_KEY_LEFT)) {
                     /*if (sprite->animation() != MOVE_LEFT)
                         sprite->changeAnimation(MOVE_LEFT);*/
@@ -97,6 +102,10 @@ void Player::update(int deltaTime) {
                     if (map->collisionPlayerLeft(posPlayer, sizePlayer)) {
                         posPlayer.x += 1;
                         // sprite->changeAnimation(STAND_LEFT);
+                    } else {
+                        for (int j = 0; j < infoBalls.size(); j++) {
+                            infoBalls[j].despl--;
+                        }
                     }
                 }
                 else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT)) {
@@ -106,6 +115,10 @@ void Player::update(int deltaTime) {
                     if (map->collisionPlayerRight(posPlayer, sizePlayer)) {
                         posPlayer.x -= 1;
                         // sprite->changeAnimation(STAND_RIGHT);
+                    } else {
+                        for (int j = 0; j < infoBalls.size(); j++) {
+                            infoBalls[j].despl++;
+                        }
                     }
                 } /*else {
                     if (sprite->animation() == MOVE_LEFT)
@@ -118,8 +131,8 @@ void Player::update(int deltaTime) {
                     if (map->collisionPlayerUp(posPlayer, sizePlayer)) {
                         posPlayer.y += 1;
                     }
-                    for (int i = 0; i < infoBalls.size(); i++) {
-                        if (infoBalls[i].collision) infoBalls[i].numColl++;
+                    for (int j = 0; j < infoBalls.size(); j++) {
+                        if (infoBalls[j].collision) infoBalls[j].numColl++;
                     }
                 }
                 else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
@@ -190,7 +203,7 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
 }
 
 void Player::applyEffect(int num) {
-    if (big && (num != 3)) initNormalSprite();
+    if (big && ((num != 2) || (num != 4) ||(num != 5))) initNormalSprite();
     switch (num) {
         case 0:
             shoot = false;
@@ -203,15 +216,19 @@ void Player::applyEffect(int num) {
             sprite->changeAnimation(BLUE);
             break;
         case 2:
+            break;
+        case 3:
             shoot = true;
             big = false;
             sprite->changeAnimation(RED);
             break;
-        case 3:
+        case 4:
             shoot = false;
             if (!big) initBigSprite();
             big = true;
             // ball->applyEffect();
+            break;
+        case 5:
             break;
         default:
             break;
@@ -280,6 +297,13 @@ glm::ivec2 Player::getRebBall(int pos) {
     while (pos >= infoBalls.size()) initInfoBalls();
     return infoBalls[pos].reb;
 }
+
+int Player::getDespl(int pos) {
+    while (pos >= infoBalls.size()) initInfoBalls();
+     return infoBalls[pos].despl;
+}
+
+glm::ivec2 Player::getSizePlayer() { return sizePlayer; }
 
 void Player::initSpriteDeath() {
     timeDies = 750;
@@ -381,6 +405,7 @@ void Player::initInfoBalls() {
     infoBall iB;
     iB.collision = false;
     iB.numColl = 0;
+    iB.despl = 0;
     iB.pos = glm::vec2(-5, -5);
     iB.prePosition = glm::vec2(-5, -5);
     iB.reb = glm::vec2(1, -3);
@@ -390,3 +415,5 @@ void Player::initInfoBalls() {
 void Player::deleteInfoBall(int pos) { infoBalls.erase(infoBalls.begin() + pos); }
 
 void Player::deleteShots() { shot->deleteAll(); }
+
+void Player::setPauseFalse() { paused = false; }

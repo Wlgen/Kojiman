@@ -23,11 +23,13 @@ class Police {
 
     void togglePause();
 
+    void setPauseFalse();
+
    private:
     void initSrpite();
 
    private:
-    bool rend, persecution, begin, paused;
+    bool rend, persecution, begin, paused, first;
     int movX, movY, Xmov, Ymov, tileSize, firstTime;
     glm::ivec2 tileMapDispl, posPolice, posPlayer;
     Texture spritesheet;

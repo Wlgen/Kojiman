@@ -39,6 +39,8 @@ class Game {
     bool getSpecialKey(int key) const;
 
     void restart(bool death);
+    void pause(bool player);
+    void toggleRend();
 
    private:
     bool bPlay;   // Continue to play game?
