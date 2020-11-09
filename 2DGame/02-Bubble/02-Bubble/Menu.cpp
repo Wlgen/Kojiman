@@ -26,16 +26,16 @@ void Menu::render(State::state state) {
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
     modelview = glm::mat4(1.0f);
-    texProgram.setUniformMatrix4f("modelview", modelview);
+    
     switch (state) {
         case State::state::menu:
-            background->render(tex[0]);
+            background->render(tex[0], modelview);
             break;
         case State::state::credits:
-            background->render(tex[2]);
+            background->render(tex[2], modelview);
             break;
         case State::state::instr:
-            background->render(tex[1]);
+            background->render(tex[1], modelview);
             break;
     }
 }

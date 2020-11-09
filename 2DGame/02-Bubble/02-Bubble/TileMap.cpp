@@ -1,4 +1,5 @@
 #include "TileMap.h"
+#include "Game.h"
 
 #include <fstream>
 #include <iostream>
@@ -78,6 +79,11 @@ void TileMap::restart() {
                     for (int k = i; k < (i + (actBlock->getBlockSize().x / tileSize)); ++k) {
                         map[j * mapSize.x + k] = actBlock->getBlockType();
                     }
+                    if (actBlock->getBlockType() == KEY || actBlock->getBlockType() == FOOD) {
+                        for (int k = i + mapSize.x; k < (i + mapSize.x + (actBlock->getBlockSize().x / tileSize)); ++k) {
+                            map[j * mapSize.x + k] = actBlock->getBlockType();
+                        }
+                    }
                 }
                 else if (actBlock->getBlockType() == MULTBREAK1 || actBlock->getBlockType() == MULTBREAK2) {
                     actBlock->restart();
@@ -133,6 +139,16 @@ bool TileMap::loadLevel(const string& levelFile) {
     texDoor.setWrapT(GL_REPEAT);
     texDoor.setMinFilter(GL_NEAREST);
     texDoor.setMagFilter(GL_NEAREST);
+    texFood.loadFromFile("images/galletas.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texFood.setWrapS(GL_REPEAT);
+    texFood.setWrapT(GL_REPEAT);
+    texFood.setMinFilter(GL_NEAREST);
+    texFood.setMagFilter(GL_NEAREST);
+    texDrink.loadFromFile("images/chocolate.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texDrink.setWrapS(GL_REPEAT);
+    texDrink.setWrapT(GL_REPEAT);
+    texDrink.setMinFilter(GL_NEAREST);
+    texDrink.setMagFilter(GL_NEAREST);
     getline(fin, line);
     sstream.str(line);
     sstream >> tilesheetSize.x >> tilesheetSize.y;
@@ -184,6 +200,18 @@ bool TileMap::loadLevel(const string& levelFile) {
                         if (map[j * mapSize.x + i - 1] != DOOR)
                             blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, DOOR);
                         map[j * mapSize.x + i] = DOOR;
+                    } else if (tile == 'g') {
+                        blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, FOOD);
+                        map[j * mapSize.x + i] = FOOD;
+                        map[j * mapSize.x + i + 1] = FOOD;
+                        map[(j + 1) * mapSize.x + i + 1] = FOOD;
+                        map[(j + 1) * mapSize.x + i] = FOOD;
+                    } else if (tile == 'h') {
+                        blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, DRINK);
+                        map[j * mapSize.x + i] = DRINK;
+                        map[j * mapSize.x + i + 1] = DRINK;
+                        map[(j + 1) * mapSize.x + i + 1] = DRINK;
+                        map[(j + 1) * mapSize.x + i] = DRINK;
                     }
                     else {
                         map[j * mapSize.x + i] = tile - int('0');
@@ -261,6 +289,10 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
                             while (map[j * mapSize.x + i + doorSize] == DOOR) ++doorSize;
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texDoor, glm::vec2(float(16 * doorSize), 16.f), glm::vec2(doorSize, 0.25));
                         }
+                        else if (blocks[j * mapSize.x + i]->getBlockType() == FOOD)
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texFood, glm::vec2(32.f, 32.f), glm::vec2(1.f, 1.f));
+                        else if (blocks[j * mapSize.x + i]->getBlockType() == DRINK)
+                            blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texDrink, glm::vec2(32.f, 32.f), glm::vec2(1.f, 1.f));
                         else
                             blocks[j * mapSize.x + i]->init(glm::vec2(minCoords.x + i * tileSize, minCoords.y + j * tileSize), program, &texBlock, glm::vec2(32.f, 16.f), glm::vec2((1.f / 3.f), 1.f));
                         blocks[j * mapSize.x + i]->enableRender();
@@ -307,6 +339,20 @@ void TileMap::checkDeleteBlock(int pos) const {
                 }
             }
         }
+        if (blocks[pos] != NULL) pos = pos;
+        else if (blocks[pos + 1] != NULL) pos = pos + 1;
+        else if (blocks[pos - 1] != NULL) pos = pos - 1;
+        else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
+        else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
+        else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
+        else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
+        else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
+        else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
+        if (blocks[pos]->disableRender()) {
+            map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
+        }
+    }
+    if (map[pos] == 0x10 || map[pos] == 0x11) {
         if (blocks[pos] != NULL) pos = pos;
         else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
@@ -459,7 +505,9 @@ int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
             return 1;
         }
         else {
+            Game::instance().pause(false);
             ++actLevel;
+            Game::instance().pause(false);
             return 2;
         }
     }
@@ -482,3 +530,5 @@ glm::ivec2 TileMap::getMapSize() {
 }
 
 int TileMap::getActLevel() { return actLevel; }
+
+int TileMap::getNumLevels() { return numLevels; }

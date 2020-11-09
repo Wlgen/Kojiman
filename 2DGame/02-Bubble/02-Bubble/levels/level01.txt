@@ -49,10 +49,10 @@ images/bloques.png 	-- Tilesheet
 1                            1
 1                            1
 1                            1
-1                            1
-1                            1
-1                            1
-1                            1
+1                          gg1
+1                          gg1
+1                          hh1
+1                          hh1
 1                            1
 1                            1
 1                            1

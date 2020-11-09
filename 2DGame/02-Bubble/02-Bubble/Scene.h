@@ -10,6 +10,7 @@
 #include "TileMap.h"
 #include "State.h"
 #include "Police.h"
+#include "Background.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -43,7 +44,10 @@ class Scene {
     PowerUp *pu;
     Police *police;
     State *state;
+    Background *back;
+    Texture texBack;
     bool initialized = false;
+    bool inTransition = false;
 };
 
 #endif  // _SCENE_INCLUDE
