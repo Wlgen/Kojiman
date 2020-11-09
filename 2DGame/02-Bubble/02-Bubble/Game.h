@@ -57,7 +57,7 @@ class Game {
     bool bPlay;   // Continue to play game?
     Scene scene;  // Scene to render
     Menu menu;
-    bool keys[256], specialKeys[256];  // Store key states so that
+    bool keys[256], specialKeys[256], godMode;  // Store key states so that
                                        // we can have access at any time
     State gState;
 

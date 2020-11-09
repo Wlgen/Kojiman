@@ -10,6 +10,7 @@ void Game::init() {
     engine = createIrrKlangDevice();
     gState.init();
     menu.init();
+    godMode = false;
 }
 
 bool Game::update(int deltaTime) {
@@ -32,10 +33,10 @@ void Game::keyPressed(int key) {
     if (key == 27) {  // Escape code
         bPlay = false;
     }
-    if (key == '1') changeLevel(0);
-    if (key == '2') changeLevel(1);
-    if (key == '3') changeLevel(2);
     if (gState.getState() == State::state::menu) {
+        if (key == '1') changeLevel(0);
+        if (key == '2') changeLevel(1);
+        if (key == '3') changeLevel(2);
         if (key == ' ') {
             if (scene.isInitialized()) scene.restart(false);
             else scene.init();
@@ -49,11 +50,22 @@ void Game::keyPressed(int key) {
         if (key == 'f') {
             gState.changeState();
         }
+        if (key == '1') changeLevel(0);
+        if (key == '2') changeLevel(1);
+        if (key == '3') changeLevel(2);
     } else if (gState.getState() == State::state::play) {
         if (key == 'r') restart(false);
         if (key == 'x') gState.changeState();
         if (key == 'p') pause(false);
-        if (key == 'g') scene.toggleGodMode();
+        if (key == 'g') {
+            godMode = !godMode;
+            scene.toggleGodMode();
+        }
+        if (godMode) {
+            if (key == '1') changeLevel(0);
+            if (key == '2') changeLevel(1);
+            if (key == '3') changeLevel(2);
+        }
 
     } else if (gState.getState() == State::state::instr) {
         if (key == 'm') gState.toMenu();
