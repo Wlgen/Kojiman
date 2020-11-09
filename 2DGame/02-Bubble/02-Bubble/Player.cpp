@@ -203,7 +203,7 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
 }
 
 void Player::applyEffect(int num) {
-    if (big && (num != 3)) initNormalSprite();
+    if (big && ((num != 2) || (num != 4) ||(num != 5))) initNormalSprite();
     switch (num) {
         case 0:
             shoot = false;
@@ -216,15 +216,19 @@ void Player::applyEffect(int num) {
             sprite->changeAnimation(BLUE);
             break;
         case 2:
+            break;
+        case 3:
             shoot = true;
             big = false;
             sprite->changeAnimation(RED);
             break;
-        case 3:
+        case 4:
             shoot = false;
             if (!big) initBigSprite();
             big = true;
             // ball->applyEffect();
+            break;
+        case 5:
             break;
         default:
             break;
