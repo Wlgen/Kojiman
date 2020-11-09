@@ -32,6 +32,9 @@ void Game::keyPressed(int key) {
     if (key == 27) {  // Escape code
         bPlay = false;
     }
+    if (key == '1') changeLevel(0);
+    if (key == '2') changeLevel(1);
+    if (key == '3') changeLevel(2);
     if (gState.getState() == State::state::menu) {
         if (key == ' ') {
             if (scene.isInitialized()) scene.restart(false);
@@ -106,3 +109,8 @@ void Game::getSceneInTransitionUp() {
 void Game::getSceneInTransitionDown() {
     scene.getInTransitionDown();
 }
+
+void Game::changeLevel(int level) {
+    if (!scene.isInitialized()) scene.init();
+    gState.toPlay();
+    scene.changeLevel(level); }
