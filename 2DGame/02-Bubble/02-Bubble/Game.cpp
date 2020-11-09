@@ -2,9 +2,12 @@
 
 #include <iostream>
 
+using namespace irrklang;
+
 void Game::init() {
     bPlay = true;
     glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    engine = createIrrKlangDevice();
     gState.init();
     menu.init();
     scene.init();
@@ -76,3 +79,23 @@ void Game::restart(bool death) { scene.restart(death); }
 void Game::pause(bool player) { scene.togglePause(player); }
 
 void Game::toggleRend() { scene.toggleRend(); }
+
+void Game::loopMusic(char* fileName) {
+    if (!engine->isCurrentlyPlaying(fileName)) {
+        stopMusic();
+        music = engine->play2D(fileName, true, false, true);
+        music->setVolume(0.5f);
+    }
+}
+
+void Game::stopMusic() {
+    if (music != NULL) {
+        music->stop();
+    }
+}
+
+void Game::playSound(char* fileName) {
+    ISound* sound = engine->play2D(fileName, false, false, true);
+    sound->setVolume(0.2f);
+    sound->setPlaybackSpeed();
+}

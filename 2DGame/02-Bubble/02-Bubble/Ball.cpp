@@ -35,15 +35,15 @@ void Ball::update(int deltaTime) {
                     //descomentar
                     || (balls[i].cont >= 100)) {
                     balls[i].Catch = false;
-                    if (godMode) balls[i].vel = glm::ivec2(0, -3);
-                    else balls[i].vel = glm::ivec2(1, -3);
+                    /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
+                    else*/ balls[i].vel = glm::ivec2(1, -3);
                 }
             }
             if (!balls[i].Catch) {
                 glm::vec2 checkPlayer = player->checkCollisionBall(i);
                 if (checkPlayer.x) {
-                    if (godMode) balls[i].vel = glm::ivec2(0, -3);
-                    else balls[i].vel = player->getRebBall(i);
+                    /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
+                    else*/ balls[i].vel = player->getRebBall(i);
                     // if (movY > 0) movY = -movY;
                     if (puCatch) {
                          balls[i].Catch = true;
