@@ -15,13 +15,14 @@ class Background {
     Background(glm::vec2 geom[2], glm::vec2 texCoords[2],
                ShaderProgram& program);
 
-    void render(const Texture& tex) const;
+    void render(const Texture& tex, glm::mat4 modelview) const;
     void free();
 
    private:
     GLuint vao;
     GLuint vbo;
     GLint posLocation, texCoordLocation;
+    ShaderProgram* prog;
 };
 
 #endif  // _BACKGROUND_INCLUDE_

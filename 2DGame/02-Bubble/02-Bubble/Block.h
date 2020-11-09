@@ -10,6 +10,7 @@
 #define MULTBREAK1 0xe
 #define MULTBREAK2 0xf
 #define FOOD       0X10
+#define DRINK      0x11
 
 
 class Block {

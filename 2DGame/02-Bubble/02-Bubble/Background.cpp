@@ -24,9 +24,11 @@ Background::Background(glm::vec2 geom[2], glm::vec2 texCoords[2],
         program.bindVertexAttribute("position", 2, 4 * sizeof(float), 0);
     texCoordLocation = program.bindVertexAttribute(
         "texCoord", 2, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    prog = &program;
 }
 
-void Background::render(const Texture& tex) const {
+void Background::render(const Texture& tex, glm::mat4 modelview) const {
+    prog->setUniformMatrix4f("modelview", modelview);
     glEnable(GL_TEXTURE_2D);
     tex.use();
     glBindVertexArray(vao);

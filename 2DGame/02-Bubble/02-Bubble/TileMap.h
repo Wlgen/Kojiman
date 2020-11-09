@@ -52,6 +52,7 @@ class TileMap {
     glm::ivec2 getMapSize();
 
     int getActLevel();
+    int getNumLevels();
 
    private:
     bool loadLevel(const string &levelFile);
@@ -65,11 +66,14 @@ class TileMap {
     GLint posLocation, texCoordLocation;
     glm::ivec2 position, mapSize, tilesheetSize;
     int tileSize, blockSize, numLevels, actLevel;
-    Texture tilesheet, texBlock, texAlarm, texKey, texDoor;
+    Texture tilesheet, texBlock, texAlarm, texKey, texDoor, texFood, texDrink;
     glm::vec2 tileTexSize;
     int *map;
     vector<Block*> blocks;
     ShaderProgram* prog;
+    bool inTransition, transitionUp;
+    float transitionTime;
+    glm::mat4 transitionModelview;
 };
 
 #endif  // _TILE_MAP_INCLUDE
