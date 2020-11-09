@@ -106,6 +106,7 @@ void Ball::update(int deltaTime) {
                                 } else {
                                     if (godMode) {
                                         balls[i].vel.y = -balls[i].vel.y;
+                                        balls[i].pos.y -= 1;
                                     } else {
                                         rend = false;
                                         Game::instance().restart(true);
