@@ -22,6 +22,7 @@ class Police {
     void startPolice();
 
     void togglePause();
+    void toggleGodMode();
 
     void setPauseFalse();
 
@@ -29,7 +30,7 @@ class Police {
     void initSrpite();
 
    private:
-    bool rend, persecution, begin, paused, first;
+    bool rend, persecution, begin, paused, first, godMode;
     int movX, movY, Xmov, Ymov, tileSize, firstTime;
     glm::ivec2 tileMapDispl, posPolice, posPlayer;
     Texture spritesheet;
