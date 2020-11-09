@@ -63,6 +63,7 @@ void Player::update(int deltaTime) {
                     first = false;
                     time = 0;
                 } else{
+                    Game::instance().playSound("music/Megumin.wav");
                     initSpriteDeath();
                     first = false;
                     time = 0;
@@ -71,6 +72,7 @@ void Player::update(int deltaTime) {
             time += deltaTime;
             if (big && (timeDies <= time)) {
                 posPlayer.x += 8;
+                Game::instance().playSound("music/Megumin.wav");
                 initSpriteDeath();
                 big = false;
                 time = 0;
