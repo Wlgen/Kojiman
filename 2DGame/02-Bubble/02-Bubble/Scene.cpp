@@ -153,3 +153,8 @@ void Scene::setPauseFalse() {
     police->setPauseFalse();
     pu->setPauseFalse();
 }
+
+void Scene::toggleGodMode() { 
+    ball->toggleGodMode();
+    police->toggleGodMode();
+}

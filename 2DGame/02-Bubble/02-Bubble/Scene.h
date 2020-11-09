@@ -27,6 +27,7 @@ class Scene {
     void togglePause(bool player);
     void toggleRend();
     void setPauseFalse();
+    void toggleGodMode();
 
    private:
     void initShaders();
