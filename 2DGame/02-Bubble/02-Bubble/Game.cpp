@@ -10,12 +10,12 @@ void Game::init() {
     engine = createIrrKlangDevice();
     gState.init();
     menu.init();
-    scene.init();
 }
 
 bool Game::update(int deltaTime) {
-    scene.update(deltaTime); 
-
+    if (scene.isInitialized()) {
+        scene.update(deltaTime); 
+    }
     return bPlay;
 }
 

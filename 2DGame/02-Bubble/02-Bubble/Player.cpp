@@ -313,7 +313,8 @@ void Player::initSpriteDeath() {
     sizePlayer = glm::ivec2(32, 16);
     spritesheet.loadFromFile("images/PlayerDead.png",
                              TEXTURE_PIXEL_FORMAT_RGBA);
-
+    spritesheet.setMinFilter(GL_NEAREST);
+    spritesheet.setMagFilter(GL_NEAREST);
     anim = sprite->animation();
 
     sprite = Sprite::createSprite(sizePlayer, glm::vec2(0.125, 0.25),
@@ -357,6 +358,8 @@ void Player::initNormalSprite() {
 
     spritesheet.loadFromFile("images/PlayerBase.png",
                              TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.setMinFilter(GL_NEAREST);
+    spritesheet.setMagFilter(GL_NEAREST);
     sprite = Sprite::createSprite(sizePlayer, glm::vec2(1.0, 0.25),
                                   &spritesheet, &texProgram);
     sprite->setNumberAnimations(3);
@@ -381,6 +384,8 @@ void Player::initBigSprite() {
 
     spritesheet.loadFromFile("images/bigYellow.png",
                              TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.setMinFilter(GL_NEAREST);
+    spritesheet.setMagFilter(GL_NEAREST);
     sprite = Sprite::createSprite(sizePlayer, glm::vec2(0.2, 0.5),
                                   &spritesheet, &texProgram);
     sprite->setNumberAnimations(2);
