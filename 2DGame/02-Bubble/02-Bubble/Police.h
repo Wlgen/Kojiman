@@ -30,9 +30,10 @@ class Police {
     void initSrpite();
 
    private:
-    bool rend, persecution, begin, paused, first, godMode;
+    bool rend, persecution, begin, paused, first, godMode, skipX, skipY;
     int movX, movY, Xmov, Ymov, tileSize, firstTime;
-    glm::ivec2 tileMapDispl, posPolice, posPlayer;
+    glm::ivec2 tileMapDispl, posPolice, posPlayer, sizePolice;
+    vector<bool> flatAlarm; 
     Texture spritesheet;
     Sprite* sprite;
     TileMap* map;
