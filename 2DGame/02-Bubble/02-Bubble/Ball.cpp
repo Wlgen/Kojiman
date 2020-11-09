@@ -28,7 +28,13 @@ void Ball::update(int deltaTime) {
                 balls[i].cont++;
                 posPlayer = player->getPosition();
                 int despl = player->getDespl(i);
-                balls[i].pos = glm::vec2(balls[i].pos.x+despl, balls[i].pos.y);
+                int posNew = balls[i].pos.x + despl;
+                if (!map->collisionMoveLeft(glm::vec2(posNew, balls[i].pos.y),
+                                           sizeBall) &&
+                    !map->collisionMoveRight(glm::vec2(posNew, balls[i].pos.y),
+                                             sizeBall))
+                    balls[i].pos =
+                        glm::vec2(posNew, balls[i].pos.y);
                 if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) ||
                     (Game::instance().getSpecialKey(GLUT_KEY_DOWN))  // ||
                     //(Game::instance().getKey(' ')))  //Quan arreglem menú,
@@ -37,13 +43,20 @@ void Ball::update(int deltaTime) {
                     balls[i].Catch = false;
                     /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
                     else*/ balls[i].vel = glm::ivec2(1, -3);
+                    balls[i].cont = 0;
                 }
             }
             if (!balls[i].Catch) {
                 glm::vec2 checkPlayer = player->checkCollisionBall(i);
+                balls[i].cont += deltaTime;
                 if (checkPlayer.x) {
-                    /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
-                    else*/ balls[i].vel = player->getRebBall(i);
+                    /*if (godMode) balls[i].vel = glm::ivec2(0, -3)
+                    else*/ 
+                    if (balls[i].cont >= 80) {
+                        Game::instance().playSound("music/bleep.wav");
+                        balls[i].cont = 0;
+                    }
+                    balls[i].vel = player->getRebBall(i);
                     // if (movY > 0) movY = -movY;
                     if (puCatch) {
                          balls[i].Catch = true;
@@ -82,7 +95,13 @@ void Ball::update(int deltaTime) {
                             activated = true;
                             if (collisionBlock == 11){
                                 police->startPolice();
-                            }
+                            } else if (collisionBlock == 10 ||
+                                       collisionBlock >= 14) {
+                                Game::instance().playSound("music/bleep.mp3");
+                            } else if (collisionBlock == 12) {
+                            
+                            } else
+                                Game::instance().playSound("music/solid.wav");
                         }
                     }
                     if (actY != 0) {
@@ -159,6 +178,13 @@ void Ball::update(int deltaTime) {
                             else
                                 balls[i].pos.y--;
                             if (collisionBlock == 11) police->startPolice();
+                            else if (collisionBlock == 10 ||
+                                     collisionBlock >= 14) {
+                                Game::instance().playSound("music/bleep.mp3");
+                            } else if (collisionBlock == 12) {
+                            
+                            } else
+                                Game::instance().playSound("music/solid.wav");
                         }
                     }
                 }
