@@ -46,7 +46,7 @@ void Ball::update(int deltaTime) {
                         glm::vec2(posNew, balls[i].pos.y);
                 if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) ||
                     (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) ||
-                    (Game::instance().getKey(' ') && contTime >=25)  //Quan arreglem menú,
+                    (Game::instance().getKey(' ') && contTime >=50)  //Quan arreglem menú,
                     //descomentar
                     || (balls[i].cont >= 100)) {
                     contTime = 0;
