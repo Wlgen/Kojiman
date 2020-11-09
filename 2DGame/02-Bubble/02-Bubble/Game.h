@@ -6,6 +6,10 @@
 #include "Scene.h"
 #include "State.h"
 
+
+#include <irrKlang.h>
+#include <ik_ISoundEngine.h>
+
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
@@ -44,6 +48,10 @@ class Game {
     void getSceneInTransitionUp();
     void getSceneInTransitionDown();
 
+    void loopMusic(char* fileName);
+    void stopMusic();
+    void playSound(char* fileName);
+
    private:
     bool bPlay;   // Continue to play game?
     Scene scene;  // Scene to render
@@ -51,6 +59,9 @@ class Game {
     bool keys[256], specialKeys[256];  // Store key states so that
                                        // we can have access at any time
     State gState;
+
+    irrklang::ISoundEngine* engine;  // para la musica del juego
+    irrklang::ISound* music;
 };
 
 #endif  // _GAME_INCLUDE

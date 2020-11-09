@@ -25,13 +25,16 @@ void Shot::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 void Shot::update(int deltatime) {
     int i = 0;
     int maxIt = shots.size()-1;
+    int collisionBlock = 0;
+    shotAlarm = false;
     while (i <= maxIt) {
         int j = 0;
         exit = false;
         while ((j < 2) && (!exit)) {
             shots[i].y -= 1;
-            if ((map->collisionMoveUp(shots[i], sizeShot, &shots[i].y)) ||
+            if ((collisionBlock = map->collisionMoveUp(shots[i], sizeShot, &shots[i].y)) ||
                 (map->collisionPUUp(shots[i], sizeShot))) {
+                if (collisionBlock == 11) shotAlarm = true;
                 shots.erase(shots.begin() + i);
                 sprites[i]->free();
                 sprites.erase(sprites.begin() + i);
@@ -90,3 +93,5 @@ void Shot::initSprite() {
 
     sprites[sprites.size() - 1]->changeAnimation(0);
 }
+
+bool Shot::getShotAlarm() { return shotAlarm; }
