@@ -47,6 +47,7 @@ void Game::keyPressed(int key) {
         if (key == 'r') restart(false);
         if (key == 'x') gState.changeState();
         if (key == 'p') pause(false);
+        if (key == 'g') scene.toggleGodMode();
 
     } else if (gState.getState() == State::state::instr) {
         if (key == 'm') gState.toMenu();

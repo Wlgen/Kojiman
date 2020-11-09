@@ -7,7 +7,7 @@
 
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     puCatch = false;
-    collisionPlayer = paused = false;
+    godMode = paused = false;
     texProgram = shaderProgram;
     tileMapDispl = tileMapPos;
     sizeBall = glm::ivec2(18.f, 18.f);
@@ -35,15 +35,16 @@ void Ball::update(int deltaTime) {
                     //descomentar
                     || (balls[i].cont >= 100)) {
                     balls[i].Catch = false;
-                    balls[i].vel = glm::ivec2(1, -3);
+                    if (godMode) balls[i].vel = glm::ivec2(0, -3);
+                    else balls[i].vel = glm::ivec2(1, -3);
                 }
             }
             if (!balls[i].Catch) {
                 glm::vec2 checkPlayer = player->checkCollisionBall(i);
                 if (checkPlayer.x) {
-                    balls[i].vel = player->getRebBall(i);
+                    if (godMode) balls[i].vel = glm::ivec2(0, -3);
+                    else balls[i].vel = player->getRebBall(i);
                     // if (movY > 0) movY = -movY;
-                    collisionPlayer = true;
                     if (puCatch) {
                          balls[i].Catch = true;
                          balls[i].cont = 0;
@@ -54,6 +55,7 @@ void Ball::update(int deltaTime) {
                         }
                     }
                 }
+                //if (godMode) balls[i].vel = glm::ivec2(0, -3);
                 bool actXS, actYS;
                 actXS = (balls[i].vel.x>= 0);
                 actYS = (balls[i].vel.y>= 0);
@@ -102,8 +104,12 @@ void Ball::update(int deltaTime) {
                                     --i;
                                     --maxIt;
                                 } else {
-                                    rend = false;
-                                    Game::instance().restart(true);
+                                    if (godMode) {
+                                        balls[i].vel.y = -balls[i].vel.y;
+                                    } else {
+                                        rend = false;
+                                        Game::instance().restart(true);
+                                    }
                                 }
                             } else {
                                 balls[i].pos.y = 1;
@@ -289,3 +295,5 @@ void Ball::initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel) {
 }
 
 void Ball::setPauseFalse() { paused = false; }
+
+void Ball::toggleGodMode() { godMode = !godMode; }

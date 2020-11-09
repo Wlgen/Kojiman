@@ -3,6 +3,7 @@
 #include "Game.h"
 
 void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
+    godMode = false;
     rend = false;
     begin = false;
     paused = false;
@@ -79,11 +80,13 @@ void Police::update(int deltaTime) {  // canviar
                 }
             }
             if (PoliceCatchPlayer()) {
-                if (first) {
-                    Game::instance().toggleRend();
-                    first = false;
+                if (!godMode) {
+                    if (first) {
+                        Game::instance().toggleRend();
+                        first = false;
+                    }
+                    Game::instance().restart(true);
                 }
-                Game::instance().restart(true);
             }
         }
     }
@@ -177,5 +180,7 @@ void Police::startPolice() {
 }
 
 void Police::togglePause() { paused = !paused; }
+
+void Police::toggleGodMode() { godMode = !godMode; }
 
 void Police::setPauseFalse() { paused = false; }
