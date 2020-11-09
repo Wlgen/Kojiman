@@ -14,6 +14,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     initSprite();
     initBall(true, posBall, glm::ivec2(0, 0));
     player = Player::getInstance();
+    rend = true;
 }
 
 void Ball::update(int deltaTime) {
