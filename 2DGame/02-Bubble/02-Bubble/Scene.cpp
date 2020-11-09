@@ -68,6 +68,14 @@ void Scene::init() {
 }
 
 void Scene::update(int deltaTime) {
+    if (inTransition) {
+        if (transitionTime == 0) togglePause(false);
+        else if (transitionTime >= map->getTileSize() * map->getMapSize().y) {
+            togglePause(false);
+            outOfTransition();
+        }
+        transitionTime += deltaTime;
+    }
     currentTime += deltaTime;
     player->update(deltaTime);
     pu->update(deltaTime);
@@ -79,6 +87,8 @@ void Scene::update(int deltaTime) {
 void Scene::render() {
     glm::mat4 modelview;
     modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * map->getActLevel() * map->getMapSize().y * map->getTileSize()), 0.f));
+    if (inTransition && transitionUp) modelview = glm::translate(modelview, glm::vec3(0.f, float((-1) * (map->getMapSize().y * map->getTileSize() - transitionTime)), 0.f));
+    else if(inTransition && !transitionUp) modelview = glm::translate(modelview, glm::vec3(0.f, float(map->getMapSize().y * map->getTileSize() -  transitionTime), 0.f));
     texProgram.use();
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -165,4 +175,20 @@ void Scene::setPauseFalse() {
 void Scene::toggleGodMode() {
     ball->toggleGodMode();
     police->toggleGodMode();
+}
+
+void Scene::getInTransitionUp() {
+    transitionTime = 0;
+    inTransition = true;
+    transitionUp = true;
+}
+
+void Scene::getInTransitionDown() {
+    transitionTime = 0;
+    inTransition = true;
+    transitionUp = false;
+}
+
+void Scene::outOfTransition() {
+    inTransition = false;
 }

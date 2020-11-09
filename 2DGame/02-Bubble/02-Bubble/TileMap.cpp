@@ -21,6 +21,7 @@ TileMap* TileMap::createTileMap(const string& levelFile,
 TileMap::TileMap(const string& levelFile, const glm::vec2& minCoords,
                  ShaderProgram& program) {
     prog = &program;
+    inTransition = false;
     loadLevel(levelFile);
     prepareArrays(minCoords, program);
 }
@@ -36,8 +37,11 @@ void TileMap::initMap() {
 }
 
 void TileMap::render() const {
-    glm::mat4 modelview =
-        glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * actLevel * (mapSize.y / numLevels) * tileSize), 0.f));
+    glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * actLevel * (mapSize.y / numLevels) * tileSize), 0.f));
+    if (inTransition && transitionUp)
+        modelview = glm::translate(modelview, glm::vec3(0.f, float((-1) * ((mapSize.y / numLevels) * tileSize - transitionTime)), 0.f));
+    else if(inTransition && !transitionUp)
+        modelview = glm::translate(modelview, glm::vec3(0.f, float((mapSize.y / numLevels) * tileSize - transitionTime), 0.f));
     prog->setUniformMatrix4f("modelview", modelview);
     glEnable(GL_TEXTURE_2D);
     tilesheet.use();
@@ -46,11 +50,13 @@ void TileMap::render() const {
     glEnableVertexAttribArray(texCoordLocation);
     glDrawArrays(GL_TRIANGLES, 0, 6 * mapSize.x * mapSize.y);
     glDisable(GL_TEXTURE_2D);
-    for (int j = 0; j < mapSize.y; ++j) {
-        for (int i = 0; i < mapSize.x; ++i) {
-            if (blocks[j * mapSize.x + i] != NULL) {
-                blocks[j * mapSize.x + i]->moveY(float(-(mapSize.y / numLevels) * actLevel * tileSize));
-                blocks[j * mapSize.x + i]->render();
+    if (!inTransition) {
+        for (int j = 0; j < mapSize.y; ++j) {
+            for (int i = 0; i < mapSize.x; ++i) {
+                if (blocks[j * mapSize.x + i] != NULL) {
+                    blocks[j * mapSize.x + i]->moveY(float(-(mapSize.y / numLevels) * actLevel * tileSize));
+                    blocks[j * mapSize.x + i]->render();
+                }
             }
         }
     }
@@ -63,6 +69,12 @@ void TileMap::update(int deltaTime) {
                 blocks[j * mapSize.x + i]->update(deltaTime);
             }
         }
+    }
+    if (inTransition) {
+        if (transitionTime >= tileSize * getMapSize().y) {
+            inTransition = false;
+        }
+        transitionTime += deltaTime;
     }
 }
 
@@ -200,13 +212,15 @@ bool TileMap::loadLevel(const string& levelFile) {
                         if (map[j * mapSize.x + i - 1] != DOOR)
                             blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, DOOR);
                         map[j * mapSize.x + i] = DOOR;
-                    } else if (tile == 'g') {
+                    }
+                    else if (tile == 'g') {
                         blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, FOOD);
                         map[j * mapSize.x + i] = FOOD;
                         map[j * mapSize.x + i + 1] = FOOD;
                         map[(j + 1) * mapSize.x + i + 1] = FOOD;
                         map[(j + 1) * mapSize.x + i] = FOOD;
-                    } else if (tile == 'h') {
+                    }
+                    else if (tile == 'h') {
                         blocks[j * mapSize.x + i] = new Block(j * mapSize.x + i, DRINK);
                         map[j * mapSize.x + i] = DRINK;
                         map[j * mapSize.x + i + 1] = DRINK;
@@ -505,9 +519,11 @@ int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
             return 1;
         }
         else {
-            Game::instance().pause(false);
+            Game::instance().getSceneInTransitionDown();
+            inTransition = true;
+            transitionUp = false;
+            transitionTime = 0;
             ++actLevel;
-            Game::instance().pause(false);
             return 2;
         }
     }
@@ -516,6 +532,10 @@ int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
 
 bool TileMap::ballOutOfMapUp(const glm::ivec2& pos) {
     if (pos.y <= 0) {
+        Game::instance().getSceneInTransitionUp();
+        transitionTime = 0;
+        inTransition = true;
+        transitionUp = true;
         --actLevel;
         return true;
     }

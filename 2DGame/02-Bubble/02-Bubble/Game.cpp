@@ -76,3 +76,11 @@ void Game::restart(bool death) { scene.restart(death); }
 void Game::pause(bool player) { scene.togglePause(player); }
 
 void Game::toggleRend() { scene.toggleRend(); }
+
+void Game::getSceneInTransitionUp() {
+    scene.getInTransitionUp();
+}
+
+void Game::getSceneInTransitionDown() {
+    scene.getInTransitionDown();
+}

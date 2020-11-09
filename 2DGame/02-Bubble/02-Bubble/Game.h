@@ -41,6 +41,8 @@ class Game {
     void restart(bool death);
     void pause(bool player);
     void toggleRend();
+    void getSceneInTransitionUp();
+    void getSceneInTransitionDown();
 
    private:
     bool bPlay;   // Continue to play game?

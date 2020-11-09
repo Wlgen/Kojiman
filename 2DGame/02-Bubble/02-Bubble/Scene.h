@@ -29,6 +29,9 @@ class Scene {
     void toggleRend();
     void setPauseFalse();
     void toggleGodMode();
+    void getInTransitionUp();
+    void getInTransitionDown();
+    void outOfTransition();
 
    private:
     void initShaders();
@@ -38,7 +41,7 @@ class Scene {
     Player *player;
     Ball *ball;
     ShaderProgram texProgram;
-    float currentTime;
+    float currentTime, transitionTime;
     glm::mat4 projection;
     int mapChange;
     PowerUp *pu;
@@ -48,6 +51,7 @@ class Scene {
     Texture texBack;
     bool initialized = false;
     bool inTransition = false;
+    bool transitionUp;
 };
 
 #endif  // _SCENE_INCLUDE

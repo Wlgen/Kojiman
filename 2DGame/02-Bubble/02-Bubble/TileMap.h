@@ -71,6 +71,9 @@ class TileMap {
     int *map;
     vector<Block*> blocks;
     ShaderProgram* prog;
+    bool inTransition, transitionUp;
+    float transitionTime;
+    glm::mat4 transitionModelview;
 };
 
 #endif  // _TILE_MAP_INCLUDE
