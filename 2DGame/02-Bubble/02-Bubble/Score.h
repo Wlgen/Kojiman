@@ -11,15 +11,15 @@
 #define COOKIES   2000
 #define CHOCOLATE 1000
 #define BLOCK     100
-#define KEY       500
+#define KEYSCORE  500
 
 // Score multipliers
-#define WHITE  1
-#define BLUE   2
-#define YELLOW 3
-#define RED    4
-#define GREEN  5
-#define PINK   6
+#define WH 1
+#define BL 2
+#define YL 3
+#define RD 4
+#define GR 5
+#define PK 6
 
 class Score {
 public:
@@ -31,8 +31,11 @@ public:
     }
     void init(glm::vec2& minCoords, ShaderProgram& program);
     void addToScore(int score);
+    void addToFood(int num);
     void changeMultiplier(int multiplier);
-    void writeString(string s);
+    void changePowerUp(int s);
+    void changeHeight(int s);
+    void changeLevel(int s);
     void render();
 
 private:

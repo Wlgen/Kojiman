@@ -333,6 +333,7 @@ void TileMap::prepareArrays(const glm::vec2& minCoords,
 
 void TileMap::checkDeleteBlock(int pos) const {
     if (map[pos] == 0xa || map[pos] == 0xe || map[pos] == 0xf) {
+        Score::instance().addToScore(BLOCK);
         if (blocks[pos] == NULL) {
             if (blocks[pos - 1]->disableRender())
                 map[pos] = map[pos - 1] = 0;
@@ -344,6 +345,7 @@ void TileMap::checkDeleteBlock(int pos) const {
     }
     if (map[pos] == 0xc) {
         Game::instance().playSound("music/key.wav");
+        Score::instance().addToScore(KEYSCORE);
         for (int i = pos; i >= (mapSize.y / numLevels) * actLevel * mapSize.x; --i) {
             if (blocks[i] != NULL) {
                 if (blocks[i]->getBlockType() == DOOR) {
@@ -368,6 +370,14 @@ void TileMap::checkDeleteBlock(int pos) const {
         }
     }
     if (map[pos] == 0x10 || map[pos] == 0x11) {
+        if (map[pos] == 0x10) {
+            Score::instance().addToScore(COOKIES);
+            Score::instance().addToFood(2);
+        }
+        if (map[pos] == 0x11) {
+            Score::instance().addToScore(CHOCOLATE);
+            Score::instance().addToFood(1);
+        }
         if (blocks[pos] != NULL) pos = pos;
         else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
