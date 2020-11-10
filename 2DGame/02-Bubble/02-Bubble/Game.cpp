@@ -140,3 +140,7 @@ void Game::changeLevel(int level) {
     if (!scene.isInitialized()) scene.init();
     gState.toPlay();
     scene.changeLevel(level); }
+
+bool Game::isGodMode() {
+    return godMode;
+}

@@ -52,6 +52,7 @@ class Game {
     void loopMusic(char* fileName);
     void stopMusic();
     void playSound(char* fileName);
+    bool isGodMode();
 
    private:
     bool bPlay, first;   // Continue to play game?
