@@ -63,6 +63,24 @@ void TileMap::render() const {
 }
 
 void TileMap::update(int deltaTime) {
+    if (Game::instance().isGodMode()) {
+        if (Game::instance().getKey('k') && actLevel > 0) {
+            Game::instance().keyReleased('k');
+            Game::instance().getSceneInTransitionUp();
+            transitionTime = 0;
+            inTransition = true;
+            transitionUp = true;
+            --actLevel;
+        }
+        if (Game::instance().getKey('j') && actLevel < numLevels - 1) {
+            Game::instance().keyReleased('j');
+            Game::instance().getSceneInTransitionDown();
+            inTransition = true;
+            transitionUp = false;
+            transitionTime = 0;
+            ++actLevel;
+        }
+    }
     for (int j = 0; j < mapSize.y; ++j) {
         for (int i = 0; i < mapSize.x; ++i) {
             if (blocks[j * mapSize.x + i] != NULL) {
