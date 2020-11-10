@@ -7,10 +7,12 @@
 
 void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     puCatch = false;
-    godMode = paused = false;
-    texProgram = shaderProgram;
+    godMode = paused = kame = kameActivated = false;
+    texProgram = &shaderProgram;
     tileMapDispl = tileMapPos;
     sizeBall = glm::ivec2(18.f, 18.f);
+    kameIns = new Kame();
+    kameIns->init(tileMapPos, shaderProgram);
     if(sprites.size() < 1) initSprite();
     if (balls.size() < 1)
         initBall(true, posBall, glm::ivec2(0, 0));
@@ -29,6 +31,7 @@ void Ball::update(int deltaTime) {
         contTime += deltaTime;
         int i = 0;
         int maxIt = balls.size();
+        kameIns->update(deltaTime);
         while(i <=  maxIt-1) {
             bool activated = false;
             skip = false;
@@ -44,44 +47,76 @@ void Ball::update(int deltaTime) {
                                              sizeBall))
                     balls[i].pos =
                         glm::vec2(posNew, balls[i].pos.y);
-                if ((Game::instance().getSpecialKey(GLUT_KEY_UP)) ||
-                    (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) ||
-                    (Game::instance().getKey(' ') && contTime >= 100)  //Quan arreglem menú,
-                    //descomentar
-                    || (balls[i].cont >= 100)) {
-                    contTime = 0;
-                    balls[i].Catch = false;
-                    /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
-                    else*/ //balls[i].vel = glm::ivec2(1, -3);
-                    balls[i].cont = 0;
-                    //if (!balls[i].Catch) {
+                if (kame) {
+                    balls[i].cont += deltaTime;
+                    if (balls[i].cont >= 2000) {
+                        balls[i].Catch = false;
+                        //balls[i].vel = glm::vec2(0, -3);
+                        kameActivated = true;
+                        sprites[i]->changeAnimation(2);
+                        Game::instance().playSound("music/KameRealese.wav");
+                    }
+                } else if
+                    ((Game::instance().getSpecialKey(GLUT_KEY_UP)) ||
+                     (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) ||
+                     (Game::instance().getKey(' ') &&
+                      contTime >= 100)  // Quan arreglem menú,
+                     // descomentar
+                     || (balls[i].cont >= 100)) {
+                        contTime = 0;
+                        balls[i].Catch = false;
+                        /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
+                        else*/ //balls[i].vel = glm::ivec2(1, -3);
+                        balls[i].cont = 0;
+                        // if (!balls[i].Catch) {
                 }
             }
             if (!balls[i].Catch) {
                 glm::vec2 checkPlayer = player->checkCollisionBall(i);
                 balls[i].cont += deltaTime;
                 if (checkPlayer.x) {
-                    /*if (godMode) balls[i].vel = glm::ivec2(0, -3)
-                    else*/
-                    if (balls[i].cont >= 80) {
-                        Game::instance().playSound("music/bleep.wav");
-                        balls[i].cont = 0;
-                        contTime = 0;
-                    }
-                    balls[i].vel = player->getRebBall(i);
-                    // if (movY > 0) movY = -movY;
-                    if (puCatch) {
+                    if (kame) {
+                        balls[i].vel = glm::vec2(0, 0);
                         balls[i].Catch = true;
                         balls[i].cont = 0;
+                        //sprites[i]->changeAnimation(2);
+                        for (int k = balls.size() - 1; k >= 0; k--) {
+                            if (k != i) {
+                                balls.erase(balls.begin() + k);
+                                sprites[k]->free();
+                                sprites.erase(sprites.begin() + k);
+                                player->deleteInfoBall(k);
+                                --maxIt;
+                            }
+                        }
+                        i = 0;
+                        sprites[i]->changeAnimation(3);
+                        //skip = true;
+                        Game::instance().playSound("music/prepareKame.wav");
                     }
-                    for (int j = 0; j < checkPlayer.y; j++) {
-                        if (!(map->collisionMoveUp(balls[i].pos, sizeBall,
-                                                   &balls[i].pos.y))) {
-                            balls[i].pos.y += balls[i].vel.y;
+                    /*if (godMode) balls[i].vel = glm::ivec2(0, -3)
+                    else*/
+                    else {
+                        if (balls[i].cont >= 80) {
+                            Game::instance().playSound("music/bleep.wav");
+                            balls[i].cont = 0;
+                            contTime = 0;
+                        }
+                        balls[i].vel = player->getRebBall(i);
+                        // if (movY > 0) movY = -movY;
+                        if (puCatch) {
+                            balls[i].Catch = true;
+                            balls[i].cont = 0;
+                        }
+                        for (int j = 0; j < checkPlayer.y; j++) {
+                            if (!(map->collisionMoveUp(balls[i].pos, sizeBall,
+                                                       &balls[i].pos.y))) {
+                                balls[i].pos.y += balls[i].vel.y;
+                            }
                         }
                     }
                 }
-                //if (godMode) balls[i].vel = glm::ivec2(0, -3);
+                if (kameActivated) balls[i].vel = glm::ivec2(0, -3);
                 bool actXS, actYS;
                 actXS = (balls[i].vel.x>= 0);
                 actYS = (balls[i].vel.y>= 0);
@@ -122,6 +157,7 @@ void Ball::update(int deltaTime) {
                             balls[i].pos.y++;
                         else
                             balls[i].pos.y--;
+                        if (kameActivated) kameIns->addKame(balls[i].pos);
                         --actY;
                         int ballreturn;
                         if (ballreturn =
@@ -146,7 +182,7 @@ void Ball::update(int deltaTime) {
                                 }
                             } else {
                                 balls[i].pos.y = 1;
-                                for (int k = balls.size()-1; k >= 0; k--) {
+                                for (int k = balls.size() - 1; k >= 0; k--) {
                                     if (k != i) {
                                         balls.erase(balls.begin() + k);
                                         sprites[k]->free();
@@ -207,11 +243,14 @@ void Ball::update(int deltaTime) {
                     glm::vec2(float(tileMapDispl.x + balls[i].pos.x),
                               float(tileMapDispl.y + balls[i].pos.y)));
                 player->setBallPosition(balls[i].pos, i);
-                if (balls[i].vel.x >= 0) {
-                    sprites[i]->changeAnimation(0);
-                } else {
-                    sprites[i]->changeAnimation(1);
+                if (!kame) {
+                    if (balls[i].vel.x >= 0) {
+                        sprites[i]->changeAnimation(0);
+                    } else {
+                        sprites[i]->changeAnimation(1);
+                    }
                 }
+
             }
             ++i;
         }
@@ -223,11 +262,13 @@ void Ball::render() {
         for (int i = 0; i < sprites.size(); i++) {
             sprites[i]->render();
         }
+        kameIns->render();
     }
 }
 
 void Ball::setTileMap(TileMap* tileMap) {
     map = tileMap;
+    kameIns->setTileMap(tileMap);
     // tileSize = map->getTileSize();
 }
 
@@ -255,7 +296,12 @@ void Ball::stop(bool death) {
         balls[i].Catch = true;
         balls[i].cont = 0;
     }
-    puCatch = false;
+    /*delete kameIns;
+    kameIns = new Kame();
+    kameIns->init(glm::vec2(0, 0), texProgram);
+    kameIns->setTileMap(map);*/
+    kameIns->deleteAll();
+    kame = kameActivated = puCatch = false;
 }
 
 void Ball::setPolice(Police* police) {
@@ -294,6 +340,8 @@ void Ball::applyEffect(int num) {
             // sprites[0]->changeAnimation(RED);
             //puCatch = false;
             break;
+        case 6:
+            kame = true;
         default:
             break;
     }
@@ -309,20 +357,29 @@ void Ball::addBall() {
 }
 
 void Ball::initSprite() {
-    spritesheet.loadFromFile("images/kirby.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.loadFromFile("images/kirby3.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
 
-    sprites.push_back(Sprite::createSprite(sizeBall, glm::vec2(0.5, 1.f),
-                                           &spritesheet, &texProgram));
+    sprites.push_back(Sprite::createSprite(sizeBall, glm::vec2(0.25, 0.5f),
+                                           &spritesheet, texProgram));
     int i = sprites.size() - 1;
-    sprites[i]->setNumberAnimations(2);
+    sprites[i]->setNumberAnimations(4);
 
     sprites[i]->setAnimationSpeed(1, 8);
-    sprites[i]->addKeyframe(1, glm::vec2(0, 1.f));
+    sprites[i]->addKeyframe(1, glm::vec2(0, 0.f));
 
     sprites[i]->setAnimationSpeed(0, 8);
-    sprites[i]->addKeyframe(0, glm::vec2(0.5f, 1.f));
+    sprites[i]->addKeyframe(0, glm::vec2(0.25f, 0.f));
+
+    sprites[i]->setAnimationSpeed(2, 8);
+    sprites[i]->addKeyframe(2, glm::vec2(0.f, 0.5f));
+
+    sprites[i]->setAnimationSpeed(3, 2);
+    sprites[i]->addKeyframe(3, glm::vec2(0.75f, 0.f));
+    sprites[i]->addKeyframe(3, glm::vec2(0.25f, 0.5f));
+    sprites[i]->addKeyframe(3, glm::vec2(0.5f, 0.0f));
+    sprites[i]->addKeyframe(3, glm::vec2(0.5f, 0.5f));
 
     sprites[i]->changeAnimation(0);
     sprites[i]->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),

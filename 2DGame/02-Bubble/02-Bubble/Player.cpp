@@ -240,6 +240,9 @@ void Player::applyEffect(int num) {
             break;
         case 5:
             break;
+        case 6:
+            shoot = false;
+            sprite->changeAnimation(YELLOW);
         default:
             break;
     }
