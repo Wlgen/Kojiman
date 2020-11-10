@@ -11,6 +11,7 @@
 #include "State.h"
 #include "Police.h"
 #include "Background.h"
+#include "Score.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -52,6 +53,7 @@ class Scene {
     bool initialized = false;
     bool inTransition = false;
     bool transitionUp;
+    Score* score;
 };
 
 #endif  // _SCENE_INCLUDE
