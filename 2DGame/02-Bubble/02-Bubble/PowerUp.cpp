@@ -13,7 +13,7 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
                         float(tileMapDispl.y + posPU.y)));
 
-    player = Player::getInstance();
+    player = &Player::getInstance();
     firstTime = 0;
 }
 
@@ -25,7 +25,7 @@ void PowerUp::update(int deltaTime) {
             if (!rend) {
                 firstTime = 0;
                 rend = true;
-                PowerUp::initSrpite();
+                initSrpite();
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + 10),
                                               float(tileMapDispl.y + 1)));
             }
@@ -61,7 +61,7 @@ void PowerUp::update(int deltaTime) {
             }
             if (firstTime >= 1500) {
                 firstTime = 0;
-                anim = (anim + 1) % 6;
+                anim = (anim + 1) % 7;
                 sprite->changeAnimation(anim);
             }
             player->setPUPosition(posPU);
@@ -90,13 +90,17 @@ void PowerUp::setPosition(const glm::vec2& pos) {
 void PowerUp::initSrpite() {
     anim = 0;
 
-    spritesheet.loadFromFile("images/powerUps.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.loadFromFile("images/powerUps2.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
 
+    if (sprite != NULL) {
+        sprite->free();
+        delete sprite;
+    }
     sprite = Sprite::createSprite(sizePU, glm::vec2(0.25, 0.5),
                                   &spritesheet, &texProgram);
-    sprite->setNumberAnimations(6);
+    sprite->setNumberAnimations(7);
 
     sprite->setAnimationSpeed(0, 8); //White
     sprite->addKeyframe(0, glm::vec2(0.0, 0.f));
@@ -115,6 +119,9 @@ void PowerUp::initSrpite() {
 
     sprite->setAnimationSpeed(5, 8); //Pink
     sprite->addKeyframe(5, glm::vec2(0.5, 0.5f));
+
+    sprite->setAnimationSpeed(6, 8);  // Dragon Ball
+    sprite->addKeyframe(6, glm::vec2(0.75, 0.f));
 
     sprite->changeAnimation(anim);
 

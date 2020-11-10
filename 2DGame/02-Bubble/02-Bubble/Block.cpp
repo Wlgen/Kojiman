@@ -21,6 +21,11 @@ void Block::init(const glm::ivec2& blockPos, ShaderProgram& shaderProgram,
     this->texPos = texPos;
     this->tex = tex;
     program = shaderProgram;
+
+    if (sprite != NULL) {
+        sprite->free();
+        delete sprite;
+    }
     sprite = Sprite::createSprite(blockSize, texPos, tex,
                                   &shaderProgram);
     posBlock = blockPos;
@@ -53,7 +58,10 @@ void Block::init(const glm::ivec2& blockPos, ShaderProgram& shaderProgram,
 }
 
 void Block::restart() {
-    delete sprite;
+    if (sprite != NULL) {
+        sprite->free();
+        delete sprite;
+    }
     sprite = Sprite::createSprite(blockSize, texPos, tex, &program);
     time = 0;
     opened = false;
