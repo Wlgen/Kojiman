@@ -40,7 +40,7 @@ void Player::update(int deltaTime) {
         activeAlarm = shot->getShotAlarm();
         for (unsigned int i = 0; i < infoBalls.size(); i++) {
             infoBalls[i].collision = false;
-            infoBalls[i].despl = 0;
+            infoBalls[i].despl = glm::vec2(0, 0);
 
         }
         //collisionBall = false;
@@ -100,7 +100,7 @@ void Player::update(int deltaTime) {
                         // sprite->changeAnimation(STAND_LEFT);
                     } else {
                         for (unsigned int j = 0; j < infoBalls.size(); j++) {
-                            infoBalls[j].despl--;
+                            infoBalls[j].despl.x--;
                         }
                     }
                 }
@@ -113,7 +113,7 @@ void Player::update(int deltaTime) {
                         // sprite->changeAnimation(STAND_RIGHT);
                     } else {
                         for (unsigned int j = 0; j < infoBalls.size(); j++) {
-                            infoBalls[j].despl++;
+                            infoBalls[j].despl.x++;
                         }
                     }
                 } /*else {
@@ -129,12 +129,17 @@ void Player::update(int deltaTime) {
                     }
                     for (unsigned int j = 0; j < infoBalls.size(); j++) {
                         if (infoBalls[j].collision) infoBalls[j].numColl++;
+                        infoBalls[j].despl.y--;
                     }
                 }
                 else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN)) {
                     posPlayer.y += +1;
                     if (map->collisionPlayerDown(posPlayer, sizePlayer)) {
                         posPlayer.y -= 1;
+                    } else {
+                        for (unsigned int j = 0; j < infoBalls.size(); j++) {
+                            infoBalls[j].despl.y++;
+                        }
                     }
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
@@ -304,7 +309,7 @@ glm::ivec2 Player::getRebBall(int pos) {
     return infoBalls[pos].reb;
 }
 
-int Player::getDespl(int pos) {
+glm::vec2 Player::getDespl(int pos) {
     while (pos >= int(infoBalls.size())) initInfoBalls();
      return infoBalls[pos].despl;
 }
@@ -430,7 +435,7 @@ void Player::initInfoBalls() {
     infoBall iB;
     iB.collision = false;
     iB.numColl = 0;
-    iB.despl = 0;
+    iB.despl = glm::vec2(0, 0);
     iB.pos = glm::vec2(-5, -5);
     iB.prePosition = glm::vec2(-5, -5);
     iB.reb = glm::vec2(1, -3);

@@ -104,6 +104,10 @@ void Score::changePowerUp(int s) {
             powerup = PK;
             sPowerup = "PINK";
             break;
+        case 6:
+            powerup = DB;
+            sPowerup = "KAME";
+            break;
         default:
             break;
     }

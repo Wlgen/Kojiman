@@ -42,7 +42,7 @@ class Ball {
     void initSprite();
     void initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel);
 
-    bool Catch, paused, puCatch, skip, rend, godMode, kame, kameActivated;
+    bool Catch, paused, puCatch, skip, rend, godMode, kame, kameActivated, firstKame;
     int movX, movY, contTime;
     glm::ivec2 tileMapDispl, posBall, posPlayer, movBall, sizeBall;
     Texture spritesheet;
