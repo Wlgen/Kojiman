@@ -29,6 +29,7 @@ Scene::~Scene() {
 }
 
 void Scene::init() {
+    resetPushTransition = false;
     for (int i = 0; i < 3; i++) {
         std::string st = "levels/level0" + std::to_string(i + 1) + ".txt";
         levels.push_back(st);
@@ -119,6 +120,7 @@ void Scene::initShaders() {
 }
 
 void Scene::restart(bool death) {
+    resetPushTransition = true;
     /*player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
                         INIT_PLAYER_Y_TILES * map->getTileSize())); */
     player->restart(death, glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
@@ -167,20 +169,23 @@ void Scene::toggleGodMode() {
 }
 
 void Scene::getInTransitionUp() {
+    resetPushTransition = false;
     transitionTime = 0;
     inTransition = true;
     transitionUp = true;
 }
 
 void Scene::getInTransitionDown() {
+    resetPushTransition = false;
     transitionTime = 0;
     inTransition = true;
     transitionUp = false;
 }
 
 void Scene::outOfTransition() {
-    Game::instance().loopMusic("music/kirbySong.wav");
+    // Game::instance().loopMusic("music/kirbySong.wav");
     inTransition = false;
+    if (resetPushTransition) togglePause(false);
 }
 
 void Scene::changeLevel(int level) {

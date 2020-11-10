@@ -52,8 +52,9 @@ void Ball::update(int deltaTime) {
                     contTime = 0;
                     balls[i].Catch = false;
                     /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
-                    else*/ balls[i].vel = glm::ivec2(1, -3);
+                    else*/ //balls[i].vel = glm::ivec2(1, -3);
                     balls[i].cont = 0;
+                    //if (!balls[i].Catch) {
                 }
             }
             if (!balls[i].Catch) {
@@ -61,7 +62,7 @@ void Ball::update(int deltaTime) {
                 balls[i].cont += deltaTime;
                 if (checkPlayer.x) {
                     /*if (godMode) balls[i].vel = glm::ivec2(0, -3)
-                    else*/ 
+                    else*/
                     if (balls[i].cont >= 80) {
                         Game::instance().playSound("music/bleep.wav");
                         balls[i].cont = 0;
@@ -70,11 +71,12 @@ void Ball::update(int deltaTime) {
                     balls[i].vel = player->getRebBall(i);
                     // if (movY > 0) movY = -movY;
                     if (puCatch) {
-                         balls[i].Catch = true;
-                         balls[i].cont = 0;
-                    } for (int j = 0; j < checkPlayer.y; j++) {
+                        balls[i].Catch = true;
+                        balls[i].cont = 0;
+                    }
+                    for (int j = 0; j < checkPlayer.y; j++) {
                         if (!(map->collisionMoveUp(balls[i].pos, sizeBall,
-                                                    &balls[i].pos.y))) {
+                                                   &balls[i].pos.y))) {
                             balls[i].pos.y += balls[i].vel.y;
                         }
                     }

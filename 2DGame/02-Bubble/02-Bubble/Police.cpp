@@ -47,7 +47,7 @@ void Police::update(int deltaTime) {  // canviar
         } else {
             rend = false;
             if (activated) {
-                Game::instance().stopMusic();
+                Game::instance().loopMusic("music/kirbySong.wav");
                 activated = false;
             }
         }
