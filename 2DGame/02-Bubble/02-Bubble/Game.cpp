@@ -6,7 +6,7 @@ using namespace irrklang;
 
 void Game::init() {
     bPlay = true;
-    glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.f, 0.f, 0.f, 1.0f);
     engine = createIrrKlangDevice();
     gState.init();
     menu.init();
@@ -33,8 +33,9 @@ bool Game::update(int deltaTime) {
         if (gState.getPreviousState() == State::state::play) {
             gState.toDead();
             deadTime = 0;
+            loopMusic("music/gameover.wav");
         }
-        if (deadTime >= 2500) {
+        if (deadTime >= 5000) {
             gState.toCredits();
         }
         deadTime += deltaTime;
