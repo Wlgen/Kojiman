@@ -62,6 +62,8 @@ class Game {
                                        // we can have access at any time
     State gState;
 
+    float deadTime;
+
     irrklang::ISoundEngine* engine;  // para la musica del juego
     irrklang::ISound* music;
 };

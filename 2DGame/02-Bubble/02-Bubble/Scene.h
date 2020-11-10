@@ -34,6 +34,8 @@ class Scene {
     void getInTransitionDown();
     void outOfTransition();
     void changeLevel(int level);
+    void outOfInterLevelTransition();
+    void intoInterLevelTransition();
 
    private:
     void initShaders();
@@ -43,19 +45,20 @@ class Scene {
     Player *player;
     Ball *ball;
     ShaderProgram texProgram;
-    float currentTime, transitionTime;
+    float currentTime, transitionTime, interLevelTime;
     glm::mat4 projection;
     int mapChange;
     PowerUp *pu;
     vector<string> levels;
     Police *police;
     State *state;
-    Background *back;
-    Texture texBack;
+    Background *back, *interLevel;
+    Texture texBack, texLvl1, texLvl2, texLvl3;
     bool initialized = false;
     bool inTransition = false;
     bool transitionUp;
     bool resetPushTransition;
+    bool interLevelTransition = false;
     Score* score;
 };
 

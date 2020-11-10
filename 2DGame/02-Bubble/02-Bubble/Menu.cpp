@@ -14,8 +14,17 @@ void Menu::init() {
     initShaders();
     background = Background::createBackground(geom, texCoords, texProgram);
     tex[0].loadFromFile("images/menuxd.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    tex[0].setMinFilter(GL_NEAREST);
+    tex[0].setMagFilter(GL_NEAREST);
     tex[1].loadFromFile("images/ins.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    tex[1].setMinFilter(GL_NEAREST);
+    tex[1].setMagFilter(GL_NEAREST);
     tex[2].loadFromFile("images/silsil.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    tex[2].setMinFilter(GL_NEAREST);
+    tex[2].setMagFilter(GL_NEAREST);
+    tex[3].loadFromFile("images/udedbro.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    tex[3].setMinFilter(GL_NEAREST);
+    tex[3].setMagFilter(GL_NEAREST);
     projection = glm::ortho(0.f, float(639), float(479), 0.f);
 }
 
@@ -37,6 +46,8 @@ void Menu::render(State::state state) {
         case State::state::instr:
             background->render(tex[1], modelview);
             break;
+        case State::state::dead:
+            background->render(tex[3], modelview);
     }
 }
 
