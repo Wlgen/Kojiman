@@ -32,7 +32,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 
 void Police::update(int deltaTime) {  // canviar
     if (!paused) {
-        firstTime += 1;
+        firstTime += deltaTime;
         if (player->getActiveAlarm()) startPolice();
         sprite->update(deltaTime);
         int h = map->getActLevel();
@@ -59,7 +59,7 @@ void Police::update(int deltaTime) {  // canviar
                 // change animation
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
                                     float(tileMapDispl.y + posPolice.y)));
-                if (firstTime >= 350) {
+                if (firstTime >= 3000) {
                     posPlayer = player->getPosition();
                     posPlayer.y -= 16; 
                     persecution = true;

@@ -109,7 +109,7 @@ void TileMap::restart() {
                     for (int k = i; k < (i + (actBlock->getBlockSize().x / tileSize)); ++k) {
                         map[j * mapSize.x + k] = actBlock->getBlockType();
                     }
-                    if (actBlock->getBlockType() == KEY || actBlock->getBlockType() == FOOD) {
+                    if (actBlock->getBlockType() == KEY || actBlock->getBlockType() == FOOD || actBlock->getBlockType() == DRINK) {
                         for (int k = i + mapSize.x; k < (i + mapSize.x + (actBlock->getBlockSize().x / tileSize)); ++k) {
                             map[j * mapSize.x + k] = actBlock->getBlockType();
                         }
@@ -375,13 +375,13 @@ void TileMap::checkDeleteBlock(int pos) const {
             }
         }
         if (blocks[pos] != NULL) pos = pos;
-        else if (blocks[pos + 1] != NULL) pos = pos + 1;
+        //else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
-        else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
-        else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
-        else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
+        //else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
+        //else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
+        //else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
         else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
-        else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
+        //else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
         else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
         if (blocks[pos]->disableRender()) {
             map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
@@ -397,13 +397,13 @@ void TileMap::checkDeleteBlock(int pos) const {
             Score::instance().addToFood(1);
         }
         if (blocks[pos] != NULL) pos = pos;
-        else if (blocks[pos + 1] != NULL) pos = pos + 1;
+        //else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
-        else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
-        else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
-        else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
+        //else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
+        //else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
+        //else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
         else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
-        else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
+        //else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
         else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
         if (blocks[pos]->disableRender()) {
             map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
