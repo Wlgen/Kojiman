@@ -161,6 +161,7 @@ void Scene::restart(bool death) {
     police->setPosition(glm::vec2((1) * map->getTileSize(),
                         (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->restart();
+    Score::instance().reset(death);
     if (!death) {
         Game::instance().loopMusic("music/kirbySong.wav");
         map->restart();

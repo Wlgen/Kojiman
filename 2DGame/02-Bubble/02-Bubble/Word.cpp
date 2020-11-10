@@ -24,6 +24,7 @@ void Word::init(glm::vec2& position, ShaderProgram& shaderProgram) {
 
 void Word::changeString(string inWord) {
     sWord = inWord;
+    letters.resize(sWord.size());
     for (int i = 0; i < letters.size(); ++i) {
         delete letters[i];
         letters[i] = Sprite::createSprite(glm::vec2(16.f, 16.f), glm::vec2((1.f / 32.f), 0.5), &tex, program);

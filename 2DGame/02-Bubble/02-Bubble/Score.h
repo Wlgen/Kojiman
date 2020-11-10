@@ -8,10 +8,10 @@
 #include "Word.h"
 
 // Score additions
-#define COOKIES   2000
-#define CHOCOLATE 1000
+#define COOKIES   1000
+#define CHOCOLATE 500
 #define BLOCK     100
-#define KEYSCORE  500
+#define KEYSCORE  300
 
 // Score multipliers
 #define WH 1
@@ -36,10 +36,15 @@ public:
     void changePowerUp(int s);
     void changeHeight(int s);
     void changeLevel(int s);
+    void changeGodMode(bool godMode);
+    int getScoreInHeight();
+    void resetScoreHeight();
     void render();
+    void reset(bool death);
 
 private:
     int totalScore;
+    int scoreHeight;
     int totalFood;
     int multiplier;
     int lives;
