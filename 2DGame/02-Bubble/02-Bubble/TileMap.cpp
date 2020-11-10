@@ -71,6 +71,7 @@ void TileMap::update(int deltaTime) {
             inTransition = true;
             transitionUp = true;
             --actLevel;
+            Score::instance().changeHeight(actLevel);
         }
         if (Game::instance().getKey('j') && actLevel < numLevels - 1) {
             Game::instance().keyReleased('j');
@@ -79,6 +80,7 @@ void TileMap::update(int deltaTime) {
             transitionUp = false;
             transitionTime = 0;
             ++actLevel;
+            Score::instance().changeHeight(actLevel);
         }
     }
     for (int j = 0; j < mapSize.y; ++j) {
@@ -109,7 +111,7 @@ void TileMap::restart() {
                     for (int k = i; k < (i + (actBlock->getBlockSize().x / tileSize)); ++k) {
                         map[j * mapSize.x + k] = actBlock->getBlockType();
                     }
-                    if (actBlock->getBlockType() == KEY || actBlock->getBlockType() == FOOD) {
+                    if (actBlock->getBlockType() == KEY || actBlock->getBlockType() == FOOD || actBlock->getBlockType() == DRINK) {
                         for (int k = i + mapSize.x; k < (i + mapSize.x + (actBlock->getBlockSize().x / tileSize)); ++k) {
                             map[j * mapSize.x + k] = actBlock->getBlockType();
                         }
@@ -375,13 +377,13 @@ void TileMap::checkDeleteBlock(int pos) const {
             }
         }
         if (blocks[pos] != NULL) pos = pos;
-        else if (blocks[pos + 1] != NULL) pos = pos + 1;
+        //else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
-        else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
-        else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
-        else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
+        //else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
+        //else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
+        //else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
         else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
-        else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
+        //else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
         else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
         if (blocks[pos]->disableRender()) {
             map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
@@ -397,13 +399,13 @@ void TileMap::checkDeleteBlock(int pos) const {
             Score::instance().addToFood(1);
         }
         if (blocks[pos] != NULL) pos = pos;
-        else if (blocks[pos + 1] != NULL) pos = pos + 1;
+        //else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
-        else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
-        else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
-        else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
+        //else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
+        //else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
+        //else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
         else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
-        else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
+        //else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
         else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
         if (blocks[pos]->disableRender()) {
             map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
@@ -553,6 +555,7 @@ int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
             transitionUp = false;
             transitionTime = 0;
             ++actLevel;
+            Score::instance().changeHeight(actLevel);
             return 2;
         }
     }
@@ -566,6 +569,7 @@ bool TileMap::ballOutOfMapUp(const glm::ivec2& pos) {
         inTransition = true;
         transitionUp = true;
         --actLevel;
+        Score::instance().changeHeight(actLevel);
         return true;
     }
     return false;

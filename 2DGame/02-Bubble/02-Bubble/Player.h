@@ -63,7 +63,7 @@ class Player {
     void initBigSprite();
     void initInfoBalls();
 
-    bool bJumping, collisionPU, death, first, paused, shoot, count, big, activeAlarm;
+    bool collisionPU, death, first, paused, shoot, count, big, activeAlarm;
     glm::ivec2 tileMapDispl, newPos, posPlayer,posPU, sizePlayer, sizeBall;
     int jumpAngle, startY, tileSize, velX, velY, numColl, anim, time, timeShot, timeDies;
     float TimeAnimation;

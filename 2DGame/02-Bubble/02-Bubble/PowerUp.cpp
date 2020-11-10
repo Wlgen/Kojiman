@@ -19,13 +19,15 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 
 void PowerUp::update(int deltaTime) {
     if (!paused) {
-        firstTime += 1;
-        if (firstTime >= 500) {
+        firstTime += deltaTime;
+        int score = Score::instance().getScoreInHeight();
+        if (score >= 700) {
             if (!rend) {
+                firstTime = 0;
                 rend = true;
                 PowerUp::initSrpite();
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + 10),
-                                    float(tileMapDispl.y + 1)));
+                                              float(tileMapDispl.y + 1)));
             }
             sprite->update(deltaTime);
             posPlayer = player->getPosition();
@@ -51,16 +53,20 @@ void PowerUp::update(int deltaTime) {
                     // actualEffect = anim;
                     player->applyEffect(anim);
                     ball->applyEffect(anim);
+                    Score::instance().changePowerUp(anim);
+                    Score::instance().resetScoreHeight();
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
-                                    float(tileMapDispl.y + posPU.y)));
+                                              float(tileMapDispl.y + posPU.y)));
             }
-            if (firstTime % 300 == 0) {
+            if (firstTime >= 1500) {
+                firstTime = 0;
                 anim = (anim + 1) % 6;
                 sprite->changeAnimation(anim);
             }
             player->setPUPosition(posPU);
-        }
+        } else
+            rend = false;
     }
 }
 
@@ -124,6 +130,7 @@ void PowerUp::initSrpite() {
 } */
 
 void PowerUp::restart() {
+    paused = false;
     firstTime = 0;
     rend = false;
 }

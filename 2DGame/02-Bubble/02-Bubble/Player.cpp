@@ -26,13 +26,12 @@ Player* Player::getInstance() {
 }
 
 void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
-    bJumping = paused = false;
+    paused = false;
     texProgram = shaderProgram;
     tileMapDispl = tileMapPos;
     initNormalSprite();
 
     initInfoBalls();
-    //prePosBall = posBall = posPU = glm::vec2(-5, -5);
     shot = new Shot();
     shot->init(tileMapPos, shaderProgram);
     big = count = shoot = collisionPU = death = false;
@@ -186,21 +185,23 @@ glm::ivec2 Player::getPosition() { return posPlayer; }
 bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
     int x0, x1, xp, xp1;
 
-    x0 = posObj.x / tileSize;
-    x1 = (posObj.x + sizeBall.x - 1) / tileSize;
+    x0 = posObj.x;                     // / tileSize;
+    x1 = (posObj.x + sizeBall.x - 1); // / tileSize;
 
-    xp = posPlayer.x / tileSize;
-    xp1 = (posPlayer.x + sizePlayer.x - 1) / tileSize;
+    xp = posPlayer.x; // / tileSize;
+    xp1 = (posPlayer.x + sizePlayer.x - 1); // / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
-                if ((posObj.y <= posPlayer.y - (sizeBall.y - 3)) &&
-                    (posObj.y >= posPlayer.y - sizeBall.y)) {
-                    if(pos != -1){
-                        //int y1 = infoBalls[pos].prePosition.y + sizeBall.y-1;
-                        //if (y1 < posPlayer.y)
+                if ((posObj.y + sizeBall.y >= posPlayer.y)
+                    && ((posObj.y + sizeBall.y <= posPlayer.y+3))) {
+                    if (pos != -1) {
+                        int y1 = infoBalls[pos].prePosition.y + sizeBall.y - 1;
+                        if (y1 < posPlayer.y + 3) {
                             calcRebBall(pos);
+                            return true;
                         }
+                    }else
                     return true;
                     //}
                 }
@@ -265,9 +266,11 @@ void Player::restart(bool death, glm::vec2 pos) {
     velX = velY = 3;
     this->death = death;
     newPos = pos;
-    shoot = false;
+    count = shoot = collisionPU = shoot = false;
     deleteShots();
     if (!death) {
+        paused = false;
+        anim = timeShot = 0;
         setPosition(pos);
         initNormalSprite();
     }

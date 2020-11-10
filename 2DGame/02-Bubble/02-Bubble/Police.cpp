@@ -12,10 +12,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     first = true;
     activated = false;
     for (int i = 0; i < 3; i++) {
-        if (flatAlarm.size() <= i)
-            flatAlarm.push_back(false);
-        else
-            flatAlarm[i] = false;
+        flatAlarm.push_back(false);
     }
     sizePolice = glm::ivec2(16, 30);
     // actualEffect = 0;
@@ -32,7 +29,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
 
 void Police::update(int deltaTime) {  // canviar
     if (!paused) {
-        firstTime += 1;
+        firstTime += deltaTime;
         if (player->getActiveAlarm()) startPolice();
         sprite->update(deltaTime);
         int h = map->getActLevel();
@@ -50,7 +47,7 @@ void Police::update(int deltaTime) {  // canviar
         } else {
             rend = false;
             if (activated) {
-                Game::instance().stopMusic();
+                Game::instance().loopMusic("music/kirbySong.wav");
                 activated = false;
             }
         }
@@ -59,7 +56,7 @@ void Police::update(int deltaTime) {  // canviar
                 // change animation
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
                                     float(tileMapDispl.y + posPolice.y)));
-                if (firstTime >= 350) {
+                if (firstTime >= 3000) {
                     posPlayer = player->getPosition();
                     posPlayer.y -= 16; 
                     persecution = true;
@@ -217,6 +214,7 @@ void Police::restart() {
     for (int i = 0; i < flatAlarm.size(); i++) {
         flatAlarm[i] = false;
     }
+    paused = false;
     rend = false;
     begin = false;
     first = true;
