@@ -21,12 +21,13 @@ void PowerUp::update(int deltaTime) {
     if (!paused) {
         firstTime += deltaTime;
         int score = Score::instance().getScoreInHeight();
-        if (score >= 600) {
+        if (score >= 700) {
             if (!rend) {
+                firstTime = 0;
                 rend = true;
                 PowerUp::initSrpite();
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + 10),
-                                    float(tileMapDispl.y + 1)));
+                                              float(tileMapDispl.y + 1)));
             }
             sprite->update(deltaTime);
             posPlayer = player->getPosition();
@@ -56,7 +57,7 @@ void PowerUp::update(int deltaTime) {
                     Score::instance().resetScoreHeight();
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
-                                    float(tileMapDispl.y + posPU.y)));
+                                              float(tileMapDispl.y + posPU.y)));
             }
             if (firstTime >= 1500) {
                 firstTime = 0;
@@ -64,7 +65,8 @@ void PowerUp::update(int deltaTime) {
                 sprite->changeAnimation(anim);
             }
             player->setPUPosition(posPU);
-        }
+        } else
+            rend = false;
     }
 }
 
@@ -128,6 +130,7 @@ void PowerUp::initSrpite() {
 } */
 
 void PowerUp::restart() {
+    paused = false;
     firstTime = 0;
     rend = false;
 }

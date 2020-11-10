@@ -41,13 +41,18 @@ public:
     void resetScoreHeight();
     void render();
     void reset(bool death);
+    int getLives();
 
 private:
+
+    void changeLives(int live);
+
     int totalScore;
     int scoreHeight;
     int totalFood;
     int multiplier;
     int lives;
+    int scoreLives;
     Texture tex;
     ShaderProgram* program;
     glm::vec2 minCoords;

@@ -73,6 +73,7 @@ void Game::keyPressed(int key) {
         if (key == 'p') pause(false);
         if (key == 'g') {
             godMode = !godMode;
+            Score::instance().changeGodMode(godMode);
             scene.toggleGodMode();
         }
         if (godMode) {

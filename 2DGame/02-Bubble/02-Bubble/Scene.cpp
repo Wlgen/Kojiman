@@ -38,46 +38,19 @@ void Scene::init() {
     mapChange = 1;
     Game::instance().loopMusic("music/kirbySong.wav");
     player = Player::getInstance();
-    ball = new Ball();
-    pu = new PowerUp();
-    police = new Police();
-    Score::instance().init(glm::vec2(480.f, 0.f), texProgram);
-    changeLevel(0);
-    /*map = TileMap::createTileMap(levels[0],
-                                 glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
-    glm::vec2 geom[2] = { glm::vec2(0.f), glm::vec2(map->getMapSize().x * map->getTileSize(), map->getMapSize().y * map->getNumLevels() * map->getTileSize()) };
-    glm::vec2 texCoords[2] = { glm::vec2(0.f), glm::vec2(1.f) };
-    back = Background::createBackground(geom, texCoords, texProgram);
-    texBack.loadFromFile("images/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
-    texBack.setMinFilter(GL_NEAREST);
-    texBack.setMagFilter(GL_NEAREST);
-    player = Player::getInstance();
     player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-    player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-                        INIT_PLAYER_Y_TILES * map->getTileSize()));
-    player->setTileMap(map);
     ball = new Ball();
     ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-    ball->setPosition(
-        glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize() + 8,
-        (INIT_PLAYER_Y_TILES)*map->getTileSize() - 18));
-    ball->setTileMap(map);
     pu = new PowerUp();
     pu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-    pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
-                    (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
-    pu->setTileMap(map);
     police = new Police();
     police->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-    police->setPosition(glm::vec2((1) * map->getTileSize(),
-                        (INIT_PLAYER_Y_TILES)*map->getTileSize()));
-    police->setTileMap(map);
-    ball->setPolice(police);
-    pu->setBall(ball);
+    Score::instance().init(glm::vec2(480.f, 0.f), texProgram);
+    changeLevel(0);
     projection =
         glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
     currentTime = 0.0f;
-    initialized = true;*/
+    initialized = true;
 }
 
 void Scene::update(int deltaTime) {
@@ -211,6 +184,7 @@ void Scene::outOfTransition() {
 }
 
 void Scene::changeLevel(int level) {
+    Score::instance().changeLevel(level + 1);
     Game::instance().loopMusic("music/kirbySong.wav");
     map = TileMap::createTileMap(levels[level], glm::vec2(SCREEN_X, SCREEN_Y),
                                  texProgram);
@@ -223,26 +197,21 @@ void Scene::changeLevel(int level) {
     texBack.loadFromFile("images/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
     texBack.setMinFilter(GL_NEAREST);
     texBack.setMagFilter(GL_NEAREST);
-    player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-    player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-                                  INIT_PLAYER_Y_TILES * map->getTileSize()));
     player->setTileMap(map);
-    ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    player->restart(false, glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
+                                     INIT_PLAYER_Y_TILES * map->getTileSize()));
     ball->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize() + 8,
                                 (INIT_PLAYER_Y_TILES)*map->getTileSize() - 18));
     ball->setTileMap(map);
-    pu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    ball->stop(false);
     pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
                               (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
     pu->setTileMap(map);
-    police->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    pu->restart();
     police->setPosition(glm::vec2((1) * map->getTileSize(),
                                   (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->setTileMap(map);
+    police->restart();
     ball->setPolice(police);
     pu->setBall(ball);
-    projection =
-        glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
-    currentTime = 0.0f;
-    initialized = true;
 }
