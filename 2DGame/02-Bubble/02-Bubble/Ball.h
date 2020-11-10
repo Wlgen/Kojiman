@@ -6,6 +6,7 @@
 #include "TileMap.h"
 #include "Police.h"
 #include "ShaderProgram.h"
+#include "Kame.h"
 
 class Ball {
 
@@ -41,7 +42,7 @@ class Ball {
     void initSprite();
     void initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel);
 
-    bool Catch, paused, puCatch, skip, rend, godMode;
+    bool Catch, paused, puCatch, skip, rend, godMode, kame, kameActivated;
     int movX, movY, contTime;
     glm::ivec2 tileMapDispl, posBall, posPlayer, movBall, sizeBall;
     Texture spritesheet;
@@ -50,7 +51,8 @@ class Ball {
     TileMap* map;
     Player* player;
     Police* police;
-    ShaderProgram texProgram;
+    Kame* kameIns;
+    ShaderProgram* texProgram;
 };
 
 #endif  // _BALL_INCLUDE_

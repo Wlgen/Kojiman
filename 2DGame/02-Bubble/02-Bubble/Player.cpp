@@ -11,19 +11,10 @@
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
 
-Player* Player::player = NULL;
-
 //enum PlayerAnims { STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT };
 enum PlayerStates { YELLOW, RED, BLUE };
 enum PlayerDeath { YELLOW_DIES, RED_DIES, BLUE_DIES };
 enum PlayerBig { BIG_DIES, BIG_LIVES };
-
-Player* Player::getInstance() {
-    if (!player) {
-        player = new Player;
-    }
-    return player;
-}
 
 void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     paused = false;
@@ -47,7 +38,7 @@ void Player::update(int deltaTime) {
         sprite->update(deltaTime);
         shot->update(deltaTime);
         activeAlarm = shot->getShotAlarm();
-        for (int i = 0; i < infoBalls.size(); i++) {
+        for (unsigned int i = 0; i < infoBalls.size(); i++) {
             infoBalls[i].collision = false;
             infoBalls[i].despl = 0;
 
@@ -108,7 +99,7 @@ void Player::update(int deltaTime) {
                         posPlayer.x += 1;
                         // sprite->changeAnimation(STAND_LEFT);
                     } else {
-                        for (int j = 0; j < infoBalls.size(); j++) {
+                        for (unsigned int j = 0; j < infoBalls.size(); j++) {
                             infoBalls[j].despl--;
                         }
                     }
@@ -121,7 +112,7 @@ void Player::update(int deltaTime) {
                         posPlayer.x -= 1;
                         // sprite->changeAnimation(STAND_RIGHT);
                     } else {
-                        for (int j = 0; j < infoBalls.size(); j++) {
+                        for (unsigned int j = 0; j < infoBalls.size(); j++) {
                             infoBalls[j].despl++;
                         }
                     }
@@ -136,7 +127,7 @@ void Player::update(int deltaTime) {
                     if (map->collisionPlayerUp(posPlayer, sizePlayer)) {
                         posPlayer.y += 1;
                     }
-                    for (int j = 0; j < infoBalls.size(); j++) {
+                    for (unsigned int j = 0; j < infoBalls.size(); j++) {
                         if (infoBalls[j].collision) infoBalls[j].numColl++;
                     }
                 }
@@ -148,7 +139,7 @@ void Player::update(int deltaTime) {
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                                     float(tileMapDispl.y + posPlayer.y)));
-                for (int i = 0; i < infoBalls.size(); i++) {
+                for (unsigned int i = 0; i < infoBalls.size(); i++) {
                     if (!infoBalls[i].collision) {
                         infoBalls[i].collision = collisionWithPlayer(infoBalls[i].pos, i);
                         infoBalls[i].numColl = 1;
@@ -196,7 +187,7 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
                 if ((posObj.y + sizeBall.y >= posPlayer.y)
                     && ((posObj.y + sizeBall.y <= posPlayer.y+3))) {
                     if (pos != -1) {
-                        int y1 = infoBalls[pos].prePosition.y + sizeBall.y - 1;
+                        int y1 = int(infoBalls[pos].prePosition.y) + sizeBall.y - 1;
                         if (y1 < posPlayer.y + 3) {
                             calcRebBall(pos);
                             return true;
@@ -240,13 +231,16 @@ void Player::applyEffect(int num) {
             break;
         case 5:
             break;
+        case 6:
+            shoot = false;
+            sprite->changeAnimation(YELLOW);
         default:
             break;
     }
 }
 
 glm::vec2 Player::checkCollisionBall(int i) {
-    while (i >= infoBalls.size()) initInfoBalls();
+    while (i >= int(infoBalls.size())) initInfoBalls();
     return glm::vec2(infoBalls[i].collision, infoBalls[i].numColl);
 }
 
@@ -255,7 +249,7 @@ bool Player::checkCollisionPU() {
 }
 
 void Player::setBallPosition(glm::vec2 pos, int i) {
-    while (i >= infoBalls.size()) initInfoBalls();
+    while (i >= int(infoBalls.size())) initInfoBalls();
     infoBalls[i].prePosition = infoBalls[i].pos;
     infoBalls[i].pos = pos;
 }
@@ -277,7 +271,7 @@ void Player::restart(bool death, glm::vec2 pos) {
 }
 
 void Player::calcRebBall(int pos) {
-    int midBall = (infoBalls[pos].pos.x + (sizeBall.x / 2) - 1);
+    int midBall = (int(infoBalls[pos].pos.x) + (sizeBall.x / 2) - 1);
     int sizePart = sizePlayer.x / 6;
     int varSize = sizePlayer.x;
     int init = 0;
@@ -306,12 +300,12 @@ void Player::calcRebBall(int pos) {
 }
 
 glm::ivec2 Player::getRebBall(int pos) { 
-    while (pos >= infoBalls.size()) initInfoBalls();
+    while (pos >= int(infoBalls.size())) initInfoBalls();
     return infoBalls[pos].reb;
 }
 
 int Player::getDespl(int pos) {
-    while (pos >= infoBalls.size()) initInfoBalls();
+    while (pos >= int(infoBalls.size())) initInfoBalls();
      return infoBalls[pos].despl;
 }
 
@@ -326,6 +320,10 @@ void Player::initSpriteDeath() {
     spritesheet.setMagFilter(GL_NEAREST);
     anim = sprite->animation();
 
+    if (sprite != NULL) {
+        sprite->free();
+        delete sprite;
+    }
     sprite = Sprite::createSprite(sizePlayer, glm::vec2(0.125, 0.25),
                                   &spritesheet, &texProgram);
 
@@ -369,6 +367,11 @@ void Player::initNormalSprite() {
                              TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMinFilter(GL_NEAREST);
     spritesheet.setMagFilter(GL_NEAREST);
+
+    if (sprite != NULL) {
+        sprite->free();
+        delete sprite;
+    }
     sprite = Sprite::createSprite(sizePlayer, glm::vec2(1.0, 0.25),
                                   &spritesheet, &texProgram);
     sprite->setNumberAnimations(3);
@@ -395,6 +398,11 @@ void Player::initBigSprite() {
                              TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMinFilter(GL_NEAREST);
     spritesheet.setMagFilter(GL_NEAREST);
+
+    if (sprite != NULL) {
+        sprite->free();
+        delete sprite;
+    }
     sprite = Sprite::createSprite(sizePlayer, glm::vec2(0.2, 0.5),
                                   &spritesheet, &texProgram);
     sprite->setNumberAnimations(2);
