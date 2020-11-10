@@ -41,6 +41,7 @@ void Scene::init() {
     ball = new Ball();
     pu = new PowerUp();
     police = new Police();
+    Score::instance().init(glm::vec2(480.f, 0.f), texProgram);
     changeLevel(0);
     /*map = TileMap::createTileMap(levels[0],
                                  glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -109,6 +110,7 @@ void Scene::render() {
     texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
     back->render(texBack, modelview);
     map->render();
+    Score::instance().render();
     if (!inTransition) {
         player->render();
         ball->render();
