@@ -9,7 +9,7 @@ void Score::init(glm::vec2& minCoords, ShaderProgram& program) {
     totalScore = totalFood = 0;
     multiplier = 1;
     lives = 3;
-    words.resize(12);
+    words.resize(14);
     words[0] = new Word("SCORE:");
     words[0]->init(glm::vec2(minCoords.x + 32, minCoords.y + 16), program);
     words[1] = new Word("000000");
@@ -34,6 +34,10 @@ void Score::init(glm::vec2& minCoords, ShaderProgram& program) {
     words[10]->init(glm::vec2(minCoords.x + 32, minCoords.y + 288), program);
     words[11] = new Word("X1");
     words[11]->init(glm::vec2(minCoords.x + 32, minCoords.y + 304), program);
+    words[12] = new Word("GODMODE:");
+    words[12]->init(glm::vec2(minCoords.x + 16, minCoords.y + 432), program);
+    words[13] = new Word("OFF");
+    words[13]->init(glm::vec2(minCoords.x + 16, minCoords.y + 448), program);
 }
 
 void Score::addToScore(int score) {
