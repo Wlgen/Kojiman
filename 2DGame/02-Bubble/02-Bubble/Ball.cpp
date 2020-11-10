@@ -237,7 +237,10 @@ void Ball::setPosition(const glm::vec2& pos) {
 }
 
 void Ball::stop(bool death) {
-    if (!death) rend = true;
+    if (!death) {
+        rend = true;
+        paused = false;
+    } 
     contTime = 0;
     for (int i = balls.size() - 1; i >= 1; i--) {
         balls.erase(balls.begin() + i);

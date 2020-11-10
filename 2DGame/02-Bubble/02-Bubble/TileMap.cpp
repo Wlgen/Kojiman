@@ -71,6 +71,7 @@ void TileMap::update(int deltaTime) {
             inTransition = true;
             transitionUp = true;
             --actLevel;
+            Score::instance().changeHeight(actLevel);
         }
         if (Game::instance().getKey('j') && actLevel < numLevels - 1) {
             Game::instance().keyReleased('j');
@@ -79,6 +80,7 @@ void TileMap::update(int deltaTime) {
             transitionUp = false;
             transitionTime = 0;
             ++actLevel;
+            Score::instance().changeHeight(actLevel);
         }
     }
     for (int j = 0; j < mapSize.y; ++j) {
@@ -553,6 +555,7 @@ int TileMap::ballOutOfMapDown(const glm::ivec2& pos,
             transitionUp = false;
             transitionTime = 0;
             ++actLevel;
+            Score::instance().changeHeight(actLevel);
             return 2;
         }
     }
@@ -566,6 +569,7 @@ bool TileMap::ballOutOfMapUp(const glm::ivec2& pos) {
         inTransition = true;
         transitionUp = true;
         --actLevel;
+        Score::instance().changeHeight(actLevel);
         return true;
     }
     return false;
