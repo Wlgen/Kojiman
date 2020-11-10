@@ -55,6 +55,7 @@ class Scene {
     bool initialized = false;
     bool inTransition = false;
     bool transitionUp;
+    bool resetPushTransition;
     Score* score;
 };
 
