@@ -10,12 +10,27 @@ void Game::init() {
     engine = createIrrKlangDevice();
     gState.init();
     menu.init();
+    loopMusic("music/Menu.wav");
+    godMode = false;
+    first = true;
 }
 
 bool Game::update(int deltaTime) {
     if (scene.isInitialized()) {
         scene.update(deltaTime); 
     }
+    if (gState.getState() == State::state::menu)
+        loopMusic("music/Menu.wav");
+    else if (gState.getState() == State::state::instr)
+        loopMusic("music/Menu.wav");
+    else if (gState.getState() == State::state::credits) {
+        loopMusic("music/Credits.wav");
+        if (first && scene.isInitialized()) {
+            scene.togglePause(false);
+            first = false;
+        }
+    } else
+        first = true;
     return bPlay;
 }
 
@@ -33,6 +48,9 @@ void Game::keyPressed(int key) {
         bPlay = false;
     }
     if (gState.getState() == State::state::menu) {
+        if (key == '1') changeLevel(0);
+        if (key == '2') changeLevel(1);
+        if (key == '3') changeLevel(2);
         if (key == ' ') {
             if (scene.isInitialized()) scene.restart(false);
             else scene.init();
@@ -46,11 +64,22 @@ void Game::keyPressed(int key) {
         if (key == 'f') {
             gState.changeState();
         }
+        if (key == '1') changeLevel(0);
+        if (key == '2') changeLevel(1);
+        if (key == '3') changeLevel(2);
     } else if (gState.getState() == State::state::play) {
         if (key == 'r') restart(false);
         if (key == 'x') gState.changeState();
         if (key == 'p') pause(false);
-        if (key == 'g') scene.toggleGodMode();
+        if (key == 'g') {
+            godMode = !godMode;
+            scene.toggleGodMode();
+        }
+        if (godMode) {
+            if (key == '1') changeLevel(0);
+            if (key == '2') changeLevel(1);
+            if (key == '3') changeLevel(2);
+        }
 
     } else if (gState.getState() == State::state::instr) {
         if (key == 'm') gState.toMenu();
@@ -84,8 +113,8 @@ void Game::loopMusic(char* fileName) {
     if (!engine->isCurrentlyPlaying(fileName)) {
         stopMusic();
         music = engine->play2D(fileName, true, false, true);
-        music->setVolume(0.5f);
-    }
+        music->setVolume(0.3f);
+    } 
 }
 
 void Game::stopMusic() {
@@ -106,3 +135,8 @@ void Game::getSceneInTransitionUp() {
 void Game::getSceneInTransitionDown() {
     scene.getInTransitionDown();
 }
+
+void Game::changeLevel(int level) {
+    if (!scene.isInitialized()) scene.init();
+    gState.toPlay();
+    scene.changeLevel(level); }

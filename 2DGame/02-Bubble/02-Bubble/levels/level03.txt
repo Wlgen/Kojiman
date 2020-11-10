@@ -1,0 +1,97 @@
+TILEMAP
+30 90 							-- Size of tile map in tiles
+16 16 							-- Tile size & block size
+images/bloques.png 	-- Tilesheet
+2 2 
+3								-- Number of tiles in tilesheet
+333333333333333333333333333333
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+33         33333333         33
+33ddddddddd33333333ddddddddd33
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                          cc3
+3                          cc3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+33333                     3333
+33333ddddddddddddddddddddd3333
+3                            3
+3                            3
+3                            3
+3       aaaaaaaaaaaaaa       3
+3     ffffffffffffffffff     3
+3   aaaaaaaaaaaaaaaaaaaaaa   3
+3   aaaaaaaaaaaaaaaaaaaaaa   3
+3     ffffffffffffffffff     3
+3       eeeeeeeeeeeeee       3
+3                            3
+3           bb          cc   3
+3           bb          cc   3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+33333333            3333333333
+

@@ -10,8 +10,12 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     begin = false;
     paused = false;
     first = true;
+    activated = false;
     for (int i = 0; i < 3; i++) {
-        flatAlarm.push_back(false);
+        if (flatAlarm.size() <= i)
+            flatAlarm.push_back(false);
+        else
+            flatAlarm[i] = false;
     }
     sizePolice = glm::ivec2(16, 30);
     // actualEffect = 0;
@@ -36,14 +40,19 @@ void Police::update(int deltaTime) {  // canviar
             if (!rend) {
                 rend = true;
                 Police::initSrpite();
-                sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
-                                    float(tileMapDispl.y + posPolice.y)));
+                sprite->setPosition(glm::vec2(float(tileMapDispl.x + posIni.x),
+                                    float(tileMapDispl.y + posIni.y)));
+                posPolice = posIni;
                 Game::instance().loopMusic("music/alarm.wav");
+                activated = true;
                 firstTime = 0;
             }
         } else {
             rend = false;
-            Game::instance().stopMusic();
+            if (activated) {
+                Game::instance().stopMusic();
+                activated = false;
+            }
         }
         if (rend) {
             if (!persecution) {
@@ -52,6 +61,7 @@ void Police::update(int deltaTime) {  // canviar
                                     float(tileMapDispl.y + posPolice.y)));
                 if (firstTime >= 350) {
                     posPlayer = player->getPosition();
+                    posPlayer.y -= 16; 
                     persecution = true;
                     skipX = skipY = false;
                     movX = posPlayer.x - posPolice.x;
@@ -59,6 +69,7 @@ void Police::update(int deltaTime) {  // canviar
                     if (movX <= 0) sprite->changeAnimation(LEFT);
                     else
                         sprite->changeAnimation(RIGHT);
+                    if (movY == -1) movY += 1;
                     Xmov = (movX + 1) / (movY + 1);
                     Ymov = 0;
                     if (Xmov < 0) {
@@ -126,6 +137,7 @@ void Police::setTileMap(TileMap* tileMap) {
 
 void Police::setPosition(const glm::vec2& pos) {
     posPolice = pos;
+    posIni = pos;
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
                         float(tileMapDispl.y + posPolice.y)));
 }
@@ -208,6 +220,7 @@ void Police::restart() {
     rend = false;
     begin = false;
     first = true;
+    activated = false;
     firstTime = 0;
 }
 

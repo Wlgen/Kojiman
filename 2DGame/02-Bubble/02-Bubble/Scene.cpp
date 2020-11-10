@@ -25,12 +25,24 @@ Scene::~Scene() {
     if (ball != NULL) delete ball;
     if (pu != NULL) delete pu;
     if (police != NULL) delete police;
+    initialized = false;
 }
 
 void Scene::init() {
+    for (int i = 0; i < 3; i++) {
+        std::string st = "levels/level0" + std::to_string(i + 1) + ".txt";
+        levels.push_back(st);
+    }
+    //Game::instance().stopMusic();
     initShaders();
     mapChange = 1;
-    map = TileMap::createTileMap("levels/level01.txt",
+    Game::instance().loopMusic("music/kirbySong.wav");
+    player = Player::getInstance();
+    ball = new Ball();
+    pu = new PowerUp();
+    police = new Police();
+    changeLevel(0);
+    /*map = TileMap::createTileMap(levels[0],
                                  glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
     glm::vec2 geom[2] = { glm::vec2(0.f), glm::vec2(map->getMapSize().x * map->getTileSize(), map->getMapSize().y * map->getNumLevels() * map->getTileSize()) };
     glm::vec2 texCoords[2] = { glm::vec2(0.f), glm::vec2(1.f) };
@@ -64,7 +76,7 @@ void Scene::init() {
     projection =
         glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
     currentTime = 0.0f;
-    initialized = true;
+    initialized = true;*/
 }
 
 void Scene::update(int deltaTime) {
@@ -148,6 +160,7 @@ void Scene::restart(bool death) {
                         (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->restart();
     if (!death) {
+        Game::instance().loopMusic("music/kirbySong.wav");
         map->restart();
         setPauseFalse();
     }
@@ -190,5 +203,43 @@ void Scene::getInTransitionDown() {
 }
 
 void Scene::outOfTransition() {
+    Game::instance().loopMusic("music/kirbySong.wav");
     inTransition = false;
+}
+
+void Scene::changeLevel(int level) {
+    Game::instance().loopMusic("music/kirbySong.wav");
+    map = TileMap::createTileMap(levels[level], glm::vec2(SCREEN_X, SCREEN_Y),
+                                 texProgram);
+    glm::vec2 geom[2] = {glm::vec2(0.f),
+                         glm::vec2(map->getMapSize().x * map->getTileSize(),
+                                   map->getMapSize().y * map->getNumLevels() *
+                                       map->getTileSize())};
+    glm::vec2 texCoords[2] = {glm::vec2(0.f), glm::vec2(1.f)};
+    back = Background::createBackground(geom, texCoords, texProgram);
+    texBack.loadFromFile("images/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texBack.setMinFilter(GL_NEAREST);
+    texBack.setMagFilter(GL_NEAREST);
+    player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
+                                  INIT_PLAYER_Y_TILES * map->getTileSize()));
+    player->setTileMap(map);
+    ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    ball->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize() + 8,
+                                (INIT_PLAYER_Y_TILES)*map->getTileSize() - 18));
+    ball->setTileMap(map);
+    pu->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
+                              (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
+    pu->setTileMap(map);
+    police->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+    police->setPosition(glm::vec2((1) * map->getTileSize(),
+                                  (INIT_PLAYER_Y_TILES)*map->getTileSize()));
+    police->setTileMap(map);
+    ball->setPolice(police);
+    pu->setBall(ball);
+    projection =
+        glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
+    currentTime = 0.0f;
+    initialized = true;
 }
