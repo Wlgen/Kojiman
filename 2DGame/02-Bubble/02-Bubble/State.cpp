@@ -41,5 +41,13 @@ void State::toInst() {
     previous_state = actual_state;
     actual_state = state::instr;
 }
+void State::toDead() {
+    previous_state = actual_state;
+    actual_state = state::dead;
+}
+
+State::state State::getPreviousState() {
+    return previous_state;
+}
 
 State::state State::getState() { return actual_state; }

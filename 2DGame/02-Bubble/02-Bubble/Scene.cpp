@@ -34,8 +34,23 @@ void Scene::init() {
         std::string st = "levels/level0" + std::to_string(i + 1) + ".txt";
         levels.push_back(st);
     }
+    texBack.loadFromFile("images/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texBack.setMinFilter(GL_NEAREST);
+    texBack.setMagFilter(GL_NEAREST);
+    texLvl1.loadFromFile("images/lvl1done.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texLvl1.setMinFilter(GL_NEAREST);
+    texLvl1.setMagFilter(GL_NEAREST);
+    texLvl2.loadFromFile("images/lvl2done.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texLvl2.setMinFilter(GL_NEAREST);
+    texLvl2.setMagFilter(GL_NEAREST);
+    texLvl3.loadFromFile("images/lvl3done.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    texLvl3.setMinFilter(GL_NEAREST);
+    texLvl3.setMagFilter(GL_NEAREST);
     //Game::instance().stopMusic();
     initShaders();
+    glm::vec2 geom[2] = { glm::vec2(0.f), glm::vec2(640.f, 480.f) };
+    glm::vec2 texCoords[2] = { glm::vec2(0.f), glm::vec2(1.f) };
+    interLevel = Background::createBackground(geom, texCoords, texProgram);
     mapChange = 1;
     Game::instance().loopMusic("music/kirbySong.wav");
     player = Player::getInstance();
@@ -63,6 +78,14 @@ void Scene::update(int deltaTime) {
         }
         transitionTime += deltaTime;
     }
+    if (interLevelTransition) {
+        if (interLevelTime == 0) togglePause(false);
+        else if (interLevelTime >= 2500) {
+            togglePause(false);
+            outOfInterLevelTransition();
+        }
+        interLevelTime += deltaTime;
+    }
     currentTime += deltaTime;
     player->update(deltaTime);
     pu->update(deltaTime);
@@ -75,21 +98,36 @@ void Scene::render() {
     glm::mat4 modelview;
     modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, float((-1) * map->getActLevel() * map->getMapSize().y * map->getTileSize()), 0.f));
     if (inTransition && transitionUp) modelview = glm::translate(modelview, glm::vec3(0.f, float((-1) * (map->getMapSize().y * map->getTileSize() - transitionTime)), 0.f));
-    else if(inTransition && !transitionUp) modelview = glm::translate(modelview, glm::vec3(0.f, float(map->getMapSize().y * map->getTileSize() -  transitionTime), 0.f));
+    else if (inTransition && !transitionUp) modelview = glm::translate(modelview, glm::vec3(0.f, float(map->getMapSize().y * map->getTileSize() - transitionTime), 0.f));
     texProgram.use();
     texProgram.setUniformMatrix4f("projection", projection);
     texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
-    //modelview = glm::mat4(1.0f);
     texProgram.setUniformMatrix4f("modelview", modelview);
     texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-    back->render(texBack, modelview);
-    map->render();
-    Score::instance().render();
-    if (!inTransition) {
-        player->render();
-        ball->render();
-        pu->render();
-        police->render();
+    if (interLevelTransition) {
+        modelview = glm::mat4(1.0f);
+        switch (mapChange) {
+            case 0:
+                interLevel->render(texLvl1, modelview);
+                break;
+            case 1:
+                interLevel->render(texLvl2, modelview);
+                break;
+            case 2:
+                interLevel->render(texLvl3, modelview);
+            default:
+                break;
+        }
+    } else {
+        back->render(texBack, modelview);
+        map->render();
+        Score::instance().render();
+        if (!inTransition) {
+            player->render();
+            ball->render();
+            pu->render();
+            police->render();
+        }
     }
 }
 
@@ -136,7 +174,6 @@ void Scene::restart(bool death) {
     police->setPosition(glm::vec2((1) * map->getTileSize(),
                         (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->restart();
-    Score::instance().reset(death);
     if (!death) {
         Game::instance().loopMusic("music/kirbySong.wav");
         map->restart();
@@ -188,35 +225,46 @@ void Scene::outOfTransition() {
     if (resetPushTransition) togglePause(false);
 }
 
+void Scene::outOfInterLevelTransition() {
+    interLevelTransition = false;
+}
+
+void Scene::intoInterLevelTransition() {
+    interLevelTransition = true;
+    interLevelTime = 0;
+}
+
 void Scene::changeLevel(int level) {
+    mapChange = level;
     Score::instance().changeLevel(level + 1);
     Game::instance().loopMusic("music/kirbySong.wav");
+    if (map != NULL)
+        delete map;
     map = TileMap::createTileMap(levels[level], glm::vec2(SCREEN_X, SCREEN_Y),
                                  texProgram);
-    glm::vec2 geom[2] = {glm::vec2(0.f),
-                         glm::vec2(map->getMapSize().x * map->getTileSize(),
-                                   map->getMapSize().y * map->getNumLevels() *
-                                       map->getTileSize())};
-    glm::vec2 texCoords[2] = {glm::vec2(0.f), glm::vec2(1.f)};
+    glm::vec2 geom[2] = { glm::vec2(0.f),
+                          glm::vec2((map->getMapSize().x * map->getTileSize()),
+                                    (map->getMapSize().y * map->getNumLevels() * map->getTileSize())) };
+    glm::vec2 texCoords[2] = { glm::vec2(0.f), glm::vec2(1.f) };
+    if (back != NULL)
+        delete back;
     back = Background::createBackground(geom, texCoords, texProgram);
-    texBack.loadFromFile("images/background.png", TEXTURE_PIXEL_FORMAT_RGBA);
-    texBack.setMinFilter(GL_NEAREST);
-    texBack.setMagFilter(GL_NEAREST);
     player->setTileMap(map);
     player->restart(false, glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-                                     INIT_PLAYER_Y_TILES * map->getTileSize()));
+                    INIT_PLAYER_Y_TILES * map->getTileSize()));
     ball->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize() + 8,
-                                (INIT_PLAYER_Y_TILES)*map->getTileSize() - 18));
+                      (INIT_PLAYER_Y_TILES)*map->getTileSize() - 18));
     ball->setTileMap(map);
     ball->stop(false);
     pu->setPosition(glm::vec2((INIT_PLAYER_X_TILES)*map->getTileSize(),
-                              (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
+                    (INIT_PLAYER_Y_TILES - 4) * map->getTileSize()));
     pu->setTileMap(map);
     pu->restart();
     police->setPosition(glm::vec2((1) * map->getTileSize(),
-                                  (INIT_PLAYER_Y_TILES)*map->getTileSize()));
+                        (INIT_PLAYER_Y_TILES)*map->getTileSize()));
     police->setTileMap(map);
     police->restart();
     ball->setPolice(police);
     pu->setBall(ball);
+    intoInterLevelTransition();
 }

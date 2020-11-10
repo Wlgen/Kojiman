@@ -26,9 +26,18 @@ bool Game::update(int deltaTime) {
     else if (gState.getState() == State::state::credits) {
         loopMusic("music/Credits.wav");
         if (first && scene.isInitialized()) {
-            scene.togglePause(false);
+            //scene.togglePause(false);
             first = false;
         }
+    } else if (gState.getState() == State::state::dead) {
+        if (gState.getPreviousState() == State::state::play) {
+            gState.toDead();
+            deadTime = 0;
+        }
+        if (deadTime >= 2500) {
+            gState.toCredits();
+        }
+        deadTime += deltaTime;
     } else
         first = true;
     return bPlay;
@@ -104,7 +113,15 @@ bool Game::getKey(int key) const { return keys[key]; }
 
 bool Game::getSpecialKey(int key) const { return specialKeys[key]; }
 
-void Game::restart(bool death) { scene.restart(death); }
+void Game::restart(bool death) { 
+    Score::instance().reset(death);
+    if (Score::instance().getLives() == -1) {
+        pause(false);
+        gState.toDead();
+    } else {
+        scene.restart(death); 
+    }
+}
 
 void Game::pause(bool player) { scene.togglePause(player); }
 
