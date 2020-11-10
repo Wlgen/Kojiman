@@ -23,7 +23,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
                         float(tileMapDispl.y + posPolice.y)));
 
-    player = Player::getInstance();
+    player = &Player::getInstance();
     firstTime = 0;
 }
 
@@ -145,6 +145,10 @@ void Police::initSrpite() {
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
 
+    if (sprite != NULL) {
+        sprite->free();
+        delete sprite;
+    }
     sprite = Sprite::createSprite(sizePolice, glm::vec2(1.f/3.f, 0.5),
                                   &spritesheet, &texProgram);
     sprite->setNumberAnimations(3);
@@ -191,8 +195,8 @@ bool Police::PoliceCatchPlayer() {
     x0 = posPolice.x / tileSize;
     x1 = (posPolice.x + sizePolice.x - 1) / tileSize;
 
-    xp = actualPosPlayer.x / tileSize;
-    xp1 = (actualPosPlayer.x + sizePlayer.x - 1) / tileSize;
+    xp = int(actualPosPlayer.x) / tileSize;
+    xp1 = (int(actualPosPlayer.x) + sizePlayer.x - 1) / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
@@ -211,7 +215,7 @@ bool Police::PoliceCatchPlayer() {
 }
 
 void Police::restart() {
-    for (int i = 0; i < flatAlarm.size(); i++) {
+    for (unsigned int i = 0; i < flatAlarm.size(); i++) {
         flatAlarm[i] = false;
     }
     paused = false;

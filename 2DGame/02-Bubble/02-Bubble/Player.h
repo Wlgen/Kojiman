@@ -21,7 +21,10 @@ class Player {
     };
 
    public:
-    static Player *getInstance();
+    static Player &getInstance() {
+        static Player P;
+        return P;
+    }
 
     void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
     void update(int deltaTime);

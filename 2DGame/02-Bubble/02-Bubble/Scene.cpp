@@ -21,7 +21,6 @@ Scene::Scene() {
 
 Scene::~Scene() {
     if (map != NULL) delete map;
-    if (player != NULL) delete player;
     if (ball != NULL) delete ball;
     if (pu != NULL) delete pu;
     if (police != NULL) delete police;
@@ -53,7 +52,7 @@ void Scene::init() {
     interLevel = Background::createBackground(geom, texCoords, texProgram);
     mapChange = 1;
     Game::instance().loopMusic("music/kirbySong.wav");
-    player = Player::getInstance();
+    player = &Player::getInstance();
     player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
     ball = new Ball();
     ball->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);

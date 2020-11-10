@@ -9,6 +9,8 @@ void Shot::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     tileMapDispl = tileMapPos;
     texProgram = shaderProgram;
     spritesheet.loadFromFile("images/shot.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.setMinFilter(GL_NEAREST);
+    spritesheet.setMagFilter(GL_NEAREST);
     /*sprite = Sprite::createSprite(sizeShot, glm::vec2(1, 1), &spritesheet,
                                   &shaderProgram);
     sprite->setNumberAnimations(1);
@@ -38,6 +40,10 @@ void Shot::update(int deltatime) {
                 if (collisionBlock == 11) shotAlarm = true;
                 shots.erase(shots.begin() + i);
                 sprites[i]->free();
+                if (sprites[i] != NULL) {
+                    sprites[i]->free();
+                    delete sprites[i];
+                }
                 sprites.erase(sprites.begin() + i);
                 i--;
                 maxIt--;
@@ -73,7 +79,7 @@ void Shot::addShot(const glm::ivec2& posPlayer) {
 }
 
 void Shot::render() {
-    for (int i = 0; i < sprites.size(); i++) {
+    for (unsigned int i = 0; i < sprites.size(); i++) {
         sprites[i]->render();
     }
 }
@@ -82,6 +88,9 @@ void Shot::deleteAll() {
     for (int i = shots.size() - 1; i >= 0; i--) {
         shots.erase(shots.begin() + i);
         sprites[i]->free();
+        if (sprites[i] != NULL) {
+            delete sprites[i];
+        }
         sprites.erase(sprites.begin() + i);
     }
 }

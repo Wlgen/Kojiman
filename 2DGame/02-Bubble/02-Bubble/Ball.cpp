@@ -21,7 +21,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
         balls[0].Catch = true;
         balls[0].cont = 0;
     }
-    player = Player::getInstance();
+    player = &Player::getInstance();
     rend = true;
     contTime = 0;
 }
@@ -259,7 +259,7 @@ void Ball::update(int deltaTime) {
 
 void Ball::render() { 
     if (rend) {
-        for (int i = 0; i < sprites.size(); i++) {
+        for (unsigned int i = 0; i < sprites.size(); i++) {
             sprites[i]->render();
         }
         kameIns->render();
@@ -288,10 +288,11 @@ void Ball::stop(bool death) {
     for (int i = balls.size() - 1; i >= 1; i--) {
         balls.erase(balls.begin() + i);
         sprites[i]->free();
+        delete sprites[i];
         sprites.erase(sprites.begin() + i);
         player->deleteInfoBall(i);
     }
-    for (int i = 0; i < balls.size(); i++) {
+    for (unsigned int i = 0; i < balls.size(); i++) {
         balls[i].vel = glm::vec2(0, 0);
         balls[i].Catch = true;
         balls[i].cont = 0;

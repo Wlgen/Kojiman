@@ -13,7 +13,7 @@ void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
                         float(tileMapDispl.y + posPU.y)));
 
-    player = Player::getInstance();
+    player = &Player::getInstance();
     firstTime = 0;
 }
 
@@ -25,7 +25,7 @@ void PowerUp::update(int deltaTime) {
             if (!rend) {
                 firstTime = 0;
                 rend = true;
-                PowerUp::initSrpite();
+                initSrpite();
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + 10),
                                               float(tileMapDispl.y + 1)));
             }
@@ -94,6 +94,10 @@ void PowerUp::initSrpite() {
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
 
+    if (sprite != NULL) {
+        sprite->free();
+        delete sprite;
+    }
     sprite = Sprite::createSprite(sizePU, glm::vec2(0.25, 0.5),
                                   &spritesheet, &texProgram);
     sprite->setNumberAnimations(7);

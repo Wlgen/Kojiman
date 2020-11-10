@@ -8,6 +8,8 @@ void Kame::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     tileMapDispl = tileMapPos;
     texProgram = &shaderProgram;
     spritesheet.loadFromFile("images/KameQueue.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    spritesheet.setMinFilter(GL_NEAREST);
+    spritesheet.setMagFilter(GL_NEAREST);
 }
 
 void Kame::update(int deltatime) {
@@ -24,7 +26,9 @@ void Kame::update(int deltatime) {
     for (int j = posDelete.size() - 1; j >= 0; j--) {
         int pos = posDelete[j];
         kames.erase(kames.begin() + pos);
-        delete sprites[pos];
+        sprites[pos]->free();
+        if (sprites[pos] != NULL)
+            delete sprites[pos];
         sprites.erase(sprites.begin() + pos);
     }
 }
@@ -40,17 +44,20 @@ void Kame::addKame(const glm::ivec2& posPlayer) {
 }
 
 void Kame::render() {
-    for (int i = 0; i < sprites.size(); i++) {
+    for (unsigned int i = 0; i < sprites.size(); i++) {
         sprites[i]->render();
     }
 }
 
 void Kame::deleteAll() {
     for (int i = kames.size() - 1; i >= 0; i--) {
-        kames.erase(kames.begin() + i);
+        //kames.erase(kames.begin() + i);
+        sprites[i]->free();
         delete sprites[i];
         sprites.erase(sprites.begin() + i);
     }
+    kames.clear();
+    posDelete.clear();
 }
 
 void Kame::initSprite() {
