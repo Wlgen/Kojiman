@@ -23,7 +23,7 @@ class Menu {
     ShaderProgram texProgram;
     glm::mat4 projection;
     Background *background;
-    Texture tex[4];
+    Texture tex[5];
 };
 
 #endif  // _MENU_INCLUDE_

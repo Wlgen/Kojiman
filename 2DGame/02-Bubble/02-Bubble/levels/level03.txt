@@ -74,9 +74,9 @@ images/bloques.png 	-- Tilesheet
 3   aaaaaaaaaaaaaaaaaaaaaa   3
 3     ffffffffffffffffff     3
 3       eeeeeeeeeeeeee       3
+3       gg                   3
+3       gg                   3
 3                            3
-3           bb          cc   3
-3           bb          cc   3
 3                            3
 3                            3
 3                            3

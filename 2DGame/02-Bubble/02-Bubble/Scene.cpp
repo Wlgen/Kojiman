@@ -85,6 +85,14 @@ void Scene::update(int deltaTime) {
         }
         interLevelTime += deltaTime;
     }
+    if ((mapChange + 1) * 24 == Score::instance().getFood()) {
+        ++mapChange;
+        if (mapChange > 2) {
+            Game::instance().iWin();
+        } else {
+            changeLevel(mapChange);
+        }
+    }
     currentTime += deltaTime;
     player->update(deltaTime);
     pu->update(deltaTime);

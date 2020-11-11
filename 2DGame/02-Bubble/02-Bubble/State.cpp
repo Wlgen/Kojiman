@@ -46,6 +46,11 @@ void State::toDead() {
     actual_state = state::dead;
 }
 
+void State::toWin() {
+    previous_state = actual_state;
+    actual_state = state::win;
+}
+
 State::state State::getPreviousState() {
     return previous_state;
 }
