@@ -3,7 +3,7 @@
 
 class State {
    public:
-    enum class state { menu, play, dead, credits, instr };
+    enum class state { menu, play, dead, win, credits, instr };
 
     State();
     ~State();
@@ -15,6 +15,7 @@ class State {
     void toPlay();
     void toInst();
     void toDead();
+    void toWin();
     state getState();
     state getPreviousState();
 

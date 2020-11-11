@@ -13,6 +13,7 @@ void Game::init() {
     loopMusic("music/Menu.wav");
     godMode = false;
     first = true;
+    win = false;
 }
 
 bool Game::update(int deltaTime) {
@@ -35,7 +36,17 @@ bool Game::update(int deltaTime) {
             deadTime = 0;
             loopMusic("music/gameover.wav");
         }
-        if (deadTime >= 5000) {
+        if (deadTime >= 10000) {
+            gState.toCredits();
+        }
+        deadTime += deltaTime;
+    } else if (gState.getState() == State::state::win) {
+        if(gState.getPreviousState() == State::state::play) {
+            gState.toWin();
+            deadTime = 0;
+            loopMusic("music/gameover.wav");
+        }
+        if (deadTime >= 10000) {
             gState.toCredits();
         }
         deadTime += deltaTime;
@@ -115,6 +126,7 @@ bool Game::getKey(int key) const { return keys[key]; }
 bool Game::getSpecialKey(int key) const { return specialKeys[key]; }
 
 void Game::restart(bool death) { 
+    win = false;
     Score::instance().reset(death);
     if (Score::instance().getLives() == -1) {
         pause(false);
@@ -162,4 +174,10 @@ void Game::changeLevel(int level) {
 
 bool Game::isGodMode() {
     return godMode;
+}
+
+void Game::iWin() {
+    gState.toWin();
+    pause(false);
+    win = true;
 }

@@ -25,6 +25,9 @@ void Menu::init() {
     tex[3].loadFromFile("images/udedbro.png", TEXTURE_PIXEL_FORMAT_RGBA);
     tex[3].setMinFilter(GL_NEAREST);
     tex[3].setMagFilter(GL_NEAREST);
+    tex[4].loadFromFile("images/win.png", TEXTURE_PIXEL_FORMAT_RGBA);
+    tex[4].setMinFilter(GL_NEAREST);
+    tex[4].setMagFilter(GL_NEAREST);
     projection = glm::ortho(0.f, float(639), float(479), 0.f);
 }
 
@@ -48,6 +51,10 @@ void Menu::render(State::state state) {
             break;
         case State::state::dead:
             background->render(tex[3], modelview);
+            break;
+        case State::state::win:
+            background->render(tex[4], modelview);
+            break;
     }
 }
 
