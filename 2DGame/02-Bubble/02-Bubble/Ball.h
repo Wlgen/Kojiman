@@ -15,6 +15,7 @@ class Ball {
         glm::ivec2 vel;
         bool Catch;
         int cont;
+        bool rendered;
     };
 
    public:
@@ -39,8 +40,8 @@ class Ball {
 
     void addBall();
 
-    void initSprite();
-    void initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel);
+    void initSprite(Sprite* sprite);
+    ball initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel);
 
     bool Catch, paused, puCatch, skip, rend, godMode, kame, kameActivated, firstKame;
     int movX, movY, contTime;
