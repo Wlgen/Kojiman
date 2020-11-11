@@ -25,6 +25,7 @@ class Police {
     void toggleGodMode();
 
     void setPauseFalse();
+    void setPauseTrue();
 
    private:
     void initSrpite();

@@ -70,19 +70,19 @@ void Scene::init() {
 
 void Scene::update(int deltaTime) {
     if (inTransition) {
-        if (transitionTime == 0 && !pause) togglePause(false);
+        if (transitionTime == 0) setPauseTrue();
         else if (transitionTime >= map->getTileSize() * map->getMapSize().y) {
-            if (pause)
-                togglePause(false);
+            setPauseFalse();
             outOfTransition();
         }
         transitionTime += deltaTime;
     }
     if (interLevelTransition) {
-        if (interLevelTime == 0 && !pause) togglePause(false);
+        if (interLevelTime == 0) {
+            setPauseTrue();
+        }
         else if (interLevelTime >= 2500) {
-            if (pause)
-                togglePause(false);
+            setPauseFalse();
             outOfInterLevelTransition();
         }
         interLevelTime += deltaTime;
@@ -186,7 +186,8 @@ void Scene::restart(bool death) {
     if (!death) {
         Game::instance().loopMusic("music/kirbySong.wav");
         map->restart();
-        setPauseFalse();
+        changeLevel(0);
+        //setPauseFalse();
     }
 }
 
@@ -232,7 +233,7 @@ void Scene::getInTransitionDown() {
 void Scene::outOfTransition() {
     // Game::instance().loopMusic("music/kirbySong.wav");
     inTransition = false;
-    if (resetPushTransition) togglePause(false);
+    if (resetPushTransition) setPauseFalse();
 }
 
 void Scene::outOfInterLevelTransition() {
@@ -279,4 +280,11 @@ void Scene::changeLevel(int level) {
     ball->setPolice(police);
     pu->setBall(ball);
     intoInterLevelTransition();
+}
+
+void Scene::setPauseTrue() {
+    player->setPauseTrue();
+    ball->setPauseTrue();
+    pu->setPauseTrue();
+    police->setPauseTrue();
 }
