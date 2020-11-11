@@ -190,10 +190,10 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
                 if ((posObj.y + sizeBall.y >= posPlayer.y)
-                    && ((posObj.y + sizeBall.y <= posPlayer.y+3))) {
+                    && ((posObj.y + sizeBall.y <= posPlayer.y))) {
                     if (pos != -1) {
                         int y1 = int(infoBalls[pos].prePosition.y) + sizeBall.y - 1;
-                        if (y1 < posPlayer.y + 3) {
+                        if (y1 < posPlayer.y) {
                             calcRebBall(pos);
                             return true;
                         }
@@ -288,7 +288,7 @@ void Player::calcRebBall(int pos) {
         varSize -= sizePart * 2;
         sizePart = varSize / (4 / (i + 1));
     }
-    if (midBall < rebPlay[0]) {
+    if (midBall < rebPlay[0]-2) {
         infoBalls[pos].reb = glm::ivec2(-3, -1);
     }
     else if (midBall < rebPlay[1]) {
@@ -297,7 +297,7 @@ void Player::calcRebBall(int pos) {
         infoBalls[pos].reb = glm::ivec2(-1, -3);
     } else if (midBall < rebPlay[3]) {
         infoBalls[pos].reb = glm::ivec2(1, -3);
-    } else if (midBall <= rebPlay[4]) {
+    } else if (midBall <= rebPlay[4]+2) {
         infoBalls[pos].reb = glm::ivec2(3, -3);
     } else {
         infoBalls[pos].reb = glm::ivec2(3, -1);

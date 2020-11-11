@@ -61,6 +61,7 @@ void Ball::update(int deltaTime) {
                         sizeBall))
                         balls[i].pos =
                         glm::vec2(posNew, balls[i].pos.y);
+                        player->setBallPosition(balls[i].pos, i);
                     if (kame) {
                         balls[i].pos =
                             glm::vec2(balls[i].pos.x, balls[i].pos.y + despl.y);
@@ -83,7 +84,10 @@ void Ball::update(int deltaTime) {
                         contTime = 0;
                         balls[i].Catch = false;
                         /*if (godMode) balls[i].vel = glm::ivec2(0, -3);
-                        else*/ //balls[i].vel = glm::ivec2(1, -3);
+                         player->setBallPosition(balls[i].pos, i);
+                        else*/ 
+                        player->setBallPosition(balls[i].pos, i);
+                        balls[i].vel = player->getRebBall(i);
                         balls[i].cont = 0;
                         // if (!balls[i].Catch) {
                     }
@@ -123,14 +127,15 @@ void Ball::update(int deltaTime) {
                             }
                             balls[i].vel = player->getRebBall(i);
                             // if (movY > 0) movY = -movY;
-                            if (puCatch) {
+                            /*if (puCatch) {
                                 balls[i].Catch = true;
                                 balls[i].cont = 0;
-                            }
+                            }*/
                             for (int j = 0; j < checkPlayer.y; j++) {
+                                balls[i].pos.y += balls[i].vel.y;
                                 if (!(map->collisionMoveUp(balls[i].pos, sizeBall,
                                     &balls[i].pos.y))) {
-                                    balls[i].pos.y += balls[i].vel.y;
+                                    balls[i].pos.y -= balls[i].vel.y;
                                 }
                             }
                         }
@@ -142,8 +147,8 @@ void Ball::update(int deltaTime) {
                     int actX = std::abs(balls[i].vel.x);
                     int actY = std::abs(balls[i].vel.y);
                     int collisionBlock = 0;
-                    while ((actX != 0 || actY != 0) && !skip) {
-                        if (actX != 0) {
+                    while ((actX > 0 || actY > 0) && !skip) {
+                        if (actX > 0) {
                             if (actXS)
                                 balls[i].pos.x++;
                             else
@@ -174,7 +179,7 @@ void Ball::update(int deltaTime) {
                                     Game::instance().playSound("music/solid.wav");
                             }
                         }
-                        if (actY != 0) {
+                        if (actY > 0) {
                             if (actYS)
                                 balls[i].pos.y++;
                             else
@@ -268,13 +273,21 @@ void Ball::update(int deltaTime) {
                                     Game::instance().playSound("music/solid.wav");
                             }
                         }
+                        player->setBallPosition(balls[i].pos, i);
+                        bool b = player->collisionWithPlayer(balls[i].pos, i);
+                        if (puCatch && b || kame && b) {
+                            balls[i].Catch = true;
+                            balls[i].cont = 0;
+                            break;
+                        } else if (b) {
+                            balls[i].vel = player->getRebBall(i);                            
+                        }
                     }
                 }
                 if (!skip) {
                     sprites[i]->setPosition(
                         glm::vec2(float(tileMapDispl.x + balls[i].pos.x),
                         float(tileMapDispl.y + balls[i].pos.y)));
-                    player->setBallPosition(balls[i].pos, i);
                     if (!kame) {
                         if (balls[i].vel.x >= 0) {
                             sprites[i]->changeAnimation(0);
