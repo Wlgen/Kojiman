@@ -18,7 +18,7 @@ void Kame::update(int deltatime) {
     posDelete.clear();
     while (i <= maxIt) {
         kames[i].cont += deltatime;
-        if (kames[i].cont >= 1000) {
+        if (kames[i].cont >= 750) {
             posDelete.push_back(i);
         }
         ++i;
