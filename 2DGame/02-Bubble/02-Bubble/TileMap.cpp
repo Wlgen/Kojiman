@@ -64,8 +64,9 @@ void TileMap::render() const {
 
 void TileMap::update(int deltaTime) {
     if (Game::instance().isGodMode()) {
-        if (Game::instance().getKey('k') && actLevel > 0) {
+        if ((Game::instance().getKey('k') || Game::instance().getKey('K')) && actLevel > 0) {
             Game::instance().keyReleased('k');
+            Game::instance().keyReleased('K');
             Game::instance().getSceneInTransitionUp();
             transitionTime = 0;
             inTransition = true;
@@ -73,8 +74,9 @@ void TileMap::update(int deltaTime) {
             --actLevel;
             Score::instance().changeHeight(actLevel);
         }
-        if (Game::instance().getKey('j') && actLevel < numLevels - 1) {
+        if ((Game::instance().getKey('j') ||Game::instance().getKey('J'))  && actLevel < numLevels - 1) {
             Game::instance().keyReleased('j');
+            Game::instance().keyReleased('J');
             Game::instance().getSceneInTransitionDown();
             inTransition = true;
             transitionUp = false;

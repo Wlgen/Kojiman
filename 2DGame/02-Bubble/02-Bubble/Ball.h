@@ -15,6 +15,7 @@ class Ball {
         glm::ivec2 vel;
         bool Catch;
         int cont;
+        bool rendered;
     };
 
    public:
@@ -39,11 +40,11 @@ class Ball {
 
     void addBall();
 
-    void initSprite();
-    void initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel);
+    void initSprite(int i);
+    ball initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel);
 
     bool Catch, paused, puCatch, skip, rend, godMode, kame, kameActivated, firstKame;
-    int movX, movY, contTime;
+    int movX, movY, contTime, ballsRend;
     glm::ivec2 tileMapDispl, posBall, posPlayer, movBall, sizeBall;
     Texture spritesheet;
     vector<Sprite*> sprites;
