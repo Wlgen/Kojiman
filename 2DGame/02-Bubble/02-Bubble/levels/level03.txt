@@ -6,6 +6,49 @@ images/bloques.png 	-- Tilesheet
 3								-- Number of tiles in tilesheet
 333333333333333333333333333333
 3                            3
+3               ggaa         3
+3           ggaagg           3
+3       ggaagg               3
+3       gg                   3
+3       ee                   3
+3       gg     eegggg        3
+3       gg       gggg        3
+3       ee        ee         3
+3        ggeebbeegg          3
+3        ggeebbeegg          3
+3                            3
+3                            3
+3               hhaa         3
+3           hhaahh           3
+3       hhaahh               3
+3       hh                   3
+3       ff                   3
+3       hh     ffhhhh        3
+3       hh       hhhh        3
+3       ee        ff         3
+3        hhffbbffhh          3
+3        hhffbbffhh          3
+3                            3
+3                            3
+3                            3
+3                            3
+3                            3
+3333                      3333
+3333dddddddddddddddddddddd3333
+3                            3
+3                            3
+3      aa        aa          3
+3       aa      aa           3
+3        aa    aa            3
+3         aabbaa             3
+3         aabbaa             3
+3           cc               3
+3           cc               3
+3         aabbaa             3
+3         aabbaa             3
+3        aa    aa            3
+3       aa      aa           3
+3      aa        aa          3
 3                            3
 3                            3
 3                            3
@@ -13,75 +56,32 @@ images/bloques.png 	-- Tilesheet
 3                            3
 3                            3
 3                            3
+3     ee            ee       3
+3     ee            ee       3
+3   ffff            ffff     3
+3 aa                    aa   3
+3 aa                    aa   3
+3 aa                    aa   3
+3                            3
+33333    333      333     3333
+33333dddd333dddddd333ddddd3333
 3                            3
 3                            3
 3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-33         33333333         33
-33ddddddddd33333333ddddddddd33
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                          cc3
-3                          cc3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-3                            3
-33333                     3333
-33333ddddddddddddddddddddd3333
-3                            3
-3                            3
-3                            3
-3       aaaaaaaaaaaaaa       3
+3       eeeeeeeeeeeeee       3
 3     ffffffffffffffffff     3
-3   aaaaaaaaaaaaaaaaaaaaaa   3
-3   aaaaaaaaaaaaaaaaaaaaaa   3
+3   aaaaaaaabbccaaaaaaaaaa   3
+3   aaaaaaaabbccaaaaaaaaaa   3
 3     ffffffffffffffffff     3
 3       eeeeeeeeeeeeee       3
-3       gg                   3
-3       gg                   3
 3                            3
 3                            3
-3                            3
-3                            3
-3                            3
-3                            3
+3      33            33      3
+3      33            33      3
+3      33            33      3
+3      33            33      3
+3      33            33      3
+3      33            33      3
 3                            3
 3                            3
 3                            3
