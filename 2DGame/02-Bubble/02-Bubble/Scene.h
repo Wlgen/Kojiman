@@ -59,6 +59,7 @@ class Scene {
     bool transitionUp;
     bool resetPushTransition;
     bool interLevelTransition = false;
+    bool pause = false;
     Score* score;
 };
 
