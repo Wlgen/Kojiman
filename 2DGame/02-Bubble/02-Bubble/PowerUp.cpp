@@ -45,7 +45,8 @@ void PowerUp::update(int deltaTime) {
                     movY = -movY;
                     posPU.y += movY;
                 }
-                if (player->checkCollisionPU()) {
+                player->setPUPosition(posPU);
+                if (player->checkCollisionPU() || player->collisionWithPlayer(posPU, -1)) {
                     Game::instance().playSound("music/powerup.wav");
                     rend = false;
                     sprite->free();
@@ -64,7 +65,6 @@ void PowerUp::update(int deltaTime) {
                 anim = (anim + 1) % 7;
                 sprite->changeAnimation(anim);
             }
-            player->setPUPosition(posPU);
         } else
             rend = false;
     }
