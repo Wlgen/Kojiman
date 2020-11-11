@@ -7,6 +7,7 @@ void Score::init(glm::vec2& minCoords, ShaderProgram& program) {
     this->minCoords = minCoords;
     this->program = &program;
     scoreHeight = totalScore = totalFood = 0;
+    totalFood = 70;
     scoreLives = 100000;
     multiplier = 1;
     lives = 3;
@@ -161,3 +162,5 @@ void Score::changeLives(int lives) {
 }
 
 int Score::getLives() { return lives; }
+
+int Score::getFood() { return totalFood; }

@@ -42,6 +42,7 @@ public:
     void render();
     void reset(bool death);
     int getLives();
+    int getFood();
 
 private:
 

@@ -54,8 +54,10 @@ class Game {
     void playSound(char* fileName);
     bool isGodMode();
 
+    void iWin();
+
    private:
-    bool bPlay, first;   // Continue to play game?
+    bool bPlay, first, win;   // Continue to play game?
     Scene scene;  // Scene to render
     Menu menu;
     bool keys[256], specialKeys[256], godMode;  // Store key states so that
