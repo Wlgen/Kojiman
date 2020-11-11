@@ -8,7 +8,7 @@
 #define SCREEN_X 0
 #define SCREEN_Y 0
 
-#define INIT_PLAYER_X_TILES 4
+#define INIT_PLAYER_X_TILES 12
 #define INIT_PLAYER_Y_TILES 28
 
 Scene::Scene() {
@@ -244,6 +244,8 @@ void Scene::intoInterLevelTransition() {
 void Scene::changeLevel(int level) {
     mapChange = level;
     Score::instance().changeLevel(level + 1);
+    Score::instance().changeFood(level * 24);
+    Score::instance().changePowerUp(0);
     Game::instance().loopMusic("music/kirbySong.wav");
     if (map != NULL)
         delete map;

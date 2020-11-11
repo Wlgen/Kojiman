@@ -68,10 +68,8 @@ void Score::render() {
 }
 
 void Score::addToFood(int num) {
-    stringstream ss;
     totalFood += num;
-    ss << std::setw(5) << std::setfill('0') << totalFood;
-    words[3]->changeString(ss.str());
+    changeFood(totalFood);
 }
 
 void Score::changePowerUp(int s) {
@@ -167,3 +165,10 @@ void Score::changeLives(int lives) {
 int Score::getLives() { return lives; }
 
 int Score::getFood() { return totalFood; }
+
+void Score::changeFood(int s) {
+    stringstream ss;
+    totalFood = s;
+    ss << std::setw(5) << std::setfill('0') << totalFood;
+    words[3]->changeString(ss.str());
+}

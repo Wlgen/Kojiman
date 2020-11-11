@@ -126,7 +126,7 @@ void PowerUp::initSrpite() {
     sprite->changeAnimation(anim);
 
     posPU.x = 300;
-    posPU.y = 390;
+    posPU.y = 460;
     movX = 1;
     movY = -1;
     mov = 1;
