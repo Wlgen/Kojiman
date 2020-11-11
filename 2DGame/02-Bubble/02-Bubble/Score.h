@@ -37,6 +37,7 @@ public:
     void changePowerUp(int s);
     void changeHeight(int s);
     void changeLevel(int s);
+    void changeFood(int s);
     void changeGodMode(bool godMode);
     int getScoreInHeight();
     void resetScoreHeight();
