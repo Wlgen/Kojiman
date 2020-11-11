@@ -77,22 +77,22 @@ void Game::keyPressed(int key) {
             else scene.init();
             gState.changeState();
         }
-        else if (key == 'c')
+        else if (key == 'c' || key =='C')
             gState.toCredits();
-        else if (key == 'i')
+        else if (key == 'i' || key == 'I')
             gState.toInst();
     } else if (gState.getState() == State::state::credits) {
-        if (key == 'f') {
+        if (key == 'f' || key == 'F') {
             gState.changeState();
         }
         if (key == '1') changeLevel(0);
         if (key == '2') changeLevel(1);
         if (key == '3') changeLevel(2);
     } else if (gState.getState() == State::state::play) {
-        if (key == 'r') restart(false);
+        if (key == 'r' || key == 'R') restart(false);
         //if (key == 'x') gState.changeState();
-        if (key == 'p') pause(false);
-        if (key == 'g') {
+        if (key == 'p' || key == 'P') pause(false);
+        if (key == 'g' || key == 'G') {
             godMode = !godMode;
             Score::instance().changeGodMode(godMode);
             scene.toggleGodMode();
@@ -104,7 +104,7 @@ void Game::keyPressed(int key) {
         }
 
     } else if (gState.getState() == State::state::instr) {
-        if (key == 'm') gState.toMenu();
+        if (key == 'm' || key == 'M') gState.toMenu();
     }
     keys[key] = true;
 }
