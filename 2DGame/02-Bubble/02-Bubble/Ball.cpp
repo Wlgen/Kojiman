@@ -458,3 +458,5 @@ Ball::ball Ball::initBall(bool Catch, glm::ivec2 pos, glm::ivec2 vel) {
 void Ball::setPauseFalse() { paused = false; }
 
 void Ball::toggleGodMode() { godMode = !godMode; }
+
+void Ball::setPauseTrue() { paused = true; }

@@ -26,10 +26,6 @@ bool Game::update(int deltaTime) {
         loopMusic("music/Menu.wav");
     else if (gState.getState() == State::state::credits) {
         loopMusic("music/Credits.wav");
-        if (first && scene.isInitialized()) {
-            //scene.togglePause(false);
-            first = false;
-        }
     } else if (gState.getState() == State::state::dead) {
         if (gState.getPreviousState() == State::state::play) {
             gState.toDead();
@@ -88,10 +84,17 @@ void Game::keyPressed(int key) {
         if (key == '1') changeLevel(0);
         if (key == '2') changeLevel(1);
         if (key == '3') changeLevel(2);
+        if (key == 'r' || key == 'R') {
+            if (scene.isInitialized()) scene.restart(false);
+            else scene.init();
+
+            Score::instance().reset(false);
+            gState.toPlay();
+        }
     } else if (gState.getState() == State::state::play) {
         if (key == 'r' || key == 'R') {
-            scene.changeLevel(0);
             restart(false);
+            scene.changeLevel(0);
         }
         //if (key == 'x') gState.changeState();
         if (key == 'p' || key == 'P') pause(false);
@@ -134,6 +137,7 @@ void Game::restart(bool death) {
     if (Score::instance().getLives() == -1) {
         pause(false);
         gState.toDead();
+        Score::instance().reset(false);
     } else {
         scene.restart(death); 
     }
