@@ -20,6 +20,7 @@ class PowerUp {
     void restart();
     void togglePause();
     void setPauseFalse();
+    void setPauseTrue();
 
     void setBall(Ball* ball);
 

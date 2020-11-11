@@ -48,6 +48,7 @@ class Player {
     void deleteShots();
 
     void setPauseFalse();
+    void setPauseTrue();
 
     glm::ivec2 getPosition();
 

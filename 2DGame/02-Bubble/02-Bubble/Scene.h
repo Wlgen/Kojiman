@@ -29,6 +29,7 @@ class Scene {
     void togglePause(bool player);
     void toggleRend();
     void setPauseFalse();
+    void setPauseTrue();
     void toggleGodMode();
     void getInTransitionUp();
     void getInTransitionDown();

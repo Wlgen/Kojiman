@@ -30,6 +30,7 @@ class Ball {
     void togglePause();
 
     void setPauseFalse();
+    void setPauseTrue();
 
     void applyEffect(int num);
 

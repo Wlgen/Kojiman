@@ -238,3 +238,5 @@ void Police::togglePause() { paused = !paused; }
 void Police::toggleGodMode() { godMode = !godMode; }
 
 void Police::setPauseFalse() { paused = false; }
+
+void Police::setPauseTrue() { paused = true; }

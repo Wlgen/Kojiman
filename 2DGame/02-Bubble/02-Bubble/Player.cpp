@@ -449,3 +449,5 @@ void Player::deleteShots() { shot->deleteAll(); }
 void Player::setPauseFalse() { paused = false; }
 
 bool Player::getActiveAlarm() { return activeAlarm; }
+
+void Player::setPauseTrue() { paused = true; }
