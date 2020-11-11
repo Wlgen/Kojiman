@@ -192,6 +192,9 @@ bool TileMap::loadLevel(const string& levelFile) {
     map = new int[mapSize.x * mapSize.y];
     initMap();
     blocks = vector<Block*>(mapSize.x * mapSize.y);
+    for (int i = 0; i < mapSize.x * mapSize.y; ++i) {
+        blocks[i] = NULL;
+    }
     for (int j = 0; j < mapSize.y; j++) {
         for (int i = 0; i < mapSize.x; i++) {
             fin.get(tile);
