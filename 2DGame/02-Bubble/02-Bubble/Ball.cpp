@@ -244,7 +244,7 @@ void Ball::update(int deltaTime) {
                                 (collisionBlock = map->collisionMoveDown(
                                 balls[i].pos, sizeBall, &balls[i].pos.y)) !=
                                 0) {
-                                balls[i].vel.y = -balls[i].vel.y;
+                                if(!kameActivated)balls[i].vel.y = -balls[i].vel.y;
                                 actYS = (balls[i].vel.y >= 0);
                                 if (activated) {
                                     balls[i].vel.x = -balls[i].vel.x;
