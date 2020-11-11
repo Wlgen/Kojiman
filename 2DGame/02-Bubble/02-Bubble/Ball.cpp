@@ -26,12 +26,14 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
         balls[0].Catch = true;
         balls[0].cont = 0;
     } */
+    posBall = glm::vec2(0, 0);
     for (int i = 0; i < 3; ++i) {
-        initSprite(sprites[i]);
+        initSprite(i);
         balls[i] = initBall(false, posBall, glm::ivec2(0, 0));
     }
     balls[0].Catch = true;
     balls[0].rendered = true;
+    ballsRend = 1;
     player = &Player::getInstance();
     rend = true;
     contTime = 0;
@@ -100,6 +102,7 @@ void Ball::update(int deltaTime) {
                                 for (int k = 0; k < 3; ++k) {
                                     if (k != i) {
                                         balls[k].rendered = false;
+                                        --ballsRend;
                                         //player->deleteInfoBall(k);
                                         //--maxIt;
                                     }
@@ -188,14 +191,10 @@ void Ball::update(int deltaTime) {
                             if (ballreturn =
                                 map->ballOutOfMapDown(balls[i].pos, sizeBall)) {
                                 if (ballreturn == 1) {
-                                    if (balls.size() >= 2) {
-                                        balls.erase(balls.begin() + i);
-                                        sprites[i]->free();
-                                        sprites.erase(sprites.begin() + i);
-                                        player->deleteInfoBall(i);
+                                    if (ballsRend >= 2) {
+                                        --ballsRend;
+                                        balls[i].rendered = false;
                                         skip = true;
-                                        --i;
-                                        --maxIt;
                                     }
                                     else {
                                         if (godMode) {
@@ -210,16 +209,15 @@ void Ball::update(int deltaTime) {
                                 }
                                 else {
                                     balls[i].pos.y = 1;
-                                    for (int k = balls.size() - 1; k >= 0; k--) {
+                                    for (int k = 0; k < 3; ++k) {
                                         if (k != i) {
-                                            balls.erase(balls.begin() + k);
-                                            sprites[k]->free();
-                                            sprites.erase(sprites.begin() + k);
-                                            player->deleteInfoBall(k);
-                                            --maxIt;
+                                            balls[k].rendered = false;
+                                            --ballsRend;
+                                            // player->deleteInfoBall(k);
+                                            //--maxIt;
                                         }
                                     }
-                                    i = 0;
+                                    //i = 0;
                                     player->deleteShots();
                                     kameIns->deleteAll();
                                 }
@@ -227,16 +225,15 @@ void Ball::update(int deltaTime) {
                             else if (ballreturn = map->ballOutOfMapUp(balls[i].pos)) {
                                 balls[i].pos.y =
                                     map->getTileSize() * (map->getMapSize().y) - 25;
-                                for (int k = balls.size() - 1; k >= 0; k--) {
+                                for (int k = 0; k < 3; ++k) {
                                     if (k != i) {
-                                        balls.erase(balls.begin() + k);
-                                        sprites[k]->free();
-                                        sprites.erase(sprites.begin() + k);
-                                        player->deleteInfoBall(k);
-                                        --maxIt;
+                                        balls[k].rendered = false;
+                                        --ballsRend;
+                                        // player->deleteInfoBall(k);
+                                        //--maxIt;
                                     }
                                 }
-                                i = 0;
+                                //i = 0;
                                 player->deleteShots();
                                 kameIns->deleteAll();
                             }
@@ -323,17 +320,21 @@ void Ball::stop(bool death) {
         paused = false;
     }
     contTime = 0;
-    for (int i = balls.size() - 1; i >= 1; i--) {
+    /*for (int i = balls.size() - 1; i >= 1; i--) {
         balls.erase(balls.begin() + i);
         sprites[i]->free();
         delete sprites[i];
         sprites.erase(sprites.begin() + i);
         player->deleteInfoBall(i);
-    }
+    }*/
     for (unsigned int i = 0; i < balls.size(); i++) {
-        balls[i].vel = glm::vec2(0, 0);
-        balls[i].Catch = true;
-        balls[i].cont = 0;
+        if (i == 0) {
+            balls[i].vel = glm::vec2(0, 0);
+            balls[i].Catch = true;
+            balls[i].cont = 0;
+            balls[i].rendered = true;
+        } else
+            balls[i].rendered = false;
     }
     /*delete kameIns;
     kameIns = new Kame();
@@ -341,6 +342,7 @@ void Ball::stop(bool death) {
     kameIns->setTileMap(map);*/
     kameIns->deleteAll();
     kame = kameActivated = puCatch = false;
+    ballsRend = 1;
 }
 
 void Ball::setPolice(Police* police) {
@@ -410,34 +412,36 @@ void Ball::addBall() {
             balls[i].cont = 0;
             balls[i].pos = posBall;
             balls[i].vel = vels;
+            balls[i].rendered = true;
+            ++ballsRend;
             vels = glm::ivec2(1, -2);
         }
     }
 }
 
-void Ball::initSprite(Sprite* sprite) {
-    sprite = Sprite::createSprite(sizeBall, glm::vec2(0.25, 0.5f),
+void Ball::initSprite(int i) {
+    sprites[i] = Sprite::createSprite(sizeBall, glm::vec2(0.25, 0.5f),
                                   &spritesheet, texProgram);
     //int i = sprites.size() - 1;
-    sprite->setNumberAnimations(4);
+    sprites[i]->setNumberAnimations(4);
 
-    sprite->setAnimationSpeed(1, 8);
-    sprite->addKeyframe(1, glm::vec2(0, 0.f));
+    sprites[i]->setAnimationSpeed(1, 8);
+    sprites[i]->addKeyframe(1, glm::vec2(0, 0.f));
 
-    sprite->setAnimationSpeed(0, 8);
-    sprite->addKeyframe(0, glm::vec2(0.25f, 0.f));
+    sprites[i]->setAnimationSpeed(0, 8);
+    sprites[i]->addKeyframe(0, glm::vec2(0.25f, 0.f));
 
-    sprite->setAnimationSpeed(2, 8);
-    sprite->addKeyframe(2, glm::vec2(0.f, 0.5f));
+    sprites[i]->setAnimationSpeed(2, 8);
+    sprites[i]->addKeyframe(2, glm::vec2(0.f, 0.5f));
 
-    sprite->setAnimationSpeed(3, 2);
-    sprite->addKeyframe(3, glm::vec2(0.75f, 0.f));
-    sprite->addKeyframe(3, glm::vec2(0.25f, 0.5f));
-    sprite->addKeyframe(3, glm::vec2(0.5f, 0.0f));
-    sprite->addKeyframe(3, glm::vec2(0.5f, 0.5f));
+    sprites[i]->setAnimationSpeed(3, 2);
+    sprites[i]->addKeyframe(3, glm::vec2(0.75f, 0.f));
+    sprites[i]->addKeyframe(3, glm::vec2(0.25f, 0.5f));
+    sprites[i]->addKeyframe(3, glm::vec2(0.5f, 0.0f));
+    sprites[i]->addKeyframe(3, glm::vec2(0.5f, 0.5f));
 
-    sprite->changeAnimation(0);
-    sprite->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
+    sprites[i]->changeAnimation(0);
+    sprites[i]->setPosition(glm::vec2(float(tileMapDispl.x + posBall.x),
                         float(tileMapDispl.y + posBall.y)));
 }
 

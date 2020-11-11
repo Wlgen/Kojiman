@@ -74,7 +74,7 @@ void Player::update(int deltaTime) {
                 Game::instance().pause(true);
                 Game::instance().toggleRend();
                 restart(false, newPos);
-                Game::instance().stopMusic();
+                //Game::instance().stopMusic();
                 Game::instance().loopMusic("music/kirbySong.wav");
             }
         }

@@ -90,7 +90,7 @@ void Game::keyPressed(int key) {
         if (key == '3') changeLevel(2);
     } else if (gState.getState() == State::state::play) {
         if (key == 'r') restart(false);
-        if (key == 'x') gState.changeState();
+        //if (key == 'x') gState.changeState();
         if (key == 'p') pause(false);
         if (key == 'g') {
             godMode = !godMode;
