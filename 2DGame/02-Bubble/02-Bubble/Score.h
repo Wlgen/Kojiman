@@ -20,6 +20,7 @@
 #define RD 4
 #define GR 5
 #define PK 6
+#define DB 7
 
 class Score {
 public:
