@@ -432,9 +432,9 @@ int TileMap::collisionMoveLeft(const glm::ivec2& pos,
             checkDeleteBlock(y * mapSize.x + x);
             return ret;
         } else if (yHalf < y1) {
-            if (map[y * mapSize.x + x + 1] != 0) {
-                ret = map[y * mapSize.x + x + 1];
-                checkDeleteBlock(y * mapSize.x + x + 1);
+            if (map[(y + 1) * mapSize.x + x] != 0) {
+                ret = map[(y + 1) * mapSize.x + x];
+                checkDeleteBlock((y + 1) * mapSize.x + x);
                 return ret;
             }
         }
@@ -457,9 +457,9 @@ int TileMap::collisionMoveRight(const glm::ivec2& pos,
             checkDeleteBlock(y * mapSize.x + x);
             return ret;
         } else if (yHalf < y1) {
-            if (map[y * mapSize.x + x + 1] != 0) {
-                ret = map[y * mapSize.x + x + 1];
-                checkDeleteBlock(y * mapSize.x + x + 1);
+            if (map[(y + 1) * mapSize.x + x] != 0) {
+                ret = map[(y + 1) * mapSize.x + x];
+                checkDeleteBlock((y + 1) * mapSize.x + x);
                 return ret;
             }
         }
