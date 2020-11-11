@@ -65,7 +65,7 @@ void Kame::initSprite() {
                                            &spritesheet, texProgram));
     sprites[sprites.size() - 1]->setNumberAnimations(1);
 
-    sprites[sprites.size() - 1]->setAnimationSpeed(0, 8);
+    sprites[sprites.size() - 1]->setAnimationSpeed(0, 6);
     sprites[sprites.size() - 1]->addKeyframe(0, glm::vec2(0.f, 0.f));
     sprites[sprites.size() - 1]->addKeyframe(0, glm::vec2(0.f, 0.125f));
     sprites[sprites.size() - 1]->addKeyframe(0, glm::vec2(0.f, 0.25f));

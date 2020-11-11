@@ -17,7 +17,7 @@ class Player {
         glm::vec2 prePosition;
         bool collision;
         int numColl;
-        int despl;
+        glm::vec2 despl;
     };
 
    public:
@@ -53,7 +53,7 @@ class Player {
 
     glm::ivec2 getRebBall(int pos);
 
-    int getDespl(int pos);
+    glm::vec2 getDespl(int pos);
 
     glm::ivec2 getSizePlayer();
     bool getActiveAlarm();

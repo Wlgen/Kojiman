@@ -39,8 +39,8 @@ void Ball::update(int deltaTime) {
             if (balls[i].Catch) {
                 balls[i].cont++;
                 posPlayer = player->getPosition();
-                int despl = player->getDespl(i);
-                int posNew = balls[i].pos.x + despl;
+                glm::vec2 despl = player->getDespl(i);
+                int posNew = balls[i].pos.x + despl.x;
                 if (!map->collisionMoveLeft(glm::vec2(posNew, balls[i].pos.y),
                                            sizeBall) &&
                     !map->collisionMoveRight(glm::vec2(posNew, balls[i].pos.y),
@@ -48,6 +48,8 @@ void Ball::update(int deltaTime) {
                     balls[i].pos =
                         glm::vec2(posNew, balls[i].pos.y);
                 if (kame) {
+                    balls[i].pos =
+                        glm::vec2(balls[i].pos.x, balls[i].pos.y + despl.y);
                     balls[i].cont += deltaTime;
                     if (balls[i].cont >= 2000) {
                         balls[i].Catch = false;
@@ -76,23 +78,26 @@ void Ball::update(int deltaTime) {
                 balls[i].cont += deltaTime;
                 if (checkPlayer.x) {
                     if (kame) {
-                        balls[i].vel = glm::vec2(0, 0);
-                        balls[i].Catch = true;
-                        balls[i].cont = 0;
-                        //sprites[i]->changeAnimation(2);
-                        for (int k = balls.size() - 1; k >= 0; k--) {
-                            if (k != i) {
-                                balls.erase(balls.begin() + k);
-                                sprites[k]->free();
-                                sprites.erase(sprites.begin() + k);
-                                player->deleteInfoBall(k);
-                                --maxIt;
+                        if (firstKame) {
+                            firstKame = false;
+                            balls[i].vel = glm::vec2(0, 0);
+                            balls[i].Catch = true;
+                            balls[i].cont = 0;
+                            // sprites[i]->changeAnimation(2);
+                            for (int k = balls.size() - 1; k >= 0; k--) {
+                                if (k != i) {
+                                    balls.erase(balls.begin() + k);
+                                    sprites[k]->free();
+                                    sprites.erase(sprites.begin() + k);
+                                    player->deleteInfoBall(k);
+                                    --maxIt;
+                                }
                             }
+                            i = 0;
+                            sprites[i]->changeAnimation(3);
+                            // skip = true;
+                            Game::instance().playSound("music/prepareKame.wav");
                         }
-                        i = 0;
-                        sprites[i]->changeAnimation(3);
-                        //skip = true;
-                        Game::instance().playSound("music/prepareKame.wav");
                     }
                     /*if (godMode) balls[i].vel = glm::ivec2(0, -3)
                     else*/
@@ -159,6 +164,12 @@ void Ball::update(int deltaTime) {
                             balls[i].pos.y--;
                         if (kameActivated) kameIns->addKame(balls[i].pos);
                         --actY;
+                        if (kameActivated && map->collisionPUUp(balls[i].pos, sizeBall)) {
+                            sprites[i]->changeAnimation(0);
+                            kame = false;
+                            kameActivated = false;
+                            firstKame = false;
+                        }
                         int ballreturn;
                         if (ballreturn =
                                 map->ballOutOfMapDown(balls[i].pos, sizeBall)) {
@@ -193,6 +204,7 @@ void Ball::update(int deltaTime) {
                                 }
                                 i = 0;
                                 player->deleteShots();
+                                kameIns->deleteAll();
                             }
                         } else if (ballreturn = map->ballOutOfMapUp(balls[i].pos)) {
                             balls[i].pos.y =
@@ -208,6 +220,7 @@ void Ball::update(int deltaTime) {
                             }
                             i = 0;
                             player->deleteShots();
+                            kameIns->deleteAll();
                         } else if ((collisionBlock = map->collisionMoveUp(
                                         balls[i].pos, sizeBall,
                                         &balls[i].pos.y)) !=
@@ -319,30 +332,37 @@ void Ball::applyEffect(int num) {
     switch (num) {
         case 0:
            //sprites[0]->changeAnimation(YELLOW);
+            kame = kameActivated = false;
             puCatch = false;
             break;
         case 1:
             //sprites[0]->changeAnimation(BLUE);
+            kame = kameActivated = false;
             puCatch = true;
             break;
         case 2:
             //sprites[0]->changeAnimation(RED);
+            kame = kameActivated = false;
             addBall();
             break;
         case 3:
             // ball->applyEffect();
+            kame = kameActivated = false;
             puCatch = false;
             break;
         case 4:
             // sprites[0]->changeAnimation(RED);
+            kame = kameActivated = false;
             puCatch = false;
             break;
         case 5:
             // sprites[0]->changeAnimation(RED);
+            kame = kameActivated = false;
             //puCatch = false;
             break;
         case 6:
             kame = true;
+            firstKame = true;
         default:
             break;
     }
