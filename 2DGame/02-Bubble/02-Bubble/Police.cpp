@@ -11,6 +11,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     paused = false;
     first = true;
     activated = false;
+    preH = 0;
     for (int i = 0; i < 3; i++) {
         flatAlarm.push_back(false);
     }
@@ -33,6 +34,10 @@ void Police::update(int deltaTime) {  // canviar
         if (player->getActiveAlarm()) startPolice();
         sprite->update(deltaTime);
         int h = map->getActLevel();
+        if (h != preH) {
+            rend = false;
+            preH = h;
+        }
         if (flatAlarm[h]) { //simplemente cambiar esto por el bool que indique el chocque con la alarma alarma
             if (!rend) {
                 rend = true;
@@ -224,6 +229,7 @@ void Police::restart() {
     first = true;
     activated = false;
     firstTime = 0;
+    preH = 0;
 }
 
 void Police::startPolice() {

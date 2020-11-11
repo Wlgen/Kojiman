@@ -181,8 +181,8 @@ glm::ivec2 Player::getPosition() { return posPlayer; }
 bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
     int x0, x1, xp, xp1;
 
-    x0 = posObj.x;                     // / tileSize;
-    x1 = (posObj.x + sizeBall.x - 1); // / tileSize;
+    x0 = posObj.x + 4;                     // / tileSize;
+    x1 = (posObj.x + sizeBall.x - 4); // / tileSize;
 
     xp = posPlayer.x; // / tileSize;
     xp1 = (posPlayer.x + sizePlayer.x - 1); // / tileSize;
@@ -203,13 +203,13 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
                 }
             }
         }
-    }
+   }
 
     return false;
 }
 
 void Player::applyEffect(int num) {
-    if (big && ((num != 2) || (num != 4) ||(num != 5))) initNormalSprite();
+    if (big && ((num == 3) || (num == 1) || (num == 6) ||(num == 0))) initNormalSprite();
     switch (num) {
         case 0:
             shoot = false;

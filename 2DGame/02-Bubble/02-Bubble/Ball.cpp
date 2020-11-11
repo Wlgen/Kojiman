@@ -29,7 +29,7 @@ void Ball::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     posBall = glm::vec2(0, 0);
     for (int i = 0; i < 3; ++i) {
         initSprite(i);
-        balls[i] = initBall(false, posBall, glm::ivec2(0, 0));
+        balls[i] = initBall(false, posBall, glm::ivec2(1, -3));
     }
     balls[0].Catch = true;
     balls[0].rendered = true;
@@ -185,6 +185,7 @@ void Ball::update(int deltaTime) {
                                 sprites[i]->changeAnimation(0);
                                 kame = false;
                                 kameActivated = false;
+                                kameIns->deleteAll();
                                 firstKame = false;
                             }
                             int ballreturn;
@@ -329,7 +330,7 @@ void Ball::stop(bool death) {
     }*/
     for (unsigned int i = 0; i < balls.size(); i++) {
         if (i == 0) {
-            balls[i].vel = glm::vec2(0, 0);
+            balls[i].vel = glm::vec2(1, -3);
             balls[i].Catch = true;
             balls[i].cont = 0;
             balls[i].rendered = true;
@@ -390,6 +391,7 @@ void Ball::applyEffect(int num) {
         case 6:
             kame = true;
             firstKame = true;
+            puCatch = false;
         default:
             break;
     }

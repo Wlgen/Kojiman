@@ -32,7 +32,7 @@ class Police {
 
    private:
     bool rend, persecution, begin, paused, first, godMode, skipX, skipY, activated;
-    int movX, movY, Xmov, Ymov, tileSize, firstTime;
+    int movX, movY, Xmov, Ymov, tileSize, firstTime, preH;
     glm::ivec2 tileMapDispl, posPolice, posPlayer, sizePolice, posIni;
     vector<bool> flatAlarm; 
     Texture spritesheet;
