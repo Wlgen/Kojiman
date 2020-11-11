@@ -70,17 +70,19 @@ void Scene::init() {
 
 void Scene::update(int deltaTime) {
     if (inTransition) {
-        if (transitionTime == 0) togglePause(false);
+        if (transitionTime == 0 && !pause) togglePause(false);
         else if (transitionTime >= map->getTileSize() * map->getMapSize().y) {
-            togglePause(false);
+            if (pause)
+                togglePause(false);
             outOfTransition();
         }
         transitionTime += deltaTime;
     }
     if (interLevelTransition) {
-        if (interLevelTime == 0) togglePause(false);
+        if (interLevelTime == 0 && !pause) togglePause(false);
         else if (interLevelTime >= 2500) {
-            togglePause(false);
+            if (pause)
+                togglePause(false);
             outOfInterLevelTransition();
         }
         interLevelTime += deltaTime;
@@ -191,6 +193,7 @@ void Scene::restart(bool death) {
 bool Scene::isInitialized() { return initialized; }
 
 void Scene::togglePause(bool player) {
+    pause = !pause;
     if (!player)
         this->player->togglePause();
     ball->togglePause();

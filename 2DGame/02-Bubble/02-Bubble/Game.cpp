@@ -89,7 +89,10 @@ void Game::keyPressed(int key) {
         if (key == '2') changeLevel(1);
         if (key == '3') changeLevel(2);
     } else if (gState.getState() == State::state::play) {
-        if (key == 'r' || key == 'R') restart(false);
+        if (key == 'r' || key == 'R') {
+            scene.changeLevel(0);
+            restart(false);
+        }
         //if (key == 'x') gState.changeState();
         if (key == 'p' || key == 'P') pause(false);
         if (key == 'g' || key == 'G') {
