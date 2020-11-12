@@ -390,7 +390,7 @@ void Ball::applyEffect(int num) {
 }
 
 void Ball::addBall() {
-    glm::ivec2 vels(-1, 1);
+    glm::ivec2 vels(-1, 4);
     for (int i = 0; i < 3; ++i) {
         if (balls[i].rendered)
             posBall = balls[i].pos;
@@ -404,7 +404,7 @@ void Ball::addBall() {
             balls[i].rendered = true;
             player->setBallPosition(balls[i].pos, i);
             ++ballsRend;
-            vels = glm::ivec2(1, -2);
+            vels = glm::ivec2(3, -4);
         }
     }
 }
