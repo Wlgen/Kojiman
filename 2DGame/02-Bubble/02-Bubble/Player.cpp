@@ -28,8 +28,8 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     first = true;
     sizeBall = glm::vec2(18.f, 18.f);
     anim = timeShot = 0;
-    velX = 4;
-    velY = 4;
+    velX = 5;
+    velY = 5;
 }
 
 void Player::update(int deltaTime) {
@@ -131,7 +131,7 @@ void Player::update(int deltaTime) {
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                                     float(tileMapDispl.y + posPlayer.y)));
-                for (unsigned int i = 0; i < infoBalls.size(); i++) {
+                for (unsigned int i = 0; i < infoBalls.size(); ++i) {
                     if (!infoBalls[i].collision) {
                         infoBalls[i].collision = collisionWithPlayer(infoBalls[i].pos, i);
                         infoBalls[i].numColl = 1;
@@ -244,7 +244,7 @@ void Player::setBallPosition(glm::vec2 pos, int i) {
 void Player::setPUPosition(glm::vec2 pos) { posPU = pos; }
 
 void Player::restart(bool death, glm::vec2 pos) {
-    velX = velY = 4;
+    velX = velY = 5;
     this->death = death;
     newPos = pos;
     count = shoot = collisionPU = shoot = false;

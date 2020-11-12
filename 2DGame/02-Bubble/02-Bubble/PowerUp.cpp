@@ -54,6 +54,7 @@ void PowerUp::update(int deltaTime) {
                     ball->applyEffect(anim);
                     Score::instance().changePowerUp(anim);
                     Score::instance().resetScoreHeight();
+                    player->setPUPosition(glm::vec2(0, 0));
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPU.x),
                                               float(tileMapDispl.y + posPU.y)));
