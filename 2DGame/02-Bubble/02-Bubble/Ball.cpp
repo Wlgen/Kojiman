@@ -54,17 +54,20 @@ void Ball::update(int deltaTime) {
                     balls[i].cont++;
                     posPlayer = player->getPosition();
                     glm::vec2 despl = player->getDespl(i);
-                    int posNew = balls[i].pos.x + despl.x;
-                    if (!map->collisionMoveLeft(glm::vec2(posNew, balls[i].pos.y),
-                        sizeBall) &&
-                        !map->collisionMoveRight(glm::vec2(posNew, balls[i].pos.y),
-                        sizeBall))
-                        balls[i].pos =
-                        glm::vec2(posNew, balls[i].pos.y);
-                        player->setBallPosition(balls[i].pos, i);
+                    balls[i].pos.x += despl.x;
+                    if (map->collisionMoveLeft(glm::vec2(balls[i].pos.x, balls[i].pos.y),
+                        sizeBall) ||
+                        map->collisionMoveRight(
+                            glm::vec2(balls[i].pos.x, balls[i].pos.y),
+                            sizeBall)) {
+                        if (!kame && balls[i].Catch) {
+                            balls[i].Catch = false;
+                            balls[i].pos.x -= despl.x;
+                        }
+                    }
+                    player->setBallPosition(balls[i].pos, i);
                     if (kame) {
-                        balls[i].pos =
-                            glm::vec2(balls[i].pos.x, balls[i].pos.y + despl.y);
+                        balls[i].pos.y += despl.y;
                         balls[i].cont += deltaTime;
                         if (balls[i].cont >= 2000) {
                             balls[i].Catch = false;
@@ -174,9 +177,11 @@ void Ball::update(int deltaTime) {
                                 }
                                 else if (collisionBlock == 12) {
 
+                                } else {
+                                    Game::instance().playSound(
+                                        "music/solid.wav");
+                                    if (puCatch) balls[i].Catch = false;
                                 }
-                                else
-                                    Game::instance().playSound("music/solid.wav");
                             }
                         }
                         if (actY > 0) {
@@ -278,9 +283,31 @@ void Ball::update(int deltaTime) {
                         if (puCatch && b || kame && b) {
                             balls[i].Catch = true;
                             balls[i].cont = 0;
+                            Game::instance().playSound("music/bleep.wav");
+                            if (firstKame) {
+                                firstKame = false;
+                                balls[i].vel = glm::vec2(0, 0);
+                                balls[i].Catch = true;
+                                balls[i].cont = 0;
+                                // sprites[i]->changeAnimation(2);
+                                for (int k = 0; k < 3; ++k) {
+                                    if (k != i) {
+                                        balls[k].rendered = false;
+                                        --ballsRend;
+                                        // player->deleteInfoBall(k);
+                                        //--maxIt;
+                                    }
+                                }
+                                // i = 0;
+                                sprites[i]->changeAnimation(3);
+                                // skip = true;
+                                Game::instance().playSound(
+                                    "music/prepareKame.wav");
+                            }
                             break;
                         } else if (b) {
-                            balls[i].vel = player->getRebBall(i);                            
+                            balls[i].vel = player->getRebBall(i);
+                            Game::instance().playSound("music/bleep.wav");
                         }
                     }
                 }
