@@ -16,9 +16,7 @@ class Police {
     void setPosition(const glm::vec2& pos);
 
     bool PoliceCatchPlayer();
-
     void restart();
-
     void startPolice();
 
     void togglePause();

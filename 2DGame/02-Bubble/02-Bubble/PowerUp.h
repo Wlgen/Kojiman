@@ -24,8 +24,6 @@ class PowerUp {
 
     void setBall(Ball* ball);
 
-    // static int getActualEffect();
-
    private:
     void initSrpite();
 
