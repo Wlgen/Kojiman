@@ -4,7 +4,6 @@
 void PowerUp::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     collisionPlayer = paused = false;
     rend = false;
-    // actualEffect = 0;
     texProgram = shaderProgram;
     PowerUp::initSrpite();
 
@@ -51,7 +50,6 @@ void PowerUp::update(int deltaTime) {
                     rend = false;
                     sprite->free();
                     firstTime = 0;
-                    // actualEffect = anim;
                     player->applyEffect(anim);
                     ball->applyEffect(anim);
                     Score::instance().changePowerUp(anim);
@@ -131,10 +129,6 @@ void PowerUp::initSrpite() {
     movY = -1;
     mov = 1;
 }
-
-/*int PowerUp::getActualEffect() {
-        return actualEffect;
-} */
 
 void PowerUp::restart() {
     paused = false;

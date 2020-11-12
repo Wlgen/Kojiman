@@ -11,7 +11,6 @@
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
 
-//enum PlayerAnims { STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT };
 enum PlayerStates { YELLOW, RED, BLUE };
 enum PlayerDeath { YELLOW_DIES, RED_DIES, BLUE_DIES };
 enum PlayerBig { BIG_DIES, BIG_LIVES };
@@ -43,7 +42,7 @@ void Player::update(int deltaTime) {
             infoBalls[i].despl = glm::vec2(0, 0);
 
         }
-        //collisionBall = false;
+
         collisionPU = false;
         if (death) {
             if (first) {
@@ -74,7 +73,6 @@ void Player::update(int deltaTime) {
                 Game::instance().pause(true);
                 Game::instance().toggleRend();
                 restart(false, newPos);
-                //Game::instance().stopMusic();
                 Game::instance().loopMusic("music/kirbySong.wav");
             }
         }
@@ -92,12 +90,9 @@ void Player::update(int deltaTime) {
             }
             for (int k = 0; k < velY; k++) {
                 if (Game::instance().getSpecialKey(GLUT_KEY_LEFT)) {
-                    /*if (sprite->animation() != MOVE_LEFT)
-                        sprite->changeAnimation(MOVE_LEFT);*/
                     posPlayer.x -= 1;
                     if (map->collisionPlayerLeft(posPlayer, sizePlayer)) {
                         posPlayer.x += 1;
-                        // sprite->changeAnimation(STAND_LEFT);
                     } else {
                         for (unsigned int j = 0; j < infoBalls.size(); j++) {
                             infoBalls[j].despl.x--;
@@ -105,23 +100,15 @@ void Player::update(int deltaTime) {
                     }
                 }
                 else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT)) {
-                    /*if (sprite->animation() != MOVE_RIGHT)
-                        sprite->changeAnimation(MOVE_RIGHT);*/
                     posPlayer.x += 1;
                     if (map->collisionPlayerRight(posPlayer, sizePlayer)) {
                         posPlayer.x -= 1;
-                        // sprite->changeAnimation(STAND_RIGHT);
                     } else {
                         for (unsigned int j = 0; j < infoBalls.size(); j++) {
                             infoBalls[j].despl.x++;
                         }
                     }
-                } /*else {
-                    if (sprite->animation() == MOVE_LEFT)
-                        sprite->changeAnimation(STAND_LEFT);
-                    else if (sprite->animation() == MOVE_RIGHT)
-                        sprite->changeAnimation(STAND_RIGHT);
-                }*/
+                }
                 if (Game::instance().getSpecialKey(GLUT_KEY_UP)) {
                     posPlayer.y -= 1;
                     if (map->collisionPlayerUp(posPlayer, sizePlayer)) {
@@ -152,7 +139,6 @@ void Player::update(int deltaTime) {
                 }
                 if (!collisionPU) {
                     collisionPU = collisionWithPlayer(posPU, -1);
-                    //posPU = glm::vec2(-5, -5);
                 }
             }
         }
@@ -181,11 +167,11 @@ glm::ivec2 Player::getPosition() { return posPlayer; }
 bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
     int x0, x1, xp, xp1;
 
-    x0 = posObj.x + 4;                     // / tileSize;
-    x1 = (posObj.x + sizeBall.x - 4); // / tileSize;
+    x0 = posObj.x + 4;                    
+    x1 = (posObj.x + sizeBall.x - 4);
 
-    xp = posPlayer.x; // / tileSize;
-    xp1 = (posPlayer.x + sizePlayer.x - 1); // / tileSize;
+    xp = posPlayer.x;
+    xp1 = (posPlayer.x + sizePlayer.x - 1);
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
@@ -198,12 +184,10 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
                         }
                     }else
                          return true;
-                    //}
                 }
             }
         }
    }
-
     return false;
 }
 
@@ -231,7 +215,6 @@ void Player::applyEffect(int num) {
             shoot = false;
             if (!big) initBigSprite();
             big = true;
-            // ball->applyEffect();
             break;
         case 5:
             break;

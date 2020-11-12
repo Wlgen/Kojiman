@@ -382,13 +382,8 @@ void TileMap::checkDeleteBlock(int pos) const {
             }
         }
         if (blocks[pos] != NULL) pos = pos;
-        //else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
-        //else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
-        //else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
-        //else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
         else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
-        //else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
         else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
         if (blocks[pos]->disableRender()) {
             map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
@@ -404,13 +399,8 @@ void TileMap::checkDeleteBlock(int pos) const {
             Score::instance().addToFood(1);
         }
         if (blocks[pos] != NULL) pos = pos;
-        //else if (blocks[pos + 1] != NULL) pos = pos + 1;
         else if (blocks[pos - 1] != NULL) pos = pos - 1;
-        //else if (blocks[pos + mapSize.x] != NULL) pos = pos + mapSize.x;
-        //else if (blocks[pos + mapSize.x + 1] != NULL) pos = pos + mapSize.x + 1;
-        //else if (blocks[pos + mapSize.x - 1] != NULL) pos = pos + mapSize.x - 1;
         else if (blocks[pos - mapSize.x] != NULL) pos = pos - mapSize.x;
-        //else if (blocks[pos - mapSize.x + 1] != NULL) pos = pos - mapSize.x + 1;
         else if (blocks[pos - mapSize.x - 1] != NULL) pos = pos - mapSize.x - 1;
         if (blocks[pos]->disableRender()) {
             map[pos] = map[pos + 1] = map[pos + mapSize.x] = map[pos + mapSize.x + 1] = 0;
@@ -502,7 +492,6 @@ int TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size,
     for (int x = xHalf; x >= x0; --x) {
         if (map[y * mapSize.x + x] != 0) {
             if (*posY - tileSize * y + size.y <= 4) {
-                //*posY = tileSize * y - size.y;
                 ret = map[y * mapSize.x + x];
                 checkDeleteBlock(y * mapSize.x + x);
                 return ret;
@@ -510,7 +499,6 @@ int TileMap::collisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size,
         } else if (xHalf < x1) {
             if (map[y * mapSize.x + x + 1] != 0) {
                 if (*posY - tileSize * y + size.y <= 4) {
-                    //*posY = tileSize * y - size.y;
                     ret = map[y * mapSize.x + x + 1];
                     checkDeleteBlock(y * mapSize.x + x + 1);
                     return ret;

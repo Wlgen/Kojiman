@@ -44,18 +44,14 @@ class Player {
     void togglePause();
 
     void deleteInfoBall(int Pos);
-
     void deleteShots();
 
     void setPauseFalse();
     void setPauseTrue();
 
     glm::ivec2 getPosition();
-
     glm::ivec2 getRebBall(int pos);
-
     glm::vec2 getDespl(int pos);
-
     glm::ivec2 getSizePlayer();
     bool getActiveAlarm();
 
@@ -74,7 +70,6 @@ class Player {
     vector<infoBall> infoBalls;
     Texture spritesheet;
     Sprite *sprite;
-    //Sprite *spriteDead;
     TileMap *map;
     static Player *player;
     ShaderProgram texProgram;

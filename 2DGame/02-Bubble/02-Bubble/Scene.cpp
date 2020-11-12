@@ -45,7 +45,6 @@ void Scene::init() {
     texLvl3.loadFromFile("images/lvl3done.png", TEXTURE_PIXEL_FORMAT_RGBA);
     texLvl3.setMinFilter(GL_NEAREST);
     texLvl3.setMagFilter(GL_NEAREST);
-    //Game::instance().stopMusic();
     initShaders();
     glm::vec2 geom[2] = { glm::vec2(0.f), glm::vec2(640.f, 480.f) };
     glm::vec2 texCoords[2] = { glm::vec2(0.f), glm::vec2(1.f) };
@@ -168,8 +167,6 @@ void Scene::initShaders() {
 
 void Scene::restart(bool death) {
     resetPushTransition = true;
-    /*player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
-                        INIT_PLAYER_Y_TILES * map->getTileSize())); */
     player->restart(death, glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(),
                     INIT_PLAYER_Y_TILES * map->getTileSize()));
     ball->stop(death);
@@ -187,7 +184,6 @@ void Scene::restart(bool death) {
         Game::instance().loopMusic("music/kirbySong.wav");
         map->restart();
         changeLevel(0);
-        //setPauseFalse();
     }
 }
 
@@ -231,7 +227,6 @@ void Scene::getInTransitionDown() {
 }
 
 void Scene::outOfTransition() {
-    // Game::instance().loopMusic("music/kirbySong.wav");
     inTransition = false;
     if (resetPushTransition) setPauseFalse();
 }

@@ -51,7 +51,6 @@ void Kame::render() {
 
 void Kame::deleteAll() {
     for (int i = kames.size() - 1; i >= 0; i--) {
-        //kames.erase(kames.begin() + i);
         sprites[i]->free();
         delete sprites[i];
         sprites.erase(sprites.begin() + i);

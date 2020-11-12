@@ -16,7 +16,6 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
         flatAlarm.push_back(false);
     }
     sizePolice = glm::ivec2(16, 30);
-    // actualEffect = 0;
     texProgram = shaderProgram;
     Police::initSrpite();
 
@@ -28,7 +27,7 @@ void Police::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     firstTime = 0;
 }
 
-void Police::update(int deltaTime) {  // canviar
+void Police::update(int deltaTime) {
     if (!paused) {
         firstTime += deltaTime;
         if (player->getActiveAlarm()) startPolice();
@@ -38,7 +37,7 @@ void Police::update(int deltaTime) {  // canviar
             rend = false;
             preH = h;
         }
-        if (flatAlarm[h]) { //simplemente cambiar esto por el bool que indique el chocque con la alarma alarma
+        if (flatAlarm[h]) {
             if (!rend) {
                 rend = true;
                 Police::initSrpite();
@@ -58,7 +57,6 @@ void Police::update(int deltaTime) {  // canviar
         }
         if (rend) {
             if (!persecution) {
-                // change animation
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPolice.x),
                                     float(tileMapDispl.y + posPolice.y)));
                 if (firstTime >= 3000) {
@@ -145,7 +143,6 @@ void Police::setPosition(const glm::vec2& pos) {
 }
 
 void Police::initSrpite() {
-    //first = true;
     spritesheet.loadFromFile("images/Policeman2.png", TEXTURE_PIXEL_FORMAT_RGBA);
     spritesheet.setMagFilter(GL_NEAREST);
     spritesheet.setMinFilter(GL_NEAREST);
@@ -173,15 +170,6 @@ void Police::initSrpite() {
     sprite->addKeyframe(LEFT, glm::vec2(0.f, 0.5f));
     sprite->addKeyframe(LEFT, glm::vec2(1.f / 3.f, 0.5f));
     sprite->addKeyframe(LEFT, glm::vec2(2.f / 3.f, 0.5f));
-
-    /*sprite->setAnimationSpeed(1, 8);
-    sprite->addKeyframe(1, glm::vec2(0.f, 0.5f));
-
-    sprite->setAnimationSpeed(2, 8);
-    sprite->addKeyframe(2, glm::vec2(0.5f, 0.f));
-
-    sprite->setAnimationSpeed(3, 8);
-    sprite->addKeyframe(3, glm::vec2(0.5f, 0.5f));*/
 
     sprite->changeAnimation(WAIT);
 
