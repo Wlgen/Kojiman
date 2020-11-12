@@ -210,7 +210,7 @@ void Ball::update(int deltaTime) {
                                     else {
                                         if (godMode) {
                                             balls[i].vel.y = -balls[i].vel.y;
-                                            balls[i].pos.y -= 1;
+                                            balls[i].pos.y -= 3;
                                         }
                                         else {
                                             rend = false;
