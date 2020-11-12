@@ -54,7 +54,7 @@ void Ball::update(int deltaTime) {
                     balls[i].cont++;
                     posPlayer = player->getPosition();
                     glm::vec2 despl = player->getDespl(i);
-                    balls[i].pos.x += despl.x;
+                    balls[i].pos.x += int(despl.x);
                     if (map->collisionMoveLeft(glm::vec2(balls[i].pos.x, balls[i].pos.y),
                         sizeBall) ||
                         map->collisionMoveRight(
@@ -62,12 +62,12 @@ void Ball::update(int deltaTime) {
                             sizeBall)) {
                         if (!kame && balls[i].Catch) {
                             balls[i].Catch = false;
-                            balls[i].pos.x -= despl.x;
+                            balls[i].pos.x -= int(despl.x);
                         }
                     }
                     player->setBallPosition(balls[i].pos, i);
                     if (kame) {
-                        balls[i].pos.y += despl.y;
+                        balls[i].pos.y += int(despl.y);
                         balls[i].cont += deltaTime;
                         if (balls[i].cont >= 2000) {
                             balls[i].Catch = false;
