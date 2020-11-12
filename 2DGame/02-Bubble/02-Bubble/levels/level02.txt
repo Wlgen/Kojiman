@@ -81,11 +81,11 @@ images/bloques.png 	-- Tilesheet
 2       ffffffff             2
 2      ff      22            2
 2     ff       22            2
-2              ffffffff      2
-2             ff      22     2
-2            ff       22     2
-2                            2
-2     222222                 2
+2              22            2
+2             ff             2
+2            ff              2
+2           ff      aa       2
+2         aaaaaaaaaaaa       2
 2                            2
 2                            2
 2                            2

@@ -29,8 +29,8 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram) {
     first = true;
     sizeBall = glm::vec2(18.f, 18.f);
     anim = timeShot = 0;
-    velX = 3;
-    velY = 3;
+    velX = 4;
+    velY = 4;
 }
 
 void Player::update(int deltaTime) {
@@ -152,7 +152,7 @@ void Player::update(int deltaTime) {
                 }
                 if (!collisionPU) {
                     collisionPU = collisionWithPlayer(posPU, -1);
-                    posPU = glm::vec2(-5, -5);
+                    //posPU = glm::vec2(-5, -5);
                 }
             }
         }
@@ -181,35 +181,34 @@ glm::ivec2 Player::getPosition() { return posPlayer; }
 bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
     int x0, x1, xp, xp1;
 
-    x0 = posObj.x;                     // / tileSize;
-    x1 = (posObj.x + sizeBall.x - 1); // / tileSize;
+    x0 = posObj.x + 4;                     // / tileSize;
+    x1 = (posObj.x + sizeBall.x - 4); // / tileSize;
 
     xp = posPlayer.x; // / tileSize;
     xp1 = (posPlayer.x + sizePlayer.x - 1); // / tileSize;
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
-                if ((posObj.y + sizeBall.y >= posPlayer.y)
-                    && ((posObj.y + sizeBall.y <= posPlayer.y+3))) {
+                if (posObj.y + sizeBall.y == posPlayer.y) {
                     if (pos != -1) {
                         int y1 = int(infoBalls[pos].prePosition.y) + sizeBall.y - 1;
-                        if (y1 < posPlayer.y + 3) {
+                        if (y1 < posPlayer.y) {
                             calcRebBall(pos);
                             return true;
                         }
                     }else
-                    return true;
+                         return true;
                     //}
                 }
             }
         }
-    }
+   }
 
     return false;
 }
 
 void Player::applyEffect(int num) {
-    if (big && ((num != 2) || (num != 4) ||(num != 5))) initNormalSprite();
+    if (big && ((num == 3) || (num == 1) || (num == 6) ||(num == 0))) initNormalSprite();
     switch (num) {
         case 0:
             shoot = false;
@@ -262,7 +261,7 @@ void Player::setBallPosition(glm::vec2 pos, int i) {
 void Player::setPUPosition(glm::vec2 pos) { posPU = pos; }
 
 void Player::restart(bool death, glm::vec2 pos) {
-    velX = velY = 3;
+    velX = velY = 4;
     this->death = death;
     newPos = pos;
     count = shoot = collisionPU = shoot = false;
@@ -288,19 +287,19 @@ void Player::calcRebBall(int pos) {
         varSize -= sizePart * 2;
         sizePart = varSize / (4 / (i + 1));
     }
-    if (midBall < rebPlay[0]) {
-        infoBalls[pos].reb = glm::ivec2(-3, -1);
+    if (midBall < rebPlay[0]-2) {
+        infoBalls[pos].reb = glm::ivec2(-4, -2);
     }
     else if (midBall < rebPlay[1]) {
-        infoBalls[pos].reb = glm::ivec2(-3, -3);
+        infoBalls[pos].reb = glm::ivec2(-4, -4);
     } else if (midBall < rebPlay[2]) {
-        infoBalls[pos].reb = glm::ivec2(-1, -3);
+        infoBalls[pos].reb = glm::ivec2(-2, -4);
     } else if (midBall < rebPlay[3]) {
-        infoBalls[pos].reb = glm::ivec2(1, -3);
-    } else if (midBall <= rebPlay[4]) {
-        infoBalls[pos].reb = glm::ivec2(3, -3);
+        infoBalls[pos].reb = glm::ivec2(2, -4);
+    } else if (midBall <= rebPlay[4]+2) {
+        infoBalls[pos].reb = glm::ivec2(4, -4);
     } else {
-        infoBalls[pos].reb = glm::ivec2(3, -1);
+        infoBalls[pos].reb = glm::ivec2(4, -2);
     }
 }
 
