@@ -131,7 +131,7 @@ void Player::update(int deltaTime) {
                 }
                 sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x),
                                     float(tileMapDispl.y + posPlayer.y)));
-                for (unsigned int i = 0; i < infoBalls.size(); i++) {
+                for (unsigned int i = 0; i < infoBalls.size(); ++i) {
                     if (!infoBalls[i].collision) {
                         infoBalls[i].collision = collisionWithPlayer(infoBalls[i].pos, i);
                         infoBalls[i].numColl = 1;
