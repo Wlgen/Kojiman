@@ -189,6 +189,7 @@ void Ball::update(int deltaTime) {
                                         else {
                                             rend = false;
                                             Game::instance().restart(true);
+                                            break;
                                         }
                                     }
                                 }
@@ -401,6 +402,7 @@ void Ball::addBall() {
             balls[i].pos = posBall;
             balls[i].vel = vels;
             balls[i].rendered = true;
+            player->setBallPosition(balls[i].pos, i);
             ++ballsRend;
             vels = glm::ivec2(1, -2);
         }
