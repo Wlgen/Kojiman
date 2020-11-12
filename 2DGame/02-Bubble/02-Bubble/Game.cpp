@@ -78,7 +78,7 @@ void Game::keyPressed(int key) {
         else if (key == 'i' || key == 'I')
             gState.toInst();
     } else if (gState.getState() == State::state::credits) {
-        if (key == 'f' || key == 'F') {
+        if (key == 'm' || key == 'M') {
             gState.changeState();
         }
         if (key == '1') changeLevel(0);
