@@ -96,7 +96,10 @@ void Game::keyPressed(int key) {
             restart(false);
             scene.changeLevel(0);
         }
-        //if (key == 'x') gState.changeState();
+        if (key == 'x' || key == 'X') {
+            scene.setPauseTrue();
+            gState.toCredits();
+        }
         if (key == 'p' || key == 'P') pause(false);
         if (key == 'g' || key == 'G') {
             godMode = !godMode;
