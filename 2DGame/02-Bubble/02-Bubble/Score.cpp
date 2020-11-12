@@ -33,7 +33,7 @@ void Score::init(glm::vec2& minCoords, ShaderProgram& program) {
     words[9]->init(glm::vec2(minCoords.x + 32, minCoords.y + 256), program);
     words[10] = new Word("POWER-UP:");
     words[10]->init(glm::vec2(minCoords.x + 16, minCoords.y + 304), program);
-    words[11] = new Word("WHITE");
+    words[11] = new Word("NORMAL");
     words[11]->init(glm::vec2(minCoords.x + 32, minCoords.y + 320), program);
     words[12] = new Word("MULTI:");
     words[12]->init(glm::vec2(minCoords.x + 32, minCoords.y + 352), program);
@@ -80,27 +80,27 @@ void Score::changePowerUp(int s) {
     {
         case 0:
             powerup = WH;
-            sPowerup = "WHITE";
+            sPowerup = "NORMAL";
             break;
         case 1:
             powerup = BL;
-            sPowerup = "BLUE";
+            sPowerup = "GLUE";
             break;
         case 2:
             powerup = YL;
-            sPowerup = "YELLOW";
+            sPowerup = "TRIPLE";
             break;
         case 3:
             powerup = RD;
-            sPowerup = "RED";
+            sPowerup = "SHOOT";
             break;
         case 4:
             powerup = GR;
-            sPowerup = "GREEN";
+            sPowerup = "BIG";
             break;
         case 5:
             powerup = PK;
-            sPowerup = "PINK";
+            sPowerup = "POINTS";
             break;
         case 6:
             powerup = DB;
