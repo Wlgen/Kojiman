@@ -17,7 +17,6 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Kame.h" />
-    <ClInclude Include="Letter.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Police.h" />
@@ -39,7 +38,6 @@
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Kame.cpp" />
-    <ClCompile Include="Letter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Player.cpp" />
