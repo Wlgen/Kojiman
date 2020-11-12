@@ -152,7 +152,7 @@ void Player::update(int deltaTime) {
                 }
                 if (!collisionPU) {
                     collisionPU = collisionWithPlayer(posPU, -1);
-                    posPU = glm::vec2(-5, -5);
+                    //posPU = glm::vec2(-5, -5);
                 }
             }
         }
@@ -189,8 +189,7 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
     for (int x = x0; x <= x1; x++) {
         for (int j = xp; j <= xp1; j++) {
             if (x == j) {
-                if ((posObj.y + sizeBall.y >= posPlayer.y)
-                    && ((posObj.y + sizeBall.y <= posPlayer.y))) {
+                if (posObj.y + sizeBall.y == posPlayer.y) {
                     if (pos != -1) {
                         int y1 = int(infoBalls[pos].prePosition.y) + sizeBall.y - 1;
                         if (y1 < posPlayer.y) {
@@ -198,7 +197,7 @@ bool Player::collisionWithPlayer(glm::ivec2 posObj, int pos) {
                             return true;
                         }
                     }else
-                    return true;
+                         return true;
                     //}
                 }
             }
